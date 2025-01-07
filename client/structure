@@ -1,0 +1,14 @@
+server/
+├── controllers/
+│   ├── blogController.js
+│   └── contactController.js
+├── models/
+│   ├── Blog.js
+│   └── Contact.js
+├── routes/
+│   ├── blogRoutes.js
+│   └── contactRoutes.js
+├── .env
+├── index.js
+├── package.json
+└── ... (other files)
