@@ -8,7 +8,7 @@ import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>// BrowserRouter is a component that wraps the entire application. It provides the routing functionality to the application.
+    <BrowserRouter>
       <App />
     </BrowserRouter>
   </StrictMode>,
