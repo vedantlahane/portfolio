@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: "http://localhost:5173", // Update this to your frontend's deployed URL (e.g., https://your-frontend.vercel.app) when ready
+  origin: "vedantlahane.vercel.com", // Update this to your frontend's deployed URL (e.g., https://your-frontend.vercel.app) when ready
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionSuccessStatus: 200,
