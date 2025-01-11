@@ -1,3 +1,4 @@
+// ContactForm.jsx
 import React, { useState } from 'react';
 
 const ContactForm = () => {
@@ -19,7 +20,7 @@ const ContactForm = () => {
     setStatus('Sending...');
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/contact`, { // Removed extra '/api'
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
