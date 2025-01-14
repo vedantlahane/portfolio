@@ -10,18 +10,18 @@ const {
 } = require('../controllers/blogController');
 
 // POST /api/blogs
-router.post('/blogs', createBlog);
+router.post('/', createBlog);
 
 // GET /api/blogs
-router.get('/blogs', getAllBlogs);
+router.get('/', getAllBlogs);
 
 // GET /api/blogs/:id
-router.get('/blogs/:id', getBlogById);
+router.get('/:id', getBlogById);
 
 // PUT /api/blogs/:id
-router.put('/blogs/:id', updateBlog);
+router.put('/:id', updateBlog);
 
 // DELETE /api/blogs/:id
-router.delete('/blogs/:id', deleteBlog);
+router.delete('/:id', deleteBlog);
 
 module.exports = router;
