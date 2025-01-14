@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 // API URL Configuration
 const API_URL = import.meta.env.DEV 
   ? 'http://localhost:5000/api/contact'
-  : `${import.meta.env.VITE_API_BASE_URL}/api/contact`;
+  : `${import.meta.env.VITE_API_BASE_URL}/contact`;
 
 // Form field configuration
 const FORM_FIELDS = [

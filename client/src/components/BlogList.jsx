@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // API URL Configuration
 const API_URL = import.meta.env.DEV 
   ? 'http://localhost:5000/api/blogs'  // Development URL
-  : `${import.meta.env.VITE_API_BASE_URL}/api/blogs`; // Production URL
+  : `${import.meta.env.VITE_API_BASE_URL}/blogs`; // Production URL
 
 // BlogPreview Component
 const BlogPreview = ({ blog }) => (
