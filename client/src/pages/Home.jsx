@@ -2,9 +2,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import BlogList from '../components/BlogList';
+import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa'; // Social media icons
 
 const Home = () => {
   // Sample project data - you can move this to a separate data file
+
+  // Social media links object
+  const socialLinks = {
+    github: "https://github.com/yourusername",
+    linkedin: "https://linkedin.com/in/yourusername",
+    twitter: "https://twitter.com/yourusername"
+  };
+
   const projects = [
     {
       id: 1,
