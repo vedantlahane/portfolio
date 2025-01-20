@@ -2,58 +2,41 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import BlogList from "../components/BlogList";
-import { FaGithub, FaLinkedin, FaTwitter } from "react-icons/fa"; // Social media icons
 
 const Home = () => {
-  // Sample project data - you can move this to a separate data file
 
-  // Social media links object
-  const socialLinks = {
-    github: "https://github.com/yourusername",
-    linkedin: "https://linkedin.com/in/yourusername",
-    twitter: "https://twitter.com/yourusername",
-  };
-
-  const projects = [
-    {
-      id: 1,
-      title: "Project 1",
-      description: "Description of project 1",
-      technologies: ["React", "Node.js", "MongoDB"],
-      image: "/project1.jpg", // Add your project images to public folder
-      link: "https://project1.com",
-    },
-    // Add more projects...
-  ];
-
-  // Skills data
-  const skills = {
-    frontend: ["HTML", "CSS", "JavaScript", "React", "Tailwind CSS"],
-    backend: ["Node.js", "Express", "MongoDB", "REST APIs"],
-    tools: ["Git", "VS Code", "Postman", "Docker"],
-  };
 
   return (
     <div className="min-h-screen m-4 w-4/5 mx-auto">
       {/* Hero Section */}
-      <section className="text-white py-20">
-        <div className="container mx-auto px-4 m-4">
-          <div className="flex items-center mb-8">
-            <h1 className="text-5xl font-bold">Hey, there</h1>
+      <section className="text-white py-20 min-h-screen pt-36">
+        <div className="container  mx-auto px-4 m-8">
+          <div className="flex items-center space-x-2 mb-3">
+            <h1 className="text-4xl font-semibold">Hey, there</h1>
             <img
               className="size-14"
               src="https://img.icons8.com/emoji/100/waving-hand-light-skin-tone.png"
               alt="waving-hand-light-skin-tone"
             />
           </div>
-          <div className="bg-gradient-to-br from-blue-600">
-          <h1 className="text-7xl font-extrabold text-opacity-80 text-transparent">I'm Vedant Lahane</h1>
+          <div className="flex space-x-5 items-baseline mb-2">
+            <h1 className="text-7xl font-extrabold bg-gradient-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
+              I'm
+            </h1>
+            <h1 className="text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              Vedant Lahane
+            </h1>
           </div>
-          
-          <p className="text-xl mb-8">
-            Full Stack Developer | Problem Solver | Tech Enthusiast
+
+          <p className="text-6xl font-bold mb-8">
+            an aspiring software engineer
           </p>
-          <div className="flex justify-center gap-4">
+
+          <p className="max-w-2xl text-2xl font-medium mb-8">
+            on a journey to learn and build innovative software solutions, with
+            a focus on crafting dynamic and user-friendly experiences.
+          </p>
+          {/* <div className="flex justify-center gap-4">
             <Link
               to="/contact"
               className="bg-white text-blue-600 px-6 py-2 rounded-full hover:bg-blue-50 transition-colors"
@@ -66,12 +49,21 @@ const Home = () => {
             >
               View Projects
             </a>
-          </div>
+          </div> */}
+          
+        </div>
+        <div className="h-1 mt-28 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md "></div>
+      </section>
+      
+      {/* About Section */}
+      <section className="py-20 min-h-screen text-white">
+        <div className="container mx-auto justify-between">
+          <img src="" alt="" className="size-80" />
         </div>
       </section>
 
-      {/* About Section */}
-      <section className="py-20 bg-gray-50" id="about">
+      {/* About Section
+      <section className="py-20 ">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">About Me</h2>
           <div className="max-w-3xl mx-auto">
@@ -101,9 +93,9 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      {/* Projects Section */}
+      {/* Projects Section
       <section className="py-20" id="projects">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Projects</h2>
@@ -178,7 +170,7 @@ const Home = () => {
             Get in Touch
           </Link>
         </div>
-      </section>
+      </section> 
     </div>
   );
 };

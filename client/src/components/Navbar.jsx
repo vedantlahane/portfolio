@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
-    <nav className="w-4/5 h-20 mx-auto flex p-4 m-4 rounded-xl bg-gradient-to-br bg-opacity-75 from-blue-700">
+    <nav className="fixed  top-0 left-1/2 transform -translate-x-1/2 w-4/5 h-16 mx-auto flex p-4 m-8 rounded-xl bg-gradient-to-br opacity-95 from-blue-500 to-purple-500">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className=" text-white font-bold text-xl pl-10">
-          <span className='hover:text-cyan-500 transition-colors duration-300'>
-            Vedant Lahane
+        <Link to="/" className=" text-white font-extrabold text-3xl pl-10">
+          <span className='hover:text-gray-600 transition-colors duration-300'>
+            {'<vedant/>'}
           </span>
         </Link>
         <div className='font-semibold text-lg'>

@@ -9,7 +9,7 @@ import Navbar from './components/Navbar';
 
 function App() {
   return (
-    <div className="bg-slate-900 p-4">
+    <div className= "min-h-screen bg-slate-900 w-full p-4 overflow-x-hidden">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
