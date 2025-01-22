@@ -2,6 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import BlogList from "../components/BlogList";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const Home = () => {
   return (
@@ -105,6 +106,226 @@ const Home = () => {
         {/* Gradient Line */}
         <div className="h-1 mt-28 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md"></div>
       </section>
+
+      {/* Skills Section */}
+      <section className="text-white py-14 min-h-screen">
+        <div className="grid mx-auto px-4 m-8">
+          <h2 className="text-3xl font-bold text-center mb-12">My Skills</h2>
+          <div className="max-w-3xl mx-auto bg-gradient-to-br from-blue-500 to-purple-500 rounded-md">
+            <h2 className="text-2xl">Programming Languages</h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl">C/C++</h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl">Java</h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl">JavaScript</h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl">Python</h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl">Frontend</h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl"></h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl"></h2>   
+          </div>
+          
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl"></h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl"></h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl"></h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl"></h2>   
+          </div>
+          <div className="min-w-40 max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-md">
+            <h2 className="text-2xl"></h2>   
+          </div>
+        </div>
+      </section>
+
+      {/* Skills Section */}
+<section className="text-white py-14 min-h-screen">
+  <div className="grid gap-6 mx-auto px-4 m-8">
+    <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+      My Skills
+    </h2>
+
+    {/* Programming Languages */}
+    <div className="max-w-3xl mx-auto bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl p-6">
+      <h2 className="text-2xl font-bold mb-4">Programming Languages</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">C/C++</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Java</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">JavaScript</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Python</span>
+      </div>
+    </div>
+
+    {/* Frontend Development */}
+    <div className="max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-xl p-6">
+      <h2 className="text-2xl font-bold mb-4">Frontend Development</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">HTML5</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">CSS3</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">JavaScript</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">React.js</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Tailwind CSS</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Bootstrap</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Material UI</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Redux</span>
+      </div>
+    </div>
+
+    {/* Backend Development */}
+    <div className="max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-xl p-6">
+      <h2 className="text-2xl font-bold mb-4">Backend Development</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Node.js</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Express.js</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">MongoDB</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">MySQL</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">REST APIs</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Firebase</span>
+      </div>
+    </div>
+
+    {/* Tools & Technologies */}
+    <div className="max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-xl p-6">
+      <h2 className="text-2xl font-bold mb-4">Tools & Technologies</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Git</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">GitHub</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">VS Code</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Postman</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">npm</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Webpack</span>
+      </div>
+    </div>
+
+    {/* Currently Learning */}
+    <div className="max-w-3xl mx-auto bg-gradient-to-br from-cyan-600 to-indigo-500 rounded-xl p-6">
+      <h2 className="text-2xl font-bold mb-4">Currently Learning</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">TypeScript</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Next.js</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">Docker</span>
+        <span className="px-4 py-2 bg-white/10 rounded-lg text-center hover:bg-white/20 transition-all">AWS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Skills Section */}
+<section className="text-white py-14 min-h-screen relative overflow-hidden">
+  {/* Floating Background SVGs */}
+  <div className="absolute inset-0 -z-10">
+    {/* Add multiple tech SVGs with different sizes and animations */}
+    <div className="absolute top-20 left-10 opacity-10 animate-float">
+      <img src="/react.svg" className="w-24 h-24" />
+    </div>
+    <div className="absolute top-40 right-20 opacity-10 animate-float-delayed">
+      <img src="/nodejs.svg" className="w-32 h-32" />
+    </div>
+    <div className="absolute bottom-20 left-1/4 opacity-10 animate-float">
+      <img src="/javascript.svg" className="w-20 h-20" />
+    </div>
+    {/* Add more floating icons as needed */}
+  </div>
+
+  <div className="container mx-auto px-4">
+    <h2 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+      Tech Stack
+    </h2>
+
+    {/* Pinterest-style Grid */}
+    <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+      {/* Each card has different heights */}
+      
+      {/* React Card */}
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+      <iframe className="w-24 h-24" src="https://lottie.host/embed/31cc650e-0bf1-4897-a14c-6c87c8601d63/e0tqG9uqvL.lottie"></iframe>
+        <h3 className="text-xl font-semibold text-center mb-2">React</h3>
+        <p className="text-sm text-gray-400 text-center">Frontend Development</p>
+      </div>
+      {/* Angular Card */}
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+      <iframe src="https://lottie.host/embed/9e110ead-fe06-47cf-9c2c-69708646ebf1/i14Qdy8mWl.lottie"></iframe>
+        <h3 className="text-xl font-semibold text-center mb-2">React</h3>
+        <p className="text-sm text-gray-400 text-center">Frontend Development</p>
+      </div>
+
+      {/* Node.js Card - Taller */}
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+        <img src="src/assets/node-js.svg" className="w-16 h-16 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-center mb-2">Node.js</h3>
+        <p className="text-sm text-gray-400 text-center">Backend Development</p>
+        <div className="mt-4 flex flex-wrap gap-2 justify-center">
+          <span className="px-2 py-1 bg-green-500/20 rounded-full text-xs">Express</span>
+          <span className="px-2 py-1 bg-green-500/20 rounded-full text-xs">REST APIs</span>
+        </div>
+      </div>
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+        <img src="src/assets/express-svgrepo-com.png" className="w-16 h-16 mx-auto mb-4" />
+        
+        <h3 className="text-xl font-semibold text-center mb-2">Node.js</h3>
+        <p className="text-sm text-gray-400 text-center">Backend Development</p>
+        <div className="mt-4 flex flex-wrap gap-2 justify-center">
+          <span className="px-2 py-1 bg-green-500/20 rounded-full text-xs">Express</span>
+          <span className="px-2 py-1 bg-green-500/20 rounded-full text-xs">REST APIs</span>
+        </div>
+      </div>
+
+      {/* MongoDB Card */}
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+      <iframe src="https://lottie.host/embed/65dbcd35-959d-4d11-b7b7-65d18f5540a7/lm0xRqXEZG.lottie"></iframe>
+        <h3 className="text-xl font-semibold text-center mb-2">MongoDB</h3>
+        <p className="text-sm text-gray-400 text-center">Database</p>
+      </div>
+      {/* BootStrap Card */}
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+        <img src="src/assets/bootsrap.svg" className="w-24 h-24 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-center mb-2">BootStrap</h3>
+        <p className="text-sm text-gray-400 text-center">Database</p>
+      </div>
+      {/* HTML Card */}
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+      <iframe src="https://lottie.host/embed/0a5c1d7d-5780-447f-a07d-a7326ae9a697/QSjJ7m58yV.lottie"></iframe>
+        <h3 className="text-xl font-semibold text-center mb-2">HTML5</h3>
+        <p className="text-sm text-gray-400 text-center">Database</p>
+      </div>
+      {/* CSS Card */}
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+      <iframe src="https://lottie.host/embed/9672f1dd-fb70-4e1c-b81a-617d308b6d5d/sctkkVcDwp.lottie"></iframe>
+        <h3 className="text-xl font-semibold text-center mb-2">CSS</h3>
+        <p className="text-sm text-gray-400 text-center">Database</p>
+      </div>
+
+      {/* Tailwind CSS Card - Taller */}
+      <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+        <img src="/tailwind.svg" className="w-16 h-16 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-center mb-2">Tailwind CSS</h3>
+        <p className="text-sm text-gray-400 text-center">Styling</p>
+        <div className="mt-4 flex flex-wrap gap-2 justify-center">
+          <span className="px-2 py-1 bg-blue-500/20 rounded-full text-xs">Responsive</span>
+          <span className="px-2 py-1 bg-blue-500/20 rounded-full text-xs">Utility-First</span>
+        </div>
+      </div>
+
+      {/* Add more cards for other technologies */}
+    </div>
+  </div>
+</section>
       {/* <section className="py-20 min-h-screen text-white">
         <div className="container mx-auto flex justify-items-start">
           <img src="src/assets/vedant.png" alt="Vedant" className="w-64 h-auto rounded-xl -rotate-12 hover:rotate-0 transition-all duration-300 mx-28" />
