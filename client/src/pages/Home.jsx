@@ -321,21 +321,7 @@ const Home = () => {
         <div className="h-1 mt-36 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md"></div>
       </section>
       {/* Contact CTA Section */}
-      <section className="py-20 bg-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-8">Let's Work Together</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            I'm always interested in hearing about new projects and
-            opportunities.
-          </p>
-          <Link
-            to="/contact"
-            className="bg-white text-blue-600 px-8 py-3 rounded-full hover:bg-blue-50 transition-colors inline-block"
-          >
-            Get in Touch
-          </Link>
-        </div>
-      </section>
+      
     </div>
   );
 };
