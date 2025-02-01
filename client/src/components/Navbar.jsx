@@ -4,15 +4,15 @@ import { Link } from 'react-router-dom';
 import iconGithub from '../assets/icons8-github-100.png';
 import iconLinkedIn from '../assets/icons8-linkedin-100.png';
 import iconLeetCode from '../assets/icons8-level-up-your-coding-skills-and-quickly-land-a-job-100.png';
+import vl from '../assets/Untitled(2)(1).png';
 
 const Navbar = () => {
   return (
     <nav className="fixed  top-0 left-1/2 transform -translate-x-1/2 w-4/5 h-16 mx-auto flex p-4 m-8 rounded-xl bg-gradient-to-br opacity-95 from-blue-500 to-purple-500 z-10">
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className=" text-white font-extrabold text-3xl pl-10">
-          <span className='hover:text-gray-600 transition-colors duration-300'>
-            {'<vedant/>'}
-          </span>
+          <img className='block relative group transparent size-8 mx-4'src={vl} alt="Vedant Lahane" />
+          
         </Link>
         <div className='font-semibold text-lg'>
           <Link to='/' className='relative group mx-4'>
