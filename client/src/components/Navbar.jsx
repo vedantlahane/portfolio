@@ -2,6 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import iconGithub from '../assets/icons8-github-100.png';
+import iconLinkedIn from '../assets/icons8-linkedin-100.png';
+import iconLeetCode from '../assets/icons8-level-up-your-coding-skills-and-quickly-land-a-job-100.png';
 
 const Navbar = () => {
   return (
@@ -27,9 +29,9 @@ const Navbar = () => {
           </Link>
         </div>
         <div className='flex items-center justify-center space-x-4 pr-10'>
-          <img className='block mx-auto size-9  relative group' src="client/src/assets/wired-gradient-2677-logo-square-linkedin-hover-pinch (1).gif" alt="LinkedIn Icon" />
+          <img className='block mx-auto size-9  relative group' src={iconLinkedIn}alt="LinkedIn Icon" />
           <img className='block relative size-7 group mx-4' src={iconGithub} alt="GitHub Icon" />
-          <img className='block relative group size-8 mx-4' src="client/src/assets/icons8-level-up-your-coding-skills-and-quickly-land-a-job-100.png" alt="LeetCode Icon" />
+          <img className='block relative group size-8 mx-4' src={iconLeetCode} alt="LeetCode Icon" />
         </div>
       </div>
     </nav>
