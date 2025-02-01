@@ -26,9 +26,9 @@ const Navbar = () => {
           </Link>
         </div>
         <div className='flex items-center justify-center space-x-4 pr-10'>
-          <img className='block mx-auto size-9  relative group' src="src/assets/wired-gradient-2677-logo-square-linkedin-hover-pinch (1).gif" alt="LinkedIn Icon" />
-          <img className='block relative size-7 group mx-4' src="src/assets/icons8-github-100.png" alt="GitHub Icon" />
-          <img className='block relative group size-8 mx-4' src="src/assets/icons8-level-up-your-coding-skills-and-quickly-land-a-job-100.png" alt="LeetCode Icon" />
+          <img className='block mx-auto size-9  relative group' src="client/src/assets/wired-gradient-2677-logo-square-linkedin-hover-pinch (1).gif" alt="LinkedIn Icon" />
+          <img className='block relative size-7 group mx-4' src="client/src/assets/icons8-github-100.png" alt="GitHub Icon" />
+          <img className='block relative group size-8 mx-4' src="client/src/assets/icons8-level-up-your-coding-skills-and-quickly-land-a-job-100.png" alt="LeetCode Icon" />
         </div>
       </div>
     </nav>

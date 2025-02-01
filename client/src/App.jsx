@@ -7,12 +7,14 @@ import BlogList from './components/BlogList';
 import BlogDetail from './components/BlogDetail';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import Hero1 from './components/Hero1';
 
 function App() {
   return (
     <div className= "min-h-screen bg-slate-900 w-full p-4 overflow-x-hidden">
       <Navbar />
       <Routes>
+        <Route path="/hero1" element={<Hero1 />} />
         <Route path="/hero" element={<Hero />} />
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<ContactForm />} />
