@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import vedantImg from "../assets/vedant.jpg";
+import vedantImg from "../assets/vedant.png";
 import bootstrap from "../assets/bootstrap.svg";
 import nodejs from "../assets/node-js.svg";
 
