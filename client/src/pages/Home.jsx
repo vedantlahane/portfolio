@@ -2,6 +2,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import vedantImg from "../assets/vedant.jpg";
+import bootstrap from "../assets/bootstrap.svg";
+import nodejs from "../assets/node-js.svg";
 
 const Home = () => {
   return (
@@ -50,7 +53,7 @@ const Home = () => {
         <div className="container mx-auto flex gap-24 items-start tart px-24">
           {/* Image Section */}
           <img
-            src="src/assets/vedant.png"
+            src={vedantImg}
             alt="Vedant"
             className="w-64 h-auto rounded-xl -rotate-12 hover:rotate-0 transition-all duration-300 mt-20"
           />
@@ -137,7 +140,7 @@ const Home = () => {
             {/* Node.js Card */}
             <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
               <img
-                src="src/assets/node-js.svg"
+                src={nodejs}
                 className="w-32 h-28 mx-auto mb-4"
                 alt="Node.js"
               />
@@ -219,7 +222,7 @@ const Home = () => {
             {/* Bootstrap Card */}
             <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
               <img
-                src="src/assets/bootsrap.svg"
+                src={bootstrap}
                 className="w-28 h-28 mx-auto mb-4"
                 alt="Bootstrap"
               />
