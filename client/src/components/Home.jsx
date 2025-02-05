@@ -12,11 +12,11 @@ const skillsData = [
       'https://lottie.host/embed/31cc650e-0bf1-4897-a14c-6c87c8601d63/e0tqG9uqvL.lottie',
     isLottie: true
   },
-  // {
-  //   title: 'Node.js',
-  //   category: 'Backend Development',
-  //   imageUrl: nodejs
-  // },
+  {
+    title: 'Node.js',
+    category: 'Backend Development',
+    imageUrl: "src/assets/node-js.svg"
+  },
    {
     title: 'Tailwind CSS',
     category: 'Styling',
@@ -46,11 +46,11 @@ const skillsData = [
       'https://lottie.host/embed/65dbcd35-959d-4d11-b7b7-65d18f5540a7/lm0xRqXEZG.lottie',
     isLottie: true
   },
-  // {
-  //   title: 'Bootstrap',
-  //   category: 'Styling',
-  //   imageUrl: bootstrap
-  // },
+  {
+    title: 'Bootstrap',
+    category: 'Styling',
+    imageUrl:"src/assets/bootsrap.svg"
+  },
   {
     title: 'HTML5',
     category: 'Markup Language',

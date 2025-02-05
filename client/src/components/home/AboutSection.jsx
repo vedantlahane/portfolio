@@ -25,7 +25,7 @@ const storyElements = [
 ];
 
 const AboutSection = () => (
-  <section className="text-white py-8 min-h-screen relative overflow-hidden">
+  <section className="text-white py-8 relative overflow-hidden">
     <div className="container mx-auto px-24">
       <div className="max-w-4xl">
         <motion.div

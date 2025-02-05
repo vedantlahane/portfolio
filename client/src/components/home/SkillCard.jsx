@@ -9,14 +9,14 @@ const SkillCard = ({ title, category, animationUrl, imageUrl, isLottie = false }
   >
     {isLottie ? (
       <iframe
-        className="w-28 h-28 mx-auto mb-4"
+        className="w-40  mx-auto mb-4"
         src={animationUrl}
         title={title}
       />
     ) : (
       <img
         src={imageUrl}
-        className="w-28 h-28 mx-auto mb-4"
+        className="w-28  mx-auto mb-4"
         alt={title}
       />
     )}

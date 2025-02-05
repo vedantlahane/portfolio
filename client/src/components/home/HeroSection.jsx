@@ -19,7 +19,7 @@ const HeroSection = () => {
   return (
     <section 
       id="hero"
-      className="relative min-h-screen pt-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="relative pt-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       <div className="container mx-auto max-w-7xl h-full">
         <div className="flex flex-col lg:flex-row items-center gap-8 h-full">
