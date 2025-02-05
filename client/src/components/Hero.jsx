@@ -10,18 +10,13 @@ const Hero = () => {
       transition={{ duration: 1.0, ease: "easeOut" }}
       className="relative overflow-hidden"
     >
-      <section className="text-white py-20 min-h-[90vh] md:min-h-screen flex items-center pt-24">
-        {/* Background Elements */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/80" />
-        </div>
-
+      <section className="text-white px-52 p-24 flex items-center pt-12">
+        
         <div className="container mx-auto px-4">
           {/* Subtitle */}
           <div className="flex items-center gap-3 mb-3">
             <h1 className="text-4xl md:text-3xl font-semibold">Hey, there</h1>
-            <img
+            {/* <img
               className="size-14 md:size-10 animate-wiggle"
               src="https://img.icons8.com/emoji/100/waving-hand-light-skin-tone.png"
               alt="Waving hand"
@@ -29,6 +24,15 @@ const Hero = () => {
               aria-label="Waving hand"
               loading="eager"
               decoding="async"
+            /> */}
+            <motion.img
+              initial={{ rotate: 0 }}
+              animate={{ rotate: [0, 20, 0] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="size-14"
+              src="https://img.icons8.com/emoji/100/waving-hand-light-skin-tone.png"
+              alt="waving hand"
+              loading="eager"
             />
           </div>
 
@@ -45,7 +49,7 @@ const Hero = () => {
           {/* Tagline */}
           <p className="text-2xl md:text-4xl font-semibold mb-6 text-gray-300">
             Building <span className="text-blue-400">digital experiences</span>{" "}
-            that matter
+            {/* that matter */}
           </p>
 
           {/* Description */}

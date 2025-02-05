@@ -9,7 +9,13 @@ import nodejs from "../assets/node-js.svg";
 const Home = () => {
   return (
     <div className="min-h-screen m-4 w-4/5 mx-auto">
-      /* Hero Section */
+      {/* Background Elements */}
+      <div className="absolute inset-0 -z-20 overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/80" />
+        </div>
+
+      {/* Hero Section */}
       <motion.div
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
