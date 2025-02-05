@@ -8,7 +8,7 @@ import nodejs from "../assets/node-js.svg";
 
 const Home = () => {
   return (
-    <div className="min-h-screen m-4 w-4/5 mx-auto">
+    <div className="min-h-screen m-4 mx-auto">
       {/* Background Elements */}
       <div className="absolute inset-0 -z-20 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]" />

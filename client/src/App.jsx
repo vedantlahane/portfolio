@@ -1,7 +1,6 @@
-// App.jsx
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-//import Home from './pages/Home';
+import Home from './components/Home';
 import ContactForm from './components/ContactForm';
 import BlogList from './components/BlogList';
 import BlogDetail from './components/BlogDetail';
@@ -11,16 +10,18 @@ import Hero1 from './components/Hero1';
 
 function App() {
   return (
-    <div className= "min-h-screen bg-slate-900 w-full p-4 overflow-x-hidden">
+    <div className="min-h-screen bg-slate-900 overflow-x-hidden">
       <Navbar />
-      <Routes>
-        <Route path="/hero1" element={<Hero1 />} />
-        <Route path="/hero" element={<Hero />} />
-        <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<ContactForm />} />
-        <Route path="/blogs" element={<BlogList />} />
-        <Route path="/blogs/:id" element={<BlogDetail />} />
-      </Routes>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 pt-16"> {/* Content container */}
+        <Routes>
+          <Route path="/hero1" element={<Hero1 />} />
+          <Route path="/hero" element={<Hero />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<ContactForm />} />
+          <Route path="/blogs" element={<BlogList />} />
+          <Route path="/blogs/:id" element={<BlogDetail />} />
+        </Routes>
+      </div>
     </div>
   );
 }

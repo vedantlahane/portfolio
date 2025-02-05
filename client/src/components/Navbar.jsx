@@ -1,47 +1,144 @@
-import React from 'react';
+'use client'
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import iconGithub from '../assets/icons8-github-100.png';
-import iconLinkedIn from '../assets/icons8-linkedin-100.png';
-import iconLeetCode from '../assets/icons8-level-up-your-coding-skills-and-quickly-land-a-job-100.png';
-import vl from '../assets/VedantLogo.png';
+import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 
 const Navbar = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Contact', href: '/contact' },
+  ];
+
+  const socialLinks = [
+    { name: 'GitHub', href: 'https://github.com/vedantlahane' },
+    { name: 'LinkedIn', href: 'https://www.linkedin.com/in/vedant-lahane' },
+    { name: 'LeetCode', href: 'https://leetcode.com/u/vedantlahane' },
+  ];
+
   return (
-    <header>
-     <nav className="fixed top-0 left-1/2 transform -translate-x-1/2 w-11/12 md:w-4/5 h-14 flex p-2 md:p-4 my-4 rounded-lg bg-linear-to-br opacity-95 from-blue-500 to-purple-500 z-10">
-        <div className="container mx-auto flex justify-between items-center">
-          <Link to="/" className="text-white font-extrabold text-2xl md:text-3xl pl-2 md:pl-10">
-            {/* <img className='w-64 object-contain' src={vl} alt="Vedant Lahane" /> */}
-            <h1>vedant</h1>
+    <nav className="fixed top-0 w-full backdrop-blur-sm z-50">
+      {/* Partial border with gradient */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative h-16 flex items-center justify-between">
+          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent opacity-50" />
+          
+          {/* Logo */}
+          <Link to="/" className="z-10">
+            <span className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-purple-500 
+              bg-clip-text text-transparent">
+              v
+            </span>
           </Link>
-          <div className='hidden md:block font-semibold text-base md:text-lg'>
-            <Link to='/' className='relative group mx-2 md:mx-4' aria-label="Home">
-              <span className='text-slate-800 group-hover:text-white transition-colors duration-300'>Home</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-            <Link to='/blog' className='relative group mx-2 md:mx-4' aria-label="Blog">
-              <span className='text-slate-800 group-hover:text-white transition-colors duration-300'>Blog</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-            <Link to='/contact' className='relative group mx-2 md:mx-4' aria-label="Contact">
-              <span className='text-slate-800 font-semibold group-hover:text-white transition-colors duration-300'>Contact</span>
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
-            </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className="text-base font-medium text-blue-300 hover:text-purple-400 
+                  transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
+            
+            {/* Dropdown Menu */}
+            <div className="relative ml-4">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="text-base font-medium text-blue-300 hover:text-purple-400 
+                  transition-colors flex items-center"
+              >
+                Connect
+                <ChevronDownIcon className="h-4 w-4 ml-1" />
+              </button>
+
+              {isOpen && (
+                <div className="absolute top-full right-0 mt-2 py-2 w-48 bg-slate-900/90 
+                  backdrop-blur-sm rounded-lg shadow-xl border border-blue-900/20">
+                  {socialLinks.map((link) => (
+                    <a
+                      key={link.name}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block px-4 py-2 text-blue-300 hover:text-purple-400 
+                        hover:bg-blue-900/10 transition-colors"
+                    >
+                      {link.name}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-          <div className='flex items-center justify-center space-x-2 md:space-x-4 pr-2 md:pr-10'>
-            <a href="https://www.linkedin.com/in/vedant-lahane" target="_blank" rel="noopener noreferrer">
-              <img className='size-7 md:size-9 hover:scale-110 transition-transform duration-300' src={iconLinkedIn} alt="LinkedIn Icon" />
-            </a>
-            <a href="https://github.com/vedantlahane" target="_blank" rel="noopener noreferrer">
-              <img className='size-6 md:size-7 hover:scale-110 transition-transform duration-300' src={iconGithub} alt="GitHub Icon" />
-            </a>
-            <a href="https://leetcode.com/u/vedantlahane" target="_blank" rel="noopener noreferrer">
-              <img className='size-7 md:size-8 hover:scale-110 transition-transform duration-300' src={iconLeetCode} alt="LeetCode Icon" />
-            </a>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            className="md:hidden p-2 text-blue-300 hover:text-purple-400 transition-colors"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <span className="sr-only">Open menu</span>
+            <Bars3Icon className="h-7 w-7" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'}`}>
+        <div className="fixed inset-0 z-50 bg-slate-900/95 backdrop-blur-sm">
+          <div className="flex items-center justify-between p-4 border-b border-blue-900/20">
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-purple-500 
+              bg-clip-text text-transparent">
+              v
+            </span>
+            <button
+              type="button"
+              className="p-2 text-blue-300 hover:text-purple-400 transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="sr-only">Close menu</span>
+              <XMarkIcon className="h-7 w-7" aria-hidden="true" />
+            </button>
+          </div>
+          <div className="p-4 space-y-4">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className="block py-2 text-lg text-blue-300 hover:text-purple-400 
+                  transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <div className="pt-4">
+              <div className="border-t border-blue-900/20 pt-4">
+                <h3 className="text-blue-400 text-sm font-semibold mb-2">Connect</h3>
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.name}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block py-2 text-blue-300 hover:text-purple-400 transition-colors"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
   );
 };
 
