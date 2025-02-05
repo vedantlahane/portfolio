@@ -38,10 +38,10 @@ const Hero = () => {
 
           {/* Main Title */}
           <div className="flex space-x-5 items-baseline mb-2">
-            <h1 className="text-7xl md:text-8xl font-extrabold bg-gradient-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
+            <h1 className="text-7xl md:text-8xl font-extrabold bg-linear-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
               I'm
             </h1>
-            <h1 className="text-6xl md:text-7xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-6xl md:text-7xl font-extrabold bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
               Vedant Lahane
             </h1>
           </div>
@@ -63,7 +63,7 @@ const Hero = () => {
           <div className="flex gap-4 mt-8">
             <a
               href="#projects"
-              className="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-3 rounded-lg font-medium hover:scale-105 transition-transform"
+              className="bg-linear-to-r from-blue-500 to-purple-600 px-8 py-3 rounded-lg font-medium hover:scale-105 transition-transform"
             >
               View My Work
             </a>
@@ -84,7 +84,7 @@ const Hero = () => {
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
               transition={{ duration: 1.5, delay: 0.5 }}
-              className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full absolute inset-0"
+              className="h-1 bg-linear-to-r from-blue-500 to-purple-500 rounded-full absolute inset-0"
             />
           </div>
         </div>

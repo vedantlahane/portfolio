@@ -8,7 +8,7 @@ import vl from '../assets/VedantLogo.png';
 const Navbar = () => {
   return (
     <header>
-     <nav className="fixed top-0 left-1/2 transform -translate-x-1/2 w-11/12 md:w-4/5 h-14 flex p-2 md:p-4 my-4 rounded-lg bg-gradient-to-br opacity-95 from-blue-500 to-purple-500 z-10">
+     <nav className="fixed top-0 left-1/2 transform -translate-x-1/2 w-11/12 md:w-4/5 h-14 flex p-2 md:p-4 my-4 rounded-lg bg-linear-to-br opacity-95 from-blue-500 to-purple-500 z-10">
         <div className="container mx-auto flex justify-between items-center">
           <Link to="/" className="text-white font-extrabold text-2xl md:text-3xl pl-2 md:pl-10">
             {/* <img className='w-64 object-contain' src={vl} alt="Vedant Lahane" /> */}

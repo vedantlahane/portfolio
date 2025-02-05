@@ -42,9 +42,9 @@ const BlogSkeleton = () => (
   <div className="animate-pulse">
     {[1, 2, 3].map((n) => (
       <div key={n} className="mb-6 p-4 border rounded-lg">
-        <div className="h-6 bg-gray-200 rounded w-3/4"></div>
-        <div className="mt-2 h-4 bg-gray-200 rounded w-1/4"></div>
-        <div className="mt-2 h-4 bg-gray-200 rounded w-full"></div>
+        <div className="h-6 bg-gray-200 rounded-sm w-3/4"></div>
+        <div className="mt-2 h-4 bg-gray-200 rounded-sm w-1/4"></div>
+        <div className="mt-2 h-4 bg-gray-200 rounded-sm w-full"></div>
       </div>
     ))}
   </div>

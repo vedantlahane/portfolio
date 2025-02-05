@@ -12,7 +12,7 @@ const Home = () => {
       {/* Background Elements */}
       <div className="absolute inset-0 -z-20 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/80" />
+          <div className="absolute inset-0 bg-linear-to-b from-transparent to-gray-900/80" />
         </div>
 
       {/* Hero Section */}
@@ -33,10 +33,10 @@ const Home = () => {
               />
             </div>
             <div className="flex space-x-5 items-baseline mb-2">
-              <h1 className="text-7xl font-extrabold bg-gradient-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
+              <h1 className="text-7xl font-extrabold bg-linear-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
                 I'm
               </h1>
-              <h1 className="text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+              <h1 className="text-6xl font-extrabold bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
                 Vedant Lahane
               </h1>
             </div>
@@ -50,7 +50,7 @@ const Home = () => {
               with a focus on crafting dynamic and user-friendly experiences.
             </p>
           </div>
-          <div className="h-1 mt-36 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md "></div>
+          <div className="h-1 mt-36 bg-linear-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md "></div>
         </section>
       </motion.div>
 
@@ -74,7 +74,7 @@ const Home = () => {
                 alt="waving-hand-light-skin-tone"
               />
             </div>
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent mb-6">
+            <h2 className="text-4xl font-bold bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent mb-6">
               Let me tell you my story...
             </h2>
 
@@ -85,7 +85,7 @@ const Home = () => {
               Paratwada, Maharashtra, my goal is to be a Full Stack Developer.
             </p>
 
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent mb-4">
+            <h2 className="text-3xl font-bold bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent mb-4">
               My Journey so Far:
             </h2>
 
@@ -113,7 +113,7 @@ const Home = () => {
         </div>
 
         {/* Gradient Line */}
-        <div className="h-1 mt-28 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md"></div>
+        <div className="h-1 mt-28 bg-linear-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md"></div>
       </section>
 
       {/* Skills Section */}
@@ -121,10 +121,10 @@ const Home = () => {
         <div className="container mx-auto px-4">
           {/* Header */}
           <div className="flex space-x-5 items-baseline mb-10">
-            <h1 className="text-6xl font-extrabold bg-gradient-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
+            <h1 className="text-6xl font-extrabold bg-linear-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
               My
             </h1>
-            <h1 className="text-5xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+            <h1 className="text-5xl font-extrabold bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
               Tech Stack
             </h1>
           </div>
@@ -132,7 +132,7 @@ const Home = () => {
           {/* Cards Grid */}
           <div className="columns-2 md:columns-3 lg:columns-4 xl:columns-5 gap-4 space-y-4">
             {/* React Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm flex flex-col items-center justify-center">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs flex flex-col items-center justify-center">
               <iframe
                 className="w-28 h-28 mb-4 m-2"
                 src="https://lottie.host/embed/31cc650e-0bf1-4897-a14c-6c87c8601d63/e0tqG9uqvL.lottie"
@@ -144,7 +144,7 @@ const Home = () => {
             </div>
 
             {/* Node.js Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs">
               <img
                 src={nodejs}
                 className="w-32 h-28 mx-auto mb-4"
@@ -159,7 +159,7 @@ const Home = () => {
             </div>
 
             {/* Tailwind CSS Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs">
               <img
                 src="https://img.icons8.com/color/480/tailwindcss.png"
                 className="w-16 h-16 mx-auto mb-4"
@@ -172,7 +172,7 @@ const Home = () => {
             </div>
 
             {/* PHP Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs">
               <img
                 src="https://img.icons8.com/ios-filled/100/php.png"
                 className="w-36 mx-auto mb-4"
@@ -185,7 +185,7 @@ const Home = () => {
             </div>
 
             {/* Angular Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm flex flex-col items-center justify-center">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs flex flex-col items-center justify-center">
               <iframe
                 className="w-36 h-36 mb-4 m-2"
                 src="https://lottie.host/embed/9e110ead-fe06-47cf-9c2c-69708646ebf1/i14Qdy8mWl.lottie"
@@ -199,7 +199,7 @@ const Home = () => {
             </div>
 
             {/* Express Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs">
               <img
                 src="https://img.icons8.com/fluency/240/express-js.png"
                 className="w-28 mx-auto mb-4"
@@ -214,7 +214,7 @@ const Home = () => {
             </div>
 
             {/* MongoDB Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm flex flex-col items-center justify-center">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs flex flex-col items-center justify-center">
               <iframe
                 className="w-36 h-36 m-2 mb-0"
                 src="https://lottie.host/embed/65dbcd35-959d-4d11-b7b7-65d18f5540a7/lm0xRqXEZG.lottie"
@@ -226,7 +226,7 @@ const Home = () => {
             </div>
 
             {/* Bootstrap Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs">
               <img
                 src={bootstrap}
                 className="w-28 h-28 mx-auto mb-4"
@@ -239,7 +239,7 @@ const Home = () => {
             </div>
 
             {/* HTML Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm flex flex-col items-center justify-center">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs flex flex-col items-center justify-center">
               <iframe
                 className="w-36 h-36 mb-0"
                 src="https://lottie.host/embed/0a5c1d7d-5780-447f-a07d-a7326ae9a697/QSjJ7m58yV.lottie"
@@ -251,7 +251,7 @@ const Home = () => {
             </div>
 
             {/* CSS Card */}
-            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm flex flex-col items-center justify-center">
+            <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs flex flex-col items-center justify-center">
               <iframe
                 className="w-40 h-40 m-2 mb-0"
                 src="https://lottie.host/embed/9672f1dd-fb70-4e1c-b81a-617d308b6d5d/sctkkVcDwp.lottie"
@@ -267,7 +267,7 @@ const Home = () => {
               transition={{ duration: 0.5 }}
               className="break-inside-avoid..."
             >
-              <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+              <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs">
                 <img
                   src="https://img.icons8.com/color/480/python.png"
                   className="w-28 h-28 mx-auto mb-4"
@@ -289,7 +289,7 @@ const Home = () => {
               transition={{ duration: 0.5 }}
               className="break-inside-avoid..."
             >
-              <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+              <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs">
                 <img
                   src="https://img.icons8.com/color/480/java-coffee-cup-logo.png"
                   className="w-28 h-28 mx-auto mb-4"
@@ -309,7 +309,7 @@ const Home = () => {
               transition={{ duration: 0.5 }}
               className="break-inside-avoid..."
             >
-              <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-sm">
+              <div className="break-inside-avoid bg-slate-800/50 rounded-xl p-6 hover:bg-slate-800/70 transition-all duration-300 backdrop-blur-xs">
                 <img
                   src="https://img.icons8.com/color/480/c-plus-plus-logo.png"
                   className="w-28 h-28 mx-auto mb-4"
@@ -327,7 +327,7 @@ const Home = () => {
         </div>
 
         {/* Gradient Line */}
-        <div className="h-1 mt-36 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md"></div>
+        <div className="h-1 mt-36 bg-linear-to-r from-blue-500 to-purple-500 bg-clip-content rounded-md"></div>
       </section>
       {/* Contact CTA Section */}
       

@@ -14,7 +14,7 @@ const Hero1 = () => {
         {/* Background Elements */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/80" />
+          <div className="absolute inset-0 bg-linear-to-b from-transparent to-gray-900/80" />
         </div>
 
         <section className="text-white py-20 min-h-screen flex items-center pt-36">
@@ -35,7 +35,7 @@ const Hero1 = () => {
 
             {/* Name and Role */}
             <div className="flex space-x-5 items-baseline mb-2">
-              <h1 className="text-7xl font-extrabold bg-gradient-to-r from-slate-300 to-gray-500 bg-clip-text text-transparent">
+              <h1 className="text-7xl font-extrabold bg-linear-to-r from-slate-300 to-gray-500 bg-clip-text text-transparent">
                 I'm
               </h1>
               <motion.h1
@@ -46,7 +46,7 @@ const Hero1 = () => {
                   repeat: Infinity,
                   repeatType: "reverse",
                 }}
-                className="text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto]"
+                className="text-6xl font-extrabold bg-linear-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent bg-[length:200%_auto]"
               >
                 Vedant Lahane
               </motion.h1>
@@ -76,7 +76,7 @@ const Hero1 = () => {
             <div className="flex gap-4 mt-8">
               <a
                 href="#projects"
-                className="bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-3 rounded-lg font-medium hover:scale-105 transition-transform"
+                className="bg-linear-to-r from-blue-500 to-purple-600 px-8 py-3 rounded-lg font-medium hover:scale-105 transition-transform"
               >
                 View My Work
               </a>
@@ -94,7 +94,7 @@ const Hero1 = () => {
             initial={{ width: 0 }}
             animate={{ width: "100%" }}
             transition={{ duration: 1.5, delay: 0.8 }}
-            className="h-1 mt-36 bg-gradient-to-r from-blue-500 to-purple-500 rounded-md absolute bottom-20 left-0 right-0"
+            className="h-1 mt-36 bg-linear-to-r from-blue-500 to-purple-500 rounded-md absolute bottom-20 left-0 right-0"
           />
         </section>
       </motion.div>
