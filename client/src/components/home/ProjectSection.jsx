@@ -2,22 +2,22 @@
 import { motion } from 'framer-motion';
 import GradientSeparator from "./GradientSeparator";
 
-const WorkInProgress = () => (
-  <motion.div
-    className="fixed bottom-4 right-4 px-6 py-3 bg-slate-800/80 backdrop-blur-sm rounded-full flex items-center space-x-2 shadow-lg border border-purple-400/20"
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <motion.div
-      animate={{ rotate: [0, 20, -20, 0] }}
-      transition={{ repeat: Infinity, duration: 2 }}
-    >
-      👨💻
-    </motion.div>
-    <span className="text-purple-300">Working on it - Update coming soon!</span>
-  </motion.div>
-);
+// const WorkInProgress = () => (
+//   <motion.div
+//     className="fixed bottom-4 right-4 px-6 py-3 bg-slate-800/80 backdrop-blur-sm rounded-full flex items-center space-x-2 shadow-lg border border-purple-400/20"
+//     initial={{ opacity: 0, y: 20 }}
+//     animate={{ opacity: 1, y: 0 }}
+//     transition={{ duration: 0.5 }}
+//   >
+//     <motion.div
+//       animate={{ rotate: [0, 20, -20, 0] }}
+//       transition={{ repeat: Infinity, duration: 2 }}
+//     >
+//       👨💻
+//     </motion.div>
+//     <span className="text-purple-300">Working on it - Update coming soon!</span>
+//   </motion.div>
+// );
 
 const ProjectCard = ({ project, index }) => (
   <motion.div
@@ -106,7 +106,7 @@ const ProjectsSection = () => {
             "User features: menu browsing, reservations, feedback",
             "Automated 40% of administrative tasks"
           ],
-          tech: ["React", "Tailwind CSS", "Node.js", "MongoDB"],
+          tech: ["PHP", "MySQL", "HTML", "CSS", "JavaScript"],
           link: "https://github.com/vedantlahane/FoodOrderingSystem"
         },
         {

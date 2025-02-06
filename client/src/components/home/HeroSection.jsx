@@ -46,7 +46,7 @@ const HeroSection = () => {
 
               <div className="space-y-6">
                 <h1 className="text-5xl md:text-6xl font-bold">
-                  <span className="text-gray-300">I'm </span>
+                  <span className="bg-linear-to-r from-slate-300 to-gray-500 bg-clip-text text-transparent">I'm </span>
                   <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                     Vedant Lahane
                   </span>
