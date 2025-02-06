@@ -116,7 +116,7 @@ const HeroSection = () => {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 1.2 }}
             >
-              <div className="relative w-52 h-52 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative w-52 h-64 rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={vedantImg}
                   alt="Vedant"
