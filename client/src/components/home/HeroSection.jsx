@@ -19,7 +19,7 @@ const HeroSection = () => {
   return (
     <section 
       id="hero"
-      className="relative pt-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="relative min-h-screen pt-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       <div className="container mx-auto max-w-7xl h-full">
         <div className="flex flex-col lg:flex-row items-center gap-8 h-full">
@@ -75,11 +75,11 @@ const HeroSection = () => {
 
               <motion.div className="pt-8">
                 <a
-                  href="#contact"
-                  className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 
+                  href="https://drive.google.com/file/d/1Tk6LcfyllkKkCcH3WAsR6-pVjNgkcykZ/view?usp=drivesdk"
+                  className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 
                   text-white text-lg font-medium rounded-xl hover:shadow-2xl transition-all"
                 >
-                  Let's Connect
+                  Resume
                   <ArrowRightIcon className="h-6 w-6 ml-3" />
                 </a>
               </motion.div>

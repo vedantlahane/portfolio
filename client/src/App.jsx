@@ -7,12 +7,13 @@ import BlogDetail from './components/BlogDetail';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Hero1 from './components/Hero1';
-
+import WorkInProgress from './components/home/WorkInProgress';
 function App() {
   return (
     <div className="min-h-screen bg-slate-900 overflow-x-hidden">
       <Navbar />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 pt-16"> {/* Content container */}
+      <WorkInProgress />
         <Routes>
           <Route path="/hero1" element={<Hero1 />} />
           <Route path="/hero" element={<Hero />} />

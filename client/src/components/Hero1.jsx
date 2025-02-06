@@ -11,11 +11,7 @@ const Hero1 = () => {
         transition={{ duration: 1.0, ease: "easeOut" }}
         className="relative overflow-hidden"
       >
-        {/* Background Elements */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]" />
-          <div className="absolute inset-0 bg-linear-to-b from-transparent to-gray-900/80" />
-        </div>
+        
 
         <section className="text-white py-20 min-h-screen flex items-center pt-36">
           <div className="container mx-auto px-4">

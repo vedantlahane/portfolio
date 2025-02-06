@@ -11,12 +11,15 @@ const Navbar = () => {
     { name: 'Home', href: '/' },
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Projects', href: '/projects' },
+    { name: 'Resume', href: 'https://drive.google.com/file/d/1Tk6LcfyllkKkCcH3WAsR6-pVjNgkcykZ/view?usp=drivesdk' }
   ];
 
   const socialLinks = [
     { name: 'GitHub', href: 'https://github.com/vedantlahane' },
     { name: 'LinkedIn', href: 'https://www.linkedin.com/in/vedant-lahane' },
     { name: 'LeetCode', href: 'https://leetcode.com/u/vedantlahane' },
+    
   ];
 
   return (

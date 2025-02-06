@@ -5,7 +5,7 @@ const GradientSeparator = () => (
         initial={{ width: 0 }}
         animate={{ width: "100%" }}
         transition={{ duration: 1.5, delay: 0.8 }}
-        className="h-0.5 mt-36 bg-gradient-to-r from-blue-500 to-purple-500 rounded-md bottom-20"
+        className="h-px left-0 mt-36 right-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-4xl bottom-20"
     />
 );
 

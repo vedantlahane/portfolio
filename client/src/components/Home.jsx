@@ -1,7 +1,7 @@
 import HeroSection from './home/HeroSection';
 import AboutSection from './home/AboutSection';
 import SkillsSection from './home/SkillsSection';
-import vedantImg from '../assets/vedant.png';
+import ProjectsSection from './home/ProjectSection';
 
 // Move this to a separate data.js file if preferred
 const skillsData = [
@@ -85,13 +85,11 @@ const skillsData = [
 const Home = () => {
   return (
     <div className="min-h-screen m-4 mx-auto">
-      <div className="absolute inset-0 -z-20 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/80" />
-      </div>
+      
 
       <HeroSection />
-      <AboutSection imageUrl={vedantImg} />
+      <ProjectsSection />
+      <AboutSection />
       <SkillsSection skills={skillsData} />
     </div>
   );
