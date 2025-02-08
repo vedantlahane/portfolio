@@ -21,7 +21,7 @@ import GradientSeparator from "./GradientSeparator";
 
 const ProjectCard = ({ project, index }) => (
   <motion.div
-    className="group bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 hover:border-purple-400/30 transition-all h-full flex flex-col"
+    className="group bg-slate-800/50 rounded-2xl p-6 border border-slate-700/50 hover:border-purple-400/30 transition-all flex flex-col"
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, margin: "0px 0px -100px 0px" }}
