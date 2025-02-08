@@ -87,7 +87,7 @@ const HeroSection = () => {
           </div>
 
           {/* Right Column */}
-          <div className="lg:w-2/5 h-[600px] relative">
+          <div className="w-full lg:w-2/5 h-[300px] md:h-[400px] lg:h-[600px] relative">
             {floatingCards.map((card, index) => (
               <motion.div
                 key={index}
