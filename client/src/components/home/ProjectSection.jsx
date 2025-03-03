@@ -119,7 +119,7 @@ const ProjectsSection = () => {
             "Role-based access control and authentication"
           ],
           tech: ["React.js", "Tailwind CSS", "Node.js", "MongoDB"],
-          link: "#https://github.com/vedantlahane/ShoeMarkNet"
+          link: "https://github.com/vedantlahane/ShoeMarkNet"
         }
       ];
 
