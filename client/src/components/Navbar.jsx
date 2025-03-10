@@ -33,7 +33,7 @@ const Navbar = () => {
           <Link to="/" className="z-10">
             <span className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-purple-500 
               bg-clip-text text-transparent">
-              v 0.1
+              v
             </span>
           </Link>
 
