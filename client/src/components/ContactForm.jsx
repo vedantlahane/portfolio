@@ -1,5 +1,6 @@
 // ContactForm.jsx
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 // API URL Configuration
 const API_URL = import.meta.env.DEV 
@@ -125,7 +126,7 @@ const ContactForm = () => {
     }
   };
 
-  // Status message component
+  // Animated Status Message component
   const StatusMessage = () => {
     if (!status.message) return null;
     
@@ -136,65 +137,85 @@ const ContactForm = () => {
     };
 
     return (
-      <div className={`p-4 mb-4 border-l-4 ${statusStyles[status.type]}`}>
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className={`p-4 mb-4 border-l-4 ${statusStyles[status.type]}`}
+      >
         {status.message}
-      </div>
+      </motion.div>
     );
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Get in Touch</h2>
-      
-      <StatusMessage />
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {FORM_FIELDS.map(field => (
-          <div key={field.name}>
-            <label className="block text-gray-700 font-medium mb-2">
-              {field.label}
-            </label>
-            {field.type === 'textarea' ? (
-              <textarea
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors[field.name] ? 'border-red-500' : 'border-gray-300'
-                }`}
-                rows="5"
-                disabled={isSubmitting}
-              />
-            ) : (
-              <input
-                type={field.type}
-                name={field.name}
-                value={formData[field.name]}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                  errors[field.name] ? 'border-red-500' : 'border-gray-300'
-                }`}
-                disabled={isSubmitting}
-              />
-            )}
-            {errors[field.name] && (
-              <p className="mt-1 text-sm text-red-600">{errors[field.name]}</p>
-            )}
-          </div>
-        ))}
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className={`w-full py-2 px-4 rounded-lg text-white font-medium transition-colors
-            ${isSubmitting 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700'
-            }`}
+    <div className="min-h-screen flex justify-center items-center bg-gray-900 p-4">
+      <motion.div 
+        className="max-w-md w-full mx-auto p-6 bg-slate-800/50 shadow-lg rounded-2xl border border-slate-700/50"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.h2 
+          className="text-2xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
         >
-          {isSubmitting ? 'Sending...' : 'Send Message'}
-        </button>
-      </form>
+          Get in Touch
+        </motion.h2>
+        
+        <StatusMessage />
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {FORM_FIELDS.map(field => (
+            <div key={field.name}>
+              <label className="block text-gray-200 font-medium mb-2">
+                {field.label}
+              </label>
+              {field.type === 'textarea' ? (
+                <textarea
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors[field.name] ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  rows="5"
+                  disabled={isSubmitting}
+                />
+              ) : (
+                <input
+                  type={field.type}
+                  name={field.name}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+                    errors[field.name] ? 'border-red-500' : 'border-gray-300'
+                  }`}
+                  disabled={isSubmitting}
+                />
+              )}
+              {errors[field.name] && (
+                <p className="mt-1 text-sm text-red-600">{errors[field.name]}</p>
+              )}
+            </div>
+          ))}
+
+          <motion.button
+            type="submit"
+            disabled={isSubmitting}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.95 }}
+            className={`w-full py-2 px-4 rounded-lg text-white font-medium transition-colors
+              ${isSubmitting 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700'
+              }`}
+          >
+            {isSubmitting ? 'Sending...' : 'Send Message'}
+          </motion.button>
+        </form>
+      </motion.div>
     </div>
   );
 };
