@@ -21,7 +21,7 @@ const WorkInProgress = () => {
           <AnimatePresence>
             {showPopup && (
               <motion.div
-                className="fixed top-22 left-64 transform -translate-x-8 px-6 mx-0 py-3 bg-gradient-to-r from-slate-800/80 to-slate-800/20 backdrop-blur-sm rounded-4xl flex items-center shadow-lg"
+                className="fixed top-22 left-60 transform -translate-x-8 px-6 mx-0 py-3 bg-gradient-to-r from-slate-800/80 to-slate-800/20 backdrop-blur-sm rounded-4xl flex items-center shadow-lg"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
