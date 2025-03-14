@@ -148,9 +148,9 @@ const ContactForm = () => {
   };
 
   return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-900 p-4">
+    <div className="min-h-screen flex justify-items-end items-center p-4">
       <motion.div 
-        className="max-w-md w-full mx-auto p-6 bg-slate-800/50 shadow-lg rounded-2xl border border-slate-700/50"
+        className="max-w-3xl w-full mx-auto p-6 bg-slate-800/50 shadow-lg rounded-2xl border border-slate-700/50"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
