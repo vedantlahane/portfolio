@@ -11,9 +11,12 @@ const AboutSection = () => {
 
   return (
     <section className="text-white py-12">
-      <div className="relative sm:right-0 sm:w-auto  text-2xl text-gray-400 leading-relaxed">
+      <div className="relative sm:right-0 sm:w-auto text-2xl text-gray-400 leading-relaxed">
         {/* Title */}
-        <div className="flex space-x-5 items-baseline mb-6">
+        <div
+          className="flex space-x-5 items-baseline mb-6"
+          data-aos="fade-up"
+        >
           <h1 className="text-6xl font-extrabold bg-gradient-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
             About
           </h1>
@@ -25,10 +28,11 @@ const AboutSection = () => {
         {/* Intro Section */}
         <div className="font-bold mb-8 space-y-5 text-3xl">
           <p
-            className="border-l-4 pl-4 relative right-24 mb-8"
+            className="border-l-4 pl-4 mb-8"
             style={{
               borderImage: "linear-gradient(to bottom, #6366f1, #8b5cf6) 1",
             }}
+            data-aos="fade-right"
           >
             Hey there! I'm a{" "}
             <span className="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
@@ -55,10 +59,11 @@ const AboutSection = () => {
           </p>
 
           <p
-            className="border-r-4 pr-4 relative left-30 mb-12 text-right"
+            className="border-r-4 pr-4 mb-12 text-right"
             style={{
               borderImage: "linear-gradient(to bottom, #6366f1, #8b5cf6) 1",
             }}
+            data-aos="fade-left"
           >
             I enjoy{" "}
             <span className="text-indigo-500 font-extrabold">
@@ -77,10 +82,11 @@ const AboutSection = () => {
           </p>
 
           <p
-            className="border-l-4 pl-4 relative right-10"
+            className="border-l-4 pl-4"
             style={{
               borderImage: "linear-gradient(to bottom, #6366f1, #8b5cf6) 1",
             }}
+            data-aos="fade-right"
           >
             I'm currently looking for an{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 font-bold">
@@ -98,36 +104,8 @@ const AboutSection = () => {
         </div>
       </div>
 
-      {/* Journey So Far */}
-      {/* <div className="container mx-auto px-24" data-aos="fade-up">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent mb-4">
-          My Journey So Far:
-        </h2>
-        <ul className="space-y-4">
-          <ListItem>
-            Started with C++, thinking I'd be the next big game developer—ended
-            up making a calculator.
-          </ListItem>
-          <ListItem>
-            Fell into the world of web development, experimented with MERN and
-            MEAN stacks, and realized that JavaScript has more quirks than I do.
-          </ListItem>
-          <ListItem>
-            Took on personal projects to test my skills (and patience).
-          </ListItem>
-          <ListItem>
-            Dived into data structures and algorithms—because apparently, they
-            help in coding interviews.
-          </ListItem>
-          <ListItem>
-            Eventually, I just find myself staring at my laptop, questioning my
-            life choices. But hey, that’s part of the process, right?
-          </ListItem>
-        </ul>
-      </div> */}
-
       {/* Separator */}
-      <GradientSeparator />
+      <GradientSeparator data-aos="fade-up" />
     </section>
   );
 };
