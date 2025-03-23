@@ -11,7 +11,7 @@ const AboutSection = () => {
 
   return (
     <section className="text-white py-12">
-      <div className="relative sm:right-0 sm:w-auto text-2xl text-gray-400 leading-relaxed">
+      <div className="relative sm:right-0 sm:w-auto text-2xl  leading-relaxed">
         {/* Title */}
         <div
           className="flex space-x-5 items-baseline mb-6"
@@ -20,13 +20,13 @@ const AboutSection = () => {
           <h1 className="text-6xl font-extrabold bg-gradient-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
             About
           </h1>
-          <h1 className="text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-6xl font-extrabold bg-gradient-to-r from-blue-500  to-purple-500 bg-clip-text text-transparent">
             Me
           </h1>
         </div>
 
         {/* Intro Section */}
-        <div className="font-bold mb-8 space-y-5 text-3xl">
+        <div className="font-bold mb-8 space-y-5 text-3xl bg-gradient-to-br bg-clip-text from-blue-100 via-blue-300 to-gray-700 text-transparent">
           <p
             className="border-l-4 pl-4 mb-8"
             style={{
