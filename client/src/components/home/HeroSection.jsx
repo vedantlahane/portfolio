@@ -6,18 +6,18 @@ import GradientSeparator from "./GradientSeparator";
 
 const HeroSection = () => {
   const floatingCards = [
-    { x: "20%", y: "15%", rotate: 0, z: 25, size: "150px", delay: 0.1 },
-    { x: "30%", y: "-1%", rotate: 0, z: 10, size: "160px", delay: 0.3 },
-    { x: "60%", y: "25%", rotate: 0, z: 20, size: "130px", delay: 0.5 },
-    { x: "10%", y: "50%", rotate: 0, z: 30, size: "160px", delay: 0.7 },
-    { x: "65%", y: "40%", rotate: 0, z: 15, size: "130px", delay: 0.9 },
-    { x: "0%", y: "30%", rotate: 0, z: 25, size: "170px", delay: 1.1 },
-    { x: "70%", y: "15%", rotate: 0, z: 5, size: "120px", delay: 1.3 },
-    { x: "70%", y: "65%", rotate: 0, z: 35, size: "145px", delay: 1.5 },
+    { x: '20%', y: '15%', rotate: 0, z: 25, size: '150px', delay: 0.1 },
+    { x: '30%', y: '-1%', rotate: 0, z: 10, size: '160px', delay: 0.3 },
+    { x: '60%', y: '25%', rotate: 0, z: 20, size: '130px', delay: 0.5 },
+    { x: '10%', y: '50%', rotate: 0, z: 30, size: '160px', delay: 0.7 },
+    { x: '65%', y: '40%', rotate: 0, z: 15, size: '130px', delay: 0.9 },
+    { x: '0%', y: '30%', rotate: 0, z: 25, size: '170px', delay: 1.1 },
+    { x: '70%', y: '15%', rotate: 0, z: 5, size: '120px', delay: 1.3 },
+    { x: '70%', y: '65%', rotate: 0, z: 35, size: '145px', delay: 1.5 }
   ];
 
   return (
-    <section
+    <section 
       id="hero"
       className="relative  pt-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
@@ -46,21 +46,19 @@ const HeroSection = () => {
 
               <div className="space-y-6">
                 <h1 className="text-5xl md:text-6xl font-bold">
-                  <span className="bg-linear-to-r from-slate-300 to-gray-500 bg-clip-text text-transparent">
-                    I'm{" "}
-                  </span>
+                  <span className="bg-linear-to-r from-slate-300 to-gray-500 bg-clip-text text-transparent">I'm </span>
                   <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                     Vedant Lahane
                   </span>
                 </h1>
-
+                
                 <TypeAnimation
                   sequence={[
-                    "Full Stack Developer",
+                    'Full Stack Developer',
                     2000,
-                    "UI/UX Enthusiast",
+                    'UI/UX Enthusiast',
                     2000,
-                    "Problem Solver",
+                    'Problem Solver',
                     2000,
                   ]}
                   wrapper="p"
@@ -71,9 +69,8 @@ const HeroSection = () => {
               </div>
 
               <motion.p className="text-xl md:text-2xl text-gray-400 max-w-2xl leading-relaxed">
-                Crafting digital experiences that bridge innovation with
-                functionality, focused on building scalable solutions for modern
-                challenges.
+                Crafting digital experiences that bridge innovation with functionality,
+                focused on building scalable solutions for modern challenges.
               </motion.p>
 
               <motion.div className="pt-8">
@@ -100,14 +97,14 @@ const HeroSection = () => {
                   height: card.size,
                   zIndex: card.z,
                   left: card.x,
-                  top: card.y,
+                  top: card.y
                 }}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{
                   delay: card.delay,
                   duration: 0.8,
-                  type: "spring",
+                  type: 'spring'
                 }}
               />
             ))}
@@ -119,19 +116,19 @@ const HeroSection = () => {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 1.2 }}
             >
-              <div className="relative w-52 h-64 rounded-2xl overflow-hidden shadow-2xl group">
+              <div className="relative w-52 h-64 rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   src={vedantImg}
                   alt="Vedant"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent" />
               </div>
             </motion.div>
           </div>
         </div>
       </div>
-      <GradientSeparator />
+      <GradientSeparator/>
     </section>
   );
 };
