@@ -15,7 +15,7 @@ const skillsData = [
   {
     title: 'Node.js',
     category: 'Backend Development',
-    imageUrl: "/public/node-js.svg"
+    imageUrl: "/src/assets/node-js.svg"
   },
    {
     title: 'Tailwind CSS',
