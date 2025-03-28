@@ -26,7 +26,7 @@ const AboutSection = () => {
         </div>
 
         {/* Intro Section */}
-        <div className="font-normalva mb-8 space-y-5 text-3xl bg-gradient-to-br bg-clip-text from-blue-100 via-blue-300 to-gray-700 text-transparent">
+        <div className="font-normalva mb-8 space-y-5 text-3xl ">
           <p
             className="border-l-4 pl-4 mb-8"
             style={{
