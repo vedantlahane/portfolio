@@ -8,9 +8,11 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Hero1 from './components/Hero1';
 import WorkInProgress from './components/home/WorkInProgress';
+import MouseSmokeEffect from './components/common/MouseSmokeEffect';
 function App() {
   return (
     <div className="min-h-screen bg-slate-900 overflow-x-hidden">
+      <MouseSmokeEffect/>
       <Navbar />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 pt-16"> {/* Content container */}
       <WorkInProgress />
