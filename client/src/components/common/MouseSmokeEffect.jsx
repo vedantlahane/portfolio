@@ -1,23 +1,41 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-function SmokeEffect({ color = "#ffffff", particlesPerEmit = 2 }) {
-  const [particles, setParticles] = useState([]);
+function getRandomBlueClass() {
+  const blues = ["bg-blue-200", "bg-blue-300", "bg-blue-100"];
+  return blues[Math.floor(Math.random() * blues.length)];
+}
 
-  const createParticle = useCallback((x, y, id) => ({
-    id,
-    x,
-    y,
-    angle: (Math.random() * Math.PI) / 3 - Math.PI / 6 - Math.PI / 2,
-    speed: Math.random() * 1 + 1,
-    size: Math.random() * 12 + 8,
-    opacity: Math.random() * 0.3 + 0.1,
-  }), []);
+function SmokeEffect({ particlesPerEmit = 2 }) {
+  const [particles, setParticles] = useState([]);
+  const [lastMouse, setLastMouse] = useState({
+    x: 0,
+    y: 0,
+    time: performance.now(),
+  });
+
+  const createParticle = useCallback(
+    (x, y, id, baseAngle = -Math.PI / 2, velocity = 0.2) => {
+      const clampedVelocity = Math.min(velocity, 1); // Limit the effect of crazy fast moves
+      return {
+        id,
+        x,
+        y,
+        angle: baseAngle + (Math.random() - 0.5) * (Math.PI / 6),
+        speed: Math.random() * 1 + 1,
+        size: clampedVelocity * 20 + 8, // Bigger particles on faster movement
+        opacity: clampedVelocity * 0.4 + 0.1,
+        fadeSpeed: Math.random() * 0.5 + 1.5, // Fade time: 1.5s to 5s
+        colorClass: getRandomBlueClass(),
+      };
+    },
+    []
+  );
 
   const emitParticles = useCallback(
-    (x, y) => {
+    (x, y, baseAngle, velocity) => {
       const newParticles = Array.from({ length: particlesPerEmit }, (_, i) =>
-        createParticle(x, y, Date.now() + i)
+        createParticle(x, y, Date.now() + i, baseAngle, velocity)
       );
       setParticles((prev) => [...prev, ...newParticles]);
 
@@ -25,22 +43,30 @@ function SmokeEffect({ color = "#ffffff", particlesPerEmit = 2 }) {
         setParticles((prev) =>
           prev.filter((p) => !newParticles.find((np) => np.id === p.id))
         );
-      }, 1000);
+      }, 2000); // Cleanup after longest fade
     },
     [createParticle, particlesPerEmit]
   );
 
-  // Instead of using onMouseMove on the container, attach a global event listener.
   useEffect(() => {
     const handleMouseMove = (e) => {
-      // Log to verify this function is firing.
-      console.log("Global mouse move", e.clientX, e.clientY);
-      emitParticles(e.clientX, e.clientY);
+      const now = performance.now();
+      const dx = e.clientX - lastMouse.x;
+      const dy = e.clientY - lastMouse.y;
+      const dt = now - lastMouse.time || 16;
+
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const velocity = distance / dt;
+
+      const angle = Math.atan2(dy, dx);
+      emitParticles(e.clientX, e.clientY, angle, velocity);
+
+      setLastMouse({ x: e.clientX, y: e.clientY, time: now });
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [emitParticles]);
+  }, [emitParticles, lastMouse]);
 
   return (
     <div className="w-full h-full relative overflow-hidden bg-transparent">
@@ -48,7 +74,7 @@ function SmokeEffect({ color = "#ffffff", particlesPerEmit = 2 }) {
         {particles.map((particle) => (
           <motion.div
             key={particle.id}
-            className="absolute rounded-full blur-md"
+            className={`absolute rounded-full blur-md ${particle.colorClass}`}
             initial={{
               x: particle.x,
               y: particle.y,
@@ -56,17 +82,23 @@ function SmokeEffect({ color = "#ffffff", particlesPerEmit = 2 }) {
               opacity: particle.opacity,
             }}
             animate={{
-              x: particle.x + Math.cos(particle.angle) * 200 * particle.speed,
-              y: particle.y + Math.sin(particle.angle) * 200 * particle.speed,
+              x:
+                particle.x +
+                Math.cos(particle.angle) * 200 * particle.speed,
+              y:
+                particle.y +
+                Math.sin(particle.angle) * 200 * particle.speed,
               scale: 2,
               opacity: 0,
             }}
             exit={{ opacity: 0, scale: 3 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            transition={{
+              duration: particle.fadeSpeed,
+              ease: "easeOut",
+            }}
             style={{
               width: particle.size,
               height: particle.size,
-              backgroundColor: color,
             }}
           />
         ))}
@@ -77,15 +109,10 @@ function SmokeEffect({ color = "#ffffff", particlesPerEmit = 2 }) {
 
 export default function MouseSmokeEffect() {
   return (
-    // By keeping the container at the top layer (z-index 0 or similar) we ensure it captures events,
-    // and then you can use CSS in your main app to layer it behind your interactive elements.
     <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0">
-      {/* The SmokeEffect itself will now respond to global events */}
       <div className="pointer-events-auto w-full h-full">
         <SmokeEffect />
       </div>
-      {/* For debugging, you can temporarily show this text */}
-      <div className="absolute top-0 left-0 text-white">Smoke Active</div>
     </div>
   );
 }

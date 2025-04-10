@@ -57,7 +57,7 @@ const Navbar = () => {
                 className="text-base font-medium text-blue-300 hover:text-purple-400 
                   transition-colors flex items-center"
               >
-                Connect
+                Links
                 <ChevronDownIcon className="h-4 w-4 ml-1" />
               </button>
 
