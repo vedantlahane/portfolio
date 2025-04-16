@@ -49,7 +49,7 @@ const skillsData = [
   {
     title: 'Bootstrap',
     category: 'Styling',
-    imageUrl:"/public/bootsrap.svg"
+    imageUrl:"/bootsrap.svg"
   },
   {
     title: 'HTML5',
