@@ -87,9 +87,10 @@ const Home = () => {
     <div className="min-h-screen m-4 mx-auto">
       
 
-      <HeroSection />
+      <HeroSection /> 
+      <AboutSection />
       <ProjectsSection />
-      {/* <AboutSection /> */}
+     
       <SkillsSection skills={skillsData} />
     </div>
   );

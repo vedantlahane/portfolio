@@ -1,4 +1,4 @@
-'use client'
+'use client'//this is a client component, which means it will be rendered on the client side
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
@@ -11,7 +11,7 @@ const Navbar = () => {
     { name: 'Home', href: '/' },
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Projects', href: '/projects' },
+    { name: 'Projects', href: '/projects' }, // Updated to link to the project section
     { name: 'Resume', href: 'https://drive.google.com/file/d/1Tk6LcfyllkKkCcH3WAsR6-pVjNgkcykZ/view?usp=drivesdk' }
   ];
 

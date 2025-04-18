@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import ListItem from "./ListItem";
 import GradientSeparator from "./GradientSeparator";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { motion } from "framer-motion";
 
 const AboutSection = () => {
   useEffect(() => {
@@ -10,90 +10,39 @@ const AboutSection = () => {
   }, []);
 
   return (
-    <section className="text-white py-12">
-      <div className="relative sm:right-0 sm:w-auto text-2xl leading-relaxed">
-        {/* Title */}
-        <div
-          className="flex space-x-5 items-baseline mb-6"
-          data-aos="fade-up"
-        >
-          <h1 className="text-6xl font-extrabold bg-gradient-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">
-            About
-          </h1>
-          <h1 className="text-6xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-            Me
-          </h1>
+    <section className="text-white py-12 -mx-8 sm:-mx-16">
+      <div className="max-w-7xl mx-auto px-8 sm:px-16">
+        {/* Vertically stacked content */}
+        <div className="mb-4 space-y-10 font-extrabold text-6xl text-gray-400">
+          <p>
+            As a full stack developer, I believe in crafting user-centric
+            experiences - whether it’s turning a wild idea into a smooth interface.
+          </p>
+          <h5 className="text-2xl text-blue-300">This is me</h5>
         </div>
-
-        {/* Intro Section */}
-        <div className="font-normalva mb-8 space-y-5 text-3xl ">
-          <p
-            className="border-l-4 pl-4 mb-8"
-            style={{
-              borderImage: "linear-gradient(to bottom, #6366f1, #8b5cf6) 1",
-            }}
-            data-aos="fade-right"
-          >
-            Hey there! I'm a{" "}
-            <span className="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
-              Computer Science & Engineering
-            </span>{" "}
-            student in my
-            <span className="text-4xl text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
-              {" "}
-              sixth semester
-            </span>{" "}
-            at Lovely Professional University, Punjab — originally from{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">
-              Paratwada, Maharashtra.
-            </span>{" "}
-            I spend most of my time{" "}
-            <span className="text-5xl text-indigo-500">coding</span>,{" "}
-            <span className="text-purple-500">experimenting with code</span>, and
-            convincing myself that errors are just{" "}
-            <span className="text-4xl italic text-indigo-600">
-              unexpected surprises.
-            </span>
-          </p>
-
-          <p
-            className="border-r-4 pr-4 mb-12 text-right"
-            style={{
-              borderImage: "linear-gradient(to bottom, #6366f1, #8b5cf6) 1",
-            }}
-            data-aos="fade-left"
-          >
-            I love{" "}
-            <span className="text-indigo-500 font-extrabold">
-              building projects
-            </span>{" "}
-            that (ideally) run smoothly, and when they don’t, I like to call it{" "}
-            <span className="italic text-purple-600">
-              “surprise debugging.”
-            </span>{" "}
-            Recently, I’ve been exploring{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 font-bold">
-              DevOps
-            </span>{" "}
-            because orchestrating seamless deployments is a skill that never goes out of style.
-          </p>
-
-          <p
-            className="border-l-4 pl-4"
-            style={{
-              borderImage: "linear-gradient(to bottom, #6366f1, #8b5cf6) 1",
-            }}
-            data-aos="fade-right"
-          >
-            I'm currently looking for an{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 font-bold">
-              SDE internship
-            </span>{" "}
-            where I can put my skills to work, learn from seasoned developers, and maybe even deploy code that doesn’t cause a system hiccup. If you appreciate clever puns and enjoy debating whether semicolons are optional, we’re bound to click.
+        <hr className="border-t border-gray-700 my-8" />
+        {/* Horizontally aligned last two divs */}
+        <div className="flex gap-40 justify-between">
+          <div>
+          <h1 className="flex text-4xl space-y-3 space-x-3 font-bold">
+                  <span className="bg-linear-to-r from-slate-300 to-gray-500 bg-clip-text text-transparent">hello</span>
+                  <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">again,</span>
+                </h1>
+          </div>
+          <div className="space-y-3 mb-8 text-xl text-ellipsis font-bold text-gray-400">
+            <motion.p>
+             I'm a 3rd year Computer Science and Engineering undergrad at Lovely Professional University. During my first semester I come across HTML, CSS and JavaScript and I was amazed by the power of web development. I started learning them (JavaScript was bit hard for me at first). Eventually i got hang on it and started building projects. Apart form web development i also have a keen interest in Data Structure and Algorithms and Competative Programming.Solved many proplems on different platforms like leetcode and Geeksforgeeks(Not keeping track but i guess over 300).
+            </motion.p>
+            <p>Eager to learn new things, for an instance I am currently lerning Docker and Jenkins. </p>
+          </div>
+        </div>
+        <hr className="border-t border-gray-700 my-8" />
+        <div>
+        <p className="space-x-12 text-3xl text-gray-300 font-semibold">
+            Looking for internships and job opportunities to learn and gain real-world experience.
           </p>
         </div>
       </div>
-
       {/* Separator */}
       <GradientSeparator data-aos="fade-up" />
     </section>
