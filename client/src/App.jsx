@@ -11,7 +11,7 @@ import WorkInProgress from './components/home/WorkInProgress';
 import MouseSmokeEffect from './components/common/MouseSmokeEffect';
 function App() {
   return (
-    <div className="min-h-screen bg-slate-900 overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-200 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500 relative overflow-hidden">
       <MouseSmokeEffect/>
       <Navbar />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 pt-16"> {/* Content container */}
