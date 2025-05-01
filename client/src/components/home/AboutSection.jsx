@@ -10,26 +10,23 @@ const AboutSection = () => {
   }, []);
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-transparent">
-      <div className=" mx-auto px-4 sm:px-8">
-        {/* Header */}
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0, y: 30 }}
+    <section id="about" className="py-16 md:py-24 bg-transparent">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.h2 
+          className="text-4xl sm:text-5xl md:text-6xl font-bold mb-12 md:mb-16"
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.5 }}
         >
-          <p className=" text-3xl sm:text-4xl md:text-5xl text-gray-300 leading-snug mb-2">
-            As a full stack developer, I believe in crafting user-centric experiences – whether it’s turning a wild idea into a smooth interface.
-          </p>
-          <h5 className="text-lg sm:text-xl text-blue-300 font-semibold mt-4">This is me</h5>
-        </motion.div>
-
-        <hr className="border-t border-gray-700 my-8" />
+          <span className="text-gray-300">About </span>
+          <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Me
+          </span>
+        </motion.h2>
 
         {/* Main Content */}
-        <div className="flex flex-col md:flex-row md:items-start md:gap-12 gap-8">
+        <div className="flex flex-col md:flex-row md:items-start gap-8 md:gap-12">
           {/* Greeting */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
@@ -50,7 +47,7 @@ const AboutSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="space-y-4 text-xl sm:text-lg text-gray-300"
+            className="space-y-4 text-base sm:text-lg text-gray-300"
           >
             <p>
               I'm a <span className="text-blue-400 font-semibold">3rd year Computer Science and Engineering undergrad</span> at Lovely Professional University.
@@ -67,7 +64,7 @@ const AboutSection = () => {
           </motion.div>
         </div>
 
-        <hr className="border-t border-gray-700 my-8" />
+        <hr className="border-t border-gray-700 my-12" />
 
         {/* Call to Action */}
         <motion.div
@@ -77,14 +74,22 @@ const AboutSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <p className="text-xl sm:text-2xl text-gray-200 ">
+          <p className="text-xl sm:text-2xl text-gray-200 text-center">
             Looking for <span className="text-blue-400">internships</span> and <span className="text-purple-400">job opportunities</span> to learn and gain real-world experience.
           </p>
         </motion.div>
       </div>
-      <GradientSeparator data-aos="fade-up" />
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        className="mt-16 md:mt-24"
+      >
+        <GradientSeparator data-aos="fade-up" />
+      </motion.div>
     </section>
   );
 };
+
 
 export default AboutSection;

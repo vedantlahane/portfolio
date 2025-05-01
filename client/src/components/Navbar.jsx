@@ -1,5 +1,6 @@
 'use client'//this is a client component, which means it will be rendered on the client side
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { Link } from 'react-router-dom';
 import { Bars3Icon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
 

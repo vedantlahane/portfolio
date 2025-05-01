@@ -14,8 +14,8 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-200 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500 relative overflow-hidden">
       <MouseSmokeEffect/>
       <Navbar />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 pt-16"> {/* Content container */}
-      <WorkInProgress />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-8"> {/* Adjusted padding-top for navbar */}
+        <WorkInProgress />
         <Routes>
           <Route path="/hero1" element={<Hero1 />} />
           <Route path="/hero" element={<Hero />} />
