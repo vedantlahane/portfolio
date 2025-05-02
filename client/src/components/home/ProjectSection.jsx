@@ -238,7 +238,7 @@ export default function ProjectGrid() {
           </motion.div>
         ))}
 
-        <div className="rounded-2xl flex items-center justify-center font-extrabold text-5xl sm:text-5xl tracking-wide shadow-2xl border border-slate-700/50 col-start-1 col-end-3 row-start-4 row-end-6 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+        <div className="rounded-2xl flex items-center justify-center font-extrabold text-5xl sm:text-5xl tracking-wide shadow-2xl border border-slate-700/50 col-start-1 col-end-3 row-start-4 row-end-6 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-pulse">
           <span>My </span>
           <span className="ml-2 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent">
             Projects

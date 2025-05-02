@@ -47,7 +47,7 @@ const AboutSection = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="space-y-4 text-base sm:text-lg text-gray-300"
+            className="space-y-4 text-xl text-gray-400"
           >
             <p>
               I'm a <span className="text-blue-400 font-semibold">3rd year Computer Science and Engineering undergrad</span> at Lovely Professional University.
@@ -74,7 +74,7 @@ const AboutSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <p className="text-xl sm:text-2xl text-gray-200 ">
+          <p className="text-xl sm:text-2xl text-gray-300 ">
             Looking for <span className="text-blue-400">internships</span> and <span className="text-purple-400">job opportunities</span> to learn and gain real-world experience.
           </p>
         </motion.div>
