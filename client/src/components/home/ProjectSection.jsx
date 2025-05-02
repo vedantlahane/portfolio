@@ -75,7 +75,7 @@ const projectDescriptions = [
 ];
 
 const defaultConsoleLines = [
-  "💡 Welcome to my project showcase!",
+  "Welcome to my project showcase!",
   "Click any project to view its details.",
   "All projects are built with passion and modern tech.",
 ];
