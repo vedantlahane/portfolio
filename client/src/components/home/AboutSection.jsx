@@ -74,7 +74,7 @@ const AboutSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <p className="text-xl sm:text-2xl text-gray-200 text-center">
+          <p className="text-xl sm:text-2xl text-gray-200 ">
             Looking for <span className="text-blue-400">internships</span> and <span className="text-purple-400">job opportunities</span> to learn and gain real-world experience.
           </p>
         </motion.div>

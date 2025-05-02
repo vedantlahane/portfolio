@@ -2,7 +2,7 @@ import SkillCard from './SkillCard';
 import GradientSeparator from './GradientSeparator';
 
 const SkillsSection = ({ skills }) => (
-  <section className="text-white py-14 min-h-screen">
+  <section className="text-white py-20 min-h-screen">
     <div className="container mx-auto px-4">
       <div className="flex space-x-5 items-baseline mb-10">
         <h1 className="text-4xl font-extrabold bg-gradient-to-r from-slate-500 to-gray-700 bg-clip-text text-transparent">

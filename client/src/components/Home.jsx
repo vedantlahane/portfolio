@@ -2,6 +2,7 @@ import HeroSection from "./home/HeroSection";
 import AboutSection from "./home/AboutSection";
 import SkillsSection from "./home/SkillsSection";
 import ProjectsSection from "./home/ProjectSection";
+import ContactSection from "./home/ContactSection";
 
 // Move this to a separate data.js file if preferred
 const skillsData = [
@@ -88,6 +89,7 @@ const Home = () => {
       <ProjectsSection />
       <AboutSection />
       <SkillsSection skills={skillsData} />
+      <ContactSection />
     </div>
   );
 };

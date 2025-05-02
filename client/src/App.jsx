@@ -11,7 +11,9 @@ import WorkInProgress from './components/home/WorkInProgress';
 import MouseSmokeEffect from './components/common/MouseSmokeEffect';
 function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-blue-200 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500 relative overflow-hidden">
+    
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/10 via-purple-100/40 to-indigo-100/30 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-500 relative ">
+      
       <MouseSmokeEffect/>
       <Navbar />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-8"> {/* Adjusted padding-top for navbar */}

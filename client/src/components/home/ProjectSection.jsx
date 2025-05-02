@@ -1,145 +1,180 @@
-
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import GradientSeparator from "./GradientSeparator";
 
+// --- Project Data ---
+const projects = [
+  { name: "Blogging Platform" },
+  { name: "Hospital Management System" },
+  { name: "FundForge (Crowdfunding)" },
+  { name: "Forked-Up (Restaurant)" },
+  { name: "Quest Search Dashboard" },
+  { name: "AI Safety Dashboard" },
+  { name: "ShoeMarkNet" }
+];
 
-const ProjectCard = ({ project, index }) => (
-  <motion.div
-    className="group bg-slate-800/50 rounded-2xl p-4 sm:p-6 border border-slate-700/50 hover:border-purple-400/30 transition-all flex flex-col h-full"
-    initial={{ opacity: 0, y: 40 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "0px 0px -100px 0px" }}
-    transition={{ duration: 0.5, delay: index * 0.1 }}
-    whileHover={{ scale: 1.02, boxShadow: "0px 10px 30px -10px rgba(112, 26, 117, 0.3)" }}
-  >
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-xl sm:text-2xl font-bold text-blue-300 group-hover:text-blue-200 transition-colors">
-        {project.title}
-      </h3>
-      <span className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-gradient-to-r from-purple-500/20 to-blue-500/20 text-purple-300 rounded-full">
-        {project.status}
-      </span>
-    </div>
+const projectDescriptions = [
+  [
+    "Engineered a dynamic blogging platform using the MEAN stack.",
+    "Implemented robust user authentication and authorization.",
+    "Designed and deployed highly efficient APIs for CRUD operations.",
+    "Optimized platform functionality for enhanced user engagement."
+  ],
+  [
+    "Comprehensive hospital platform built with Laravel.",
+    "Features: patient, doctor, appointment, billing, inventory, and role management.",
+    "Admin, doctor, nurse, and receptionist dashboards."
+  ],
+  [
+    "Decentralized crowdfunding platform using MERN stack and blockchain.",
+    "Secure smart contract-based funding and transparent transactions.",
+    "Empowers users to create and support projects globally."
+  ],
+  [
+    "Full-featured restaurant management and ordering site built with Laravel.",
+    "Admin can manage categories, menus, orders, and contact info.",
+    "Customers can browse menu, place orders, and make reservations."
+  ],
+  [
+    "Interactive dashboard built with MERN stack.",
+    "Advanced search, analytics, and user management features.",
+    "Designed for scalability and real-time data insights."
+  ],
+  [
+    "MERN-based dashboard for monitoring AI safety metrics.",
+    "Visualizes data, alerts, and compliance status.",
+    "Helps teams track AI model risks and operational health."
+  ],
+  [
+    "Secure platform for reselling shoes.",
+    "Real-time inventory, advanced filtering, and role-based access.",
+    "Built with React.js, Tailwind CSS, Node.js, and MongoDB."
+  ]
+];
 
-    <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 flex-1">
-      {project.description.map((point, i) => (
-        <li key={i} className="flex items-start space-x-2">
-          <span className="text-purple-400 mt-1.5">▹</span>
-          <span className="text-sm sm:text-base text-gray-300 group-hover:text-gray-200 transition-colors">{point}</span>
-        </li>
-      ))}
-    </ul>
+const defaultConsoleLines = [
+  "💡 Welcome to my project showcase!",
+  "Click any project to view its details.",
+  "All projects are built with passion and modern tech."
+];
 
-    <div className="flex flex-wrap gap-2 mb-4 sm:mb-6">
-      {project.tech.map((tech, i) => (
-        <motion.span 
-          key={i}
-          className="px-2 sm:px-3 py-1 text-xs sm:text-sm bg-blue-500/10 text-blue-300 rounded-full"
-          whileHover={{ scale: 1.05 }}
-        >
-          {tech}
-        </motion.span>
-      ))}
-    </div>
+// --- Typing Animation Hook ---
+function useTypedText(lines, speed = 18, deps = []) {
+  const [displayed, setDisplayed] = useState("");
+  const timeoutRef = useRef();
 
-    <motion.a
-      href={project.link}
-      className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:shadow-xl transition-all w-fit mt-auto"
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      Source Code
-      <motion.svg 
-        className="w-4 h-4 ml-2"
-        fill="none" 
-        stroke="currentColor" 
-        viewBox="0 0 24 24"
-        whileHover={{ x: 3 }}
-      >
-        <path 
-          strokeLinecap="round" 
-          strokeLinejoin="round" 
-          strokeWidth={2} 
-          d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" 
-        />
-      </motion.svg>
-    </motion.a>
-  </motion.div>
-);
-
-const ProjectsSection = () => {
-  const projects = [
-    {
-      title: "Blogging Platform",
-      status: "Currently Working",
-      description: [
-        "Engineered a dynamic blogging platform using the MEAN stack",
-        "Implemented robust user authentication and authorization",
-        "Designed and deployed highly efficient APIs for CRUD operations",
-        "Optimized platform functionality for enhanced user engagement"
-      ],
-      tech: ["MongoDB", "Express", "Angular", "Node.js"],
-      link: "https://github.com/vedantlahane/myblog"
-    },
-    {
-      title: "Restaurant Website",
-      status: "Currently Working",
-      description: [
-        "Dynamic platform for efficient restaurant management",
-        "Custom CMS for updating menus and restaurant details",
-        "User features: menu browsing, reservations, feedback",
-        "Automated 40% of administrative tasks"
-      ],
-      tech: ["PHP", "MySQL", "HTML", "CSS", "JavaScript"],
-      link: "https://github.com/vedantlahane/FoodOrderingSystem"
-    },
-    {
-      title: "ShoeMarkNet",
-      status: "Currently Working",
-      description: [
-        "Secure platform for reselling shoes",
-        "Real-time inventory management",
-        "Advanced product filtering and navigation",
-        "Role-based access control and authentication"
-      ],
-      tech: ["React.js", "Tailwind CSS", "Node.js", "MongoDB"],
-      link: "https://github.com/vedantlahane/ShoeMarkNet"
+  useEffect(() => {
+    setDisplayed("");
+    let i = 0, j = 0, output = "";
+    function type() {
+      if (i < lines.length) {
+        if (j < lines[i].length) {
+          output += lines[i][j++];
+          setDisplayed(output + "|");
+          timeoutRef.current = setTimeout(type, speed);
+        } else {
+          output += "\n";
+          setDisplayed(output + "|");
+          i++;
+          j = 0;
+          timeoutRef.current = setTimeout(type, speed * 8);
+        }
+      } else {
+        setDisplayed(output);
+      }
     }
-  ];
+    type();
+    return () => clearTimeout(timeoutRef.current);
+  }, deps);
+
+  return displayed;
+}
+
+// --- Pattern & Shade Classes for Tiles ---
+const patternClasses = [
+  "bg-[linear-gradient(to_right,#73737322_1px,transparent_1px),linear-gradient(to_bottom,#73737322_1px,transparent_1px)] bg-[size:20px_20px]",
+  "bg-[radial-gradient(circle,#73737333_1.5px,transparent_1.5px)] bg-[size:14px_14px]",
+  "bg-[repeating-linear-gradient(45deg,#73737322_0_2px,transparent_2px_20px)] bg-[size:20px_20px]",
+  "bg-[repeating-linear-gradient(to_bottom,#73737322_0_2px,transparent_2px_16px)] bg-[size:100%_18px]",
+  "bg-[linear-gradient(to_right,#73737322_1px,transparent_1px),linear-gradient(to_bottom,#73737322_1px,transparent_1px)] bg-[size:30px_30px]",
+  "bg-[radial-gradient(circle,#73737344_2px,transparent_2px)] bg-[size:22px_22px]",
+  "bg-[repeating-linear-gradient(-45deg,#73737322_0_2px,transparent_2px_18px)] bg-[size:18px_18px]"
+];
+const shadeClasses = [
+  "bg-blue-50",
+  "bg-blue-00",
+  "bg-blue-100/10",
+  "bg-blue-200",
+  "bg-blue-200/20",
+  "bg-gredient-to-r from-blue-800 to-purple-800",
+  "bg-blue-150"
+];
+
+// --- Grid Placement ---
+const gridClasses = [
+  "col-start-1 col-end-2 row-start-1 row-end-2",
+  "col-start-2 col-end-3 row-start-1 row-end-3",
+  "col-start-1 col-end-2 row-start-2 row-end-4",
+  "col-start-3 col-end-4 row-start-4 row-end-5",
+  "col-start-4 col-end-5 row-start-5 row-end-6",
+  "col-start-4 col-end-6 row-start-1 row-end-2",
+  "col-start-5 col-end-6 row-start-4 row-end-6"
+];
+
+// --- Blinking Cursor CSS ---
+const cursorStyles = `
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+.terminal-cursor { display: inline-block; width: 1ch; color: #22d3ee; animation: blink 1s step-end infinite; }
+`;
+
+export default function ProjectGrid() {
+  const [selected, setSelected] = useState(null);
+  const displayed = useTypedText(
+    selected === null ? defaultConsoleLines : projectDescriptions[selected],
+    18,
+    [selected]
+  );
+
+  const hasCursor = displayed.endsWith("|");
+  const displayText = hasCursor ? displayed.slice(0, -1) : displayed;
 
   return (
-    <section id="projects" className="relative py-16 md:py-24">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.h2 
-          className="text-4xl sm:text-5xl md:text-6xl font-bold mb-12 md:mb-16"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <span className="text-gray-300">My </span>
-          <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Projects
-          </span>
-        </motion.h2>
+    <section className="w-full mx-auto py-20 px-2">
+      <style>{cursorStyles}</style>
+      <div className="h-[600px] grid grid-cols-5 grid-rows-5 gap-4 p-4 rounded-xl ">
+        {projects.map((proj, i) => (
+          <motion.div
+            key={i}
+            onClick={() => setSelected(i)}
+            className={`relative rounded-2xl flex items-center justify-center text-center text-blue-300 font-bold text-lg sm:text-xl shadow-md border border-slate-700/50 hover:border-purple-400/50 cursor-pointer transition-all ${gridClasses[i]} ${patternClasses[i]} ${shadeClasses[i]} ${selected === i ? 'border-purple-400 shadow-lg scale-105 z-20' : ''}`}
+            whileHover={{ scale: 1.05 }}
+            animate={selected === i ? { scale: [1, 1.05, 1] } : { scale: 1 }}
+            transition={{ duration: 1.5, repeat: selected === i ? Infinity : 0 }}
+          >
+            <span className="px-2">{proj.name}</span>
+          </motion.div>
+        ))}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {projects.map((project, index) => (
-            <ProjectCard key={index} project={project} index={index} />
-          ))}
+        <div className="  rounded-2xl flex  items-center justify-center text-white font-extrabold text-2xl sm:text-3xl tracking-wide shadow-2xl border border-slate-700/50 col-start-1 col-end-3 row-start-4 row-end-6">
+         <span>My </span><span className="bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent">Projects</span>
+        </div>
+
+        <div className=" relative rounded-2xl flex flex-col items-start  font-mono shadow-xl p-6 ml-11 border border-slate-700/50 overflow-auto bg-[#181c1f] text-green-400 min-h-0 whitespace-pre-wrap col-start-3 col-end-6 row-start-2 row-end-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-3 h-3 rounded-full bg-red-500"></span>
+            <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
+            <span className="w-3 h-3 rounded-full bg-green-500"></span>
+            <span className="ml-4 text-xs text-slate-400">vedant@portfolio:~$</span>
+          </div>
+          <div className="text-base sm:text-lg leading-relaxed w-full pl-2">
+            <span>
+              {displayText}
+              {hasCursor && <span className="terminal-cursor">|</span>}
+            </span>
+          </div>
         </div>
       </div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        className="mt-16 md:mt-24"
-      >
-        <GradientSeparator />
-      </motion.div>
+      <GradientSeparator/>
     </section>
   );
-};
-
-
-export default ProjectsSection;
+}
