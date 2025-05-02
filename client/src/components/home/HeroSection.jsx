@@ -75,7 +75,7 @@ const HeroSection = () => {
 
               <motion.div className="pt-8">
                 <a
-                  href="https://drive.google.com/file/d/1Tk6LcfyllkKkCcH3WAsR6-pVjNgkcykZ/view?usp=drivesdk"
+                  href="https://drive.google.com/file/d/1l0xcsS6kuBsq_vBW7-4nOaFQg695TnJj/view?usp=drive_link"
                   className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 
                   text-white text-lg font-medium rounded-xl hover:shadow-2xl transition-all"
                 >
