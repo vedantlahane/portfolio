@@ -58,10 +58,10 @@ const cardVariants = {
 };
 
 const ContactSection = () => (
-  <section id="contact" className="py-20 ">
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section id="contact" className="py-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <motion.h2
-        className="text-center text-5xl font-extrabold mb-10 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+        className="text-4xl sm:text-5xl md:text-6xl font-bold mb-10 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -70,7 +70,7 @@ const ContactSection = () => (
         Let's Connect
       </motion.h2>
       <motion.p
-        className="text-center text-lg text-gray-500 dark:text-gray-300 mb-12 max-w-xl mx-auto"
+        className="text-lg text-gray-500 dark:text-gray-300 mb-12 max-w-2xl"
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
@@ -78,7 +78,7 @@ const ContactSection = () => (
       >
         Feel free to reach out via any platform below. I’m always open to networking, collaboration, or just a friendly chat!
       </motion.p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
         {contactLinks.map((link, i) => (
           <motion.a
             key={link.name}
