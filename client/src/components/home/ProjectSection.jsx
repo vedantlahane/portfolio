@@ -168,7 +168,7 @@ export default function ProjectGrid() {
       <style>{cursorStyles}</style>
 
       <div className="h-[600px] grid grid-cols-5 grid-rows-5 gap-4 p-4 rounded-xl">
-      <div className="relative col-start-3 col-end-5 row-start-2 row-end-4 rounded-2xl shadow-2xl border border-slate-700/70 overflow-auto bg-gradient-to-br from-[#181c1f] via-[#161a1d] to-[#181c1f] text-[#cbd5e1] min-h-0 font-mono">
+      <div className="relative col-start-3 col-end-6 row-start-2 mr-32 ml-4 row-end-4 rounded-2xl shadow-2xl border border-slate-700/70 overflow-auto bg-gradient-to-br from-[#181c1f] via-[#161a1d] to-[#181c1f] text-[#cbd5e1] min-h-0 font-mono">
   {/* Terminal header */}
   <div className="flex items-center gap-2 px-4 py-2 bg-[#23272b] rounded-t-2xl border-b border-slate-700">
     <span className="w-3 h-3 rounded-full bg-red-500"></span>

@@ -6,7 +6,7 @@ import { EnvelopeIcon } from "@heroicons/react/24/outline";
 const contactLinks = [
   {
     name: "Email",
-    href: "mailto:vedantlahane@gmail.com",
+    href: "mailto:vedantanillahane@gmail.com",
     icon: <EnvelopeIcon className="w-8 h-8 text-blue-400" />,
     display: "vedantlahane@gmail.com",
   },
