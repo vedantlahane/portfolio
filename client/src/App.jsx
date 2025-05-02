@@ -12,7 +12,7 @@ import MouseSmokeEffect from './components/common/MouseSmokeEffect';
 function App() {
   return (
     
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/10 via-purple-100/40 to-indigo-100/30 dark:from-gray-950 dark:via-gray-800 dark:to-gray-950 transition-all duration-500 relative ">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/10 via-purple-100/40 to-indigo-100/30 dark:from-gray-950 dark:via-gray-800 dark:to-gray-950 transition-all  duration-500 relative ">
       
       <MouseSmokeEffect/>
       <Navbar />
