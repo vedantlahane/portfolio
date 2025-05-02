@@ -10,7 +10,7 @@ const projects = [
     link: "https://github.com/vedantlahane/myblog",
   },
   {
-    name: "Hospital Management System",
+    name: "Health Platform",
     link: "https://github.com/vedantlahane/health-platform",
   },
   {
