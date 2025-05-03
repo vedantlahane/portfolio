@@ -190,7 +190,7 @@ export default function ProjectGrid() {
     <section className="w-full mx-auto py-20 px-2">
       <style>{cursorStyles}</style>
       <div className="h-[720px] grid grid-cols-5 grid-rows-6 gap-4 p-4 rounded-xl">
-        <div className="relative col-start-3 col-end-6 row-start-2 mr-16 m-1 row-end-5 opacity-70 rounded-2xl shadow-2xl border border-slate-700/70 overflow-auto bg-gradient-to-br from-[#394249] via-[#191d20] to-[#0e1013] text-[#cbd5e1] min-h-0 font-mono">
+        <div className="relative col-start-3 col-end-6 row-start-2  row-end-5 opacity-70 rounded-2xl shadow-2xl border border-slate-700/70 overflow-auto bg-gradient-to-br from-[#394249] via-[#191d20] to-[#0e1013] text-[#cbd5e1] min-h-0 font-mono">
           {/* Terminal header */}
           <div className="flex items-center gap-2 px-4 py-2 bg-[#23272b] rounded-t-2xl border-b border-slate-700">
             <span className="w-3 h-3 rounded-full bg-red-500"></span>
@@ -257,7 +257,7 @@ export default function ProjectGrid() {
           </motion.div>
         ))}
 
-        <div className="rounded-2xl flex items-center justify-center font-semibold sm:text-6xl tracking-wide shadow-2xl border border-slate-700/50 col-start-1 col-end-3 row-start-4 row-end-6 m-4 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-pulse">
+        <div className="rounded-2xl flex items-center justify-center font-semibold sm:text-6xl tracking-wide shadow-2xl border border-slate-700/50 col-start-1 col-end-3 row-start-4 row-end-6  bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-pulse">
           <span className="bg-gradient-to-r from-slate-700  to-blue-200 bg-clip-text text-transparent">My </span>
           <span className="ml-2 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent">
             Projects
