@@ -148,7 +148,7 @@ const shadeClasses = [
   "bg-blue-100/10",
   "bg-blue-100/10",
   "bg-blue-100/70",
-  "bg-blue-100/20",
+  "bg-blue-100/10",
   "bg-blue-100/10",
   "bg-blue-100/10",
   "bg-blue-100/20",
