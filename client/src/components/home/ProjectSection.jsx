@@ -23,15 +23,23 @@ const projects = [
   },
   {
     name: "Quest Search Dashboard",
-    link: "https://your-quest-dashboard-demo.com",
+    link: "https://github.com/vedantlahane/quest-search-dashboard",
   },
   {
     name: "AI Safety Dashboard",
-    link: "https://your-ai-safety-demo.com",
+    link: "https://github.com/vedantlahane/ai-safety-dashboard",
   },
   {
     name: "ShoeMarkNet",
-    link: "https://your-shoemarknet-demo.com",
+    link: "https://shoe-mark-net.vercel.app",
+  },
+  {
+    name: "-----------------",
+    link: "Don't Click Here",
+  },
+  {
+    name: "-----------------",
+    link: "Don't Click Here",
   },
 ];
 
@@ -72,6 +80,17 @@ const projectDescriptions = [
     "Real-time inventory, advanced filtering, and role-based access.",
     "Built with React.js, Tailwind CSS, Node.js, and MongoDB.",
   ],
+  [
+    "Don't Click Here",
+    "This is a trap!",
+    "You have been warned!",
+    "Clicking here will lead to a surprise!",
+  ],
+  [
+    "Click any project to view its details.",
+    "All projects are built with passion and modern tech.",
+    "Explore my work and connect with me.",
+  ],
 ];
 
 const defaultConsoleLines = [
@@ -87,9 +106,7 @@ function useTypedText(lines, speed = 18, deps = []) {
 
   useEffect(() => {
     setDisplayed("");
-    let i = 0,
-      j = 0,
-      output = "";
+    let i = 0, j = 0, output = "";
     function type() {
       if (i < lines.length) {
         if (j < lines[i].length) {
@@ -123,6 +140,8 @@ const patternClasses = [
   "bg-[linear-gradient(to_right,#73737322_1px,transparent_1px),linear-gradient(to_bottom,#73737322_1px,transparent_1px)] bg-[size:30px_30px]",
   "bg-[radial-gradient(circle,#73737344_2px,transparent_2px)] bg-[size:22px_22px]",
   "bg-[repeating-linear-gradient(-45deg,#73737322_0_2px,transparent_2px_18px)] bg-[size:18px_18px]",
+  "bg-[repeating-linear-gradient(135deg,#73737322_0_2px,transparent_2px_20px)] bg-[size:20px_20px]",
+  "bg-[linear-gradient(to_right,#73737322_1px,transparent_1px),linear-gradient(to_bottom,#73737322_1px,transparent_1px)] bg-[size:20px_20px]",
 ];
 const shadeClasses = [
   "bg-blue-50",
@@ -132,6 +151,8 @@ const shadeClasses = [
   "bg-blue-200/20",
   "bg-blue-100/10",
   "bg-blue-100/10",
+  "bg-blue-100/20",
+  "bg-blue-100/10",
 ];
 
 // --- Grid Placement ---
@@ -139,10 +160,12 @@ const gridClasses = [
   "col-start-1 col-end-2 row-start-1 row-end-2",
   "col-start-2 col-end-3 row-start-1 row-end-3",
   "col-start-1 col-end-2 row-start-2 row-end-4",
-  "col-start-3 col-end-4 row-start-4 row-end-5",
-  "col-start-4 col-end-5 row-start-5 row-end-6",
+  "col-start-3 col-end-4 row-start-5 row-end-6",
+  "col-start-4 col-end-5 row-start-6 row-end-7",
   "col-start-4 col-end-6 row-start-1 row-end-2",
-  "col-start-5 col-end-6 row-start-4 row-end-6",
+  "col-start-5 col-end-6 row-start-5 row-end-7",
+  "col-start-1 col-end-2 row-start-6 row-end-7",
+  "col-start-2 col-end-4 row-start-6 row-end-7",
 ];
 
 // --- Blinking Cursor CSS ---
@@ -166,50 +189,46 @@ export default function ProjectGrid() {
   return (
     <section className="w-full mx-auto py-20 px-2">
       <style>{cursorStyles}</style>
+      <div className="h-[720px] grid grid-cols-5 grid-rows-6 gap-4 p-4 rounded-xl">
+        <div className="relative col-start-3 col-end-6 row-start-2 mr-16 m-1 row-end-5 opacity-70 rounded-2xl shadow-2xl border border-slate-700/70 overflow-auto bg-gradient-to-br from-[#394249] via-[#191d20] to-[#0e1013] text-[#cbd5e1] min-h-0 font-mono">
+          {/* Terminal header */}
+          <div className="flex items-center gap-2 px-4 py-2 bg-[#23272b] rounded-t-2xl border-b border-slate-700">
+            <span className="w-3 h-3 rounded-full bg-red-500"></span>
+            <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
+            <span className="w-3 h-3 rounded-full bg-green-500"></span>
+            <span className="ml-4 text-xs text-slate-400 select-none">vedant@portfolio:~$projects</span>
+          </div>
+          {/* Terminal body */}
+          <div className="p-4 pt-3 text-base leading-relaxed w-full whitespace-pre-wrap">
+            {selectedLink && (
+              <div className="flex items-start">
+                <span className="text-sky-400 mr-2 select-none">$</span>
+                <a
+                  href={selectedLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold hover:underline flex items-center"
+                >
+                  {selectedLink}
+                  <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1 inline" />
+                </a>
+              </div>
+            )}
 
-      <div className="h-[600px] grid grid-cols-5 grid-rows-5 gap-4 p-4 rounded-xl">
-      <div className="relative col-start-3 col-end-6 row-start-2 mr-32 ml-4 row-end-4 rounded-2xl shadow-2xl border border-slate-700/70 overflow-auto bg-gradient-to-br from-[#181c1f] via-[#161a1d] to-[#181c1f] text-[#cbd5e1] min-h-0 font-mono">
-  {/* Terminal header */}
-  <div className="flex items-center gap-2 px-4 py-2 bg-[#23272b] rounded-t-2xl border-b border-slate-700">
-    <span className="w-3 h-3 rounded-full bg-red-500"></span>
-    <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
-    <span className="w-3 h-3 rounded-full bg-green-500"></span>
-    <span className="ml-4 text-xs text-slate-400 select-none">vedant@portfolio:~$projects</span>
-  </div>
-  {/* Terminal body */}
-  <div className="p-4 pt-3 text-base leading-relaxed w-full whitespace-pre-wrap">
-    {/* Project Link as gradient terminal text AT THE TOP */}
-    {selectedLink && (
-      <div className="flex items-start">
-        <span className="text-sky-400 mr-2 select-none">$</span>
-        <a
-          href={selectedLink}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold hover:underline flex items-center"
-        >
-          {selectedLink}
-          <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1 inline" />
-        </a>
-      </div>
-    )}
+            {(displayText || "").split("\n").map((line, idx) =>
+              line ? (
+                <div key={idx} className="flex items-start">
+                  <span className="text-sky-400 mr-2 select-none">$</span>
+                  <span>{line}</span>
+                </div>
+              ) : (
+                <br key={idx} />
+              )
+            )}
 
-    {/* Terminal lines */}
-    {(displayText || "").split("\n").map((line, idx) =>
-      line ? (
-        <div key={idx} className="flex items-start">
-          <span className="text-sky-400 mr-2 select-none">$</span>
-          <span>{line}</span>
+            {hasCursor && !selectedLink && <span className="terminal-cursor">|</span>}
+          </div>
         </div>
-      ) : (
-        <br key={idx} />
-      )
-    )}
-
-    {/* Blinking cursor */}
-    {hasCursor && !selectedLink && <span className="terminal-cursor">|</span>}
-  </div>
-</div>
 
         {projects.map((proj, i) => (
           <motion.div
@@ -238,8 +257,8 @@ export default function ProjectGrid() {
           </motion.div>
         ))}
 
-        <div className="rounded-2xl flex items-center justify-center font-extrabold text-5xl sm:text-5xl tracking-wide shadow-2xl border border-slate-700/50 col-start-1 col-end-3 row-start-4 row-end-6 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-pulse">
-          <span>My </span>
+        <div className="rounded-2xl flex items-center justify-center font-semibold sm:text-6xl tracking-wide shadow-2xl border border-slate-700/50 col-start-1 col-end-3 row-start-4 row-end-6 m-4 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-pulse">
+          <span className="bg-gradient-to-r from-slate-700  to-blue-200 bg-clip-text text-transparent">My </span>
           <span className="ml-2 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent">
             Projects
           </span>
