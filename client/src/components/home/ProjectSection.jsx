@@ -34,11 +34,11 @@ const projects = [
     link: "https://shoe-mark-net.vercel.app",
   },
   {
-    name: "-----------------",
+    name: "This is a trap!",
     link: "Don't Click Here",
   },
   {
-    name: "-----------------",
+    name: "Click any project to view its details.",
     link: "Don't Click Here",
   },
 ];
