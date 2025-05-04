@@ -9,7 +9,7 @@ const HeroSection = () => {
     { x: '20%', y: '15%', rotate: 0, z: 25, size: '150px', delay: 0.1 },
     { x: '30%', y: '-1%', rotate: 0, z: 10, size: '160px', delay: 0.3 },
     { x: '60%', y: '25%', rotate: 0, z: 20, size: '130px', delay: 0.5 },
-    { x: '10%', y: '50%', rotate: 0, z: 30, size: '160px', delay: 0.7 },
+    { x: '5%', y: '50%', rotate: 0, z: 30, size: '160px', delay: 0.7 },
     { x: '65%', y: '40%', rotate: 0, z: 15, size: '130px', delay: 0.9 },
     { x: '0%', y: '30%', rotate: 0, z: 25, size: '170px', delay: 1.1 },
     { x: '70%', y: '15%', rotate: 0, z: 5, size: '120px', delay: 1.3 },
@@ -31,9 +31,9 @@ const HeroSection = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <motion.div className="flex items-center gap-4">
+              <motion.div className="flex items-center gap-2">
                 <span className="text-xl md:text-2xl font-medium text-blue-300">
-                  Hi there
+                  Hello there
                 </span>
                 <motion.img
                   src="https://img.icons8.com/emoji/100/waving-hand-light-skin-tone.png"
