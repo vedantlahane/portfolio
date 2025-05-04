@@ -8,7 +8,7 @@ const contactLinks = [
     name: "Email",
     href: "mailto:vedantanillahane@gmail.com",
     icon: <EnvelopeIcon className="w-8 h-8 text-blue-400" />,
-    display: "vedantlahane@gmail.com",
+    display: "vedantanillahane@gmail.com",
   },
   {
     name: "GitHub",
