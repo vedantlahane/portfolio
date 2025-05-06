@@ -13,7 +13,7 @@ const Navbar = () => {
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
     { name: 'Projects', href: '/projects' }, // Updated to link to the project section
-    { name: 'Resume', href: 'https://drive.google.com/file/d/1l0xcsS6kuBsq_vBW7-4nOaFQg695TnJj/view?usp=drive_link' }
+    { name: 'Resume', href: 'https://drive.google.com/file/d/1LEgXcAexz4AHdr95BgODzXS8SyuHJunF/view?usp=sharing' }
   ];
 
   const socialLinks = [
