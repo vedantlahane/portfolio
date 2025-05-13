@@ -11,7 +11,7 @@ const Navbar = () => {
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Blog', href: '/blog' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'About', href: '/about' },
     { name: 'Projects', href: '/projects' }, // Updated to link to the project section
     { name: 'Resume', href: 'https://drive.google.com/file/d/1LEgXcAexz4AHdr95BgODzXS8SyuHJunF/view?usp=sharing' }
   ];

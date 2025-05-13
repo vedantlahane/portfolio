@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Home from './components/Home';
-import ContactForm from './components/ContactForm';
+import About from './components/About';
 import BlogList from './components/BlogList';
 import BlogDetail from './components/BlogDetail';
 import Navbar from './components/Navbar';
@@ -22,7 +22,7 @@ function App() {
           <Route path="/hero1" element={<Hero1 />} />
           <Route path="/hero" element={<Hero />} />
           <Route path="/" element={<Home />} />
-          <Route path="/contact" element={<ContactForm />} />
+          <Route path="/about" element={<About/>} />
           <Route path="/blogs" element={<BlogList />} />
           <Route path="/blogs/:id" element={<BlogDetail />} />
         </Routes>

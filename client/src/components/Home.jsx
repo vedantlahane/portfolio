@@ -87,7 +87,7 @@ const Home = () => {
     <div className="min-h-screen">
       <HeroSection />
       <ProjectsSection />
-      <AboutSection />
+      {/* <AboutSection ;/> */}
       <SkillsSection skills={skillsData} />
       <ContactSection />
     </div>
