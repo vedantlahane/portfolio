@@ -230,7 +230,7 @@ const ContactSection = () => {
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8  mx-auto"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -261,14 +261,7 @@ const ContactSection = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.6 }}
         >
-          <motion.button
-            className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => window.open('/path-to-resume.pdf', '_blank')}
-          >
-            Download Resume
-          </motion.button>
+          
         </motion.div>
       </div>
       <GradientSeparator className="mt-24" />
