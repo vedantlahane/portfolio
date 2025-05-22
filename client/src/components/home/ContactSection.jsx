@@ -9,7 +9,7 @@ const contactLinks = [
     href: "mailto:vedantanillahane@gmail.com",
     icon: <EnvelopeIcon className="w-8 h-8 text-blue-400" />,
     display: "vedantanillahane@gmail.com",
-    color: "from-blue-400 to-blue-600",
+    color: "from-blue-400 via-blue-700 to-blue-900",
   },
   {
     name: "GitHub",
@@ -22,7 +22,7 @@ const contactLinks = [
       />
     ),
     display: "github.com/vedantlahane",
-    color: "from-gray-700 to-gray-900",
+    color: "from-gray-700 via-gray-600 to-gray-900",
   },
   {
     name: "LinkedIn",
@@ -35,7 +35,7 @@ const contactLinks = [
       />
     ),
     display: "linkedin.com/in/vedant-lahane",
-    color: "from-blue-500 to-blue-700",
+    color: "from-blue-200 to-blue-700",
   },
   {
     name: "LeetCode",
@@ -48,7 +48,7 @@ const contactLinks = [
       />
     ),
     display: "leetcode.com/u/vedantlahane",
-    color: "from-orange-400 to-orange-600",
+    color: "from-orange-400 via-orange-300 to-orange-600",
   },
 ];
 
@@ -171,7 +171,7 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="py-20 relative overflow-hidden">
-      {/* Animated background elements */}
+      {/* Animated background elements
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <motion.div 
           className="absolute top-10 left-10 w-64 h-64 rounded-full bg-blue-400/10 blur-3xl"
@@ -191,7 +191,7 @@ const ContactSection = () => {
             transition: { ...floatingAnimation.transition, delay: 2 },
           }}
         />
-      </div>
+      </div> */}
 
       <div className="mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
