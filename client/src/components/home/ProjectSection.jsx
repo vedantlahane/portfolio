@@ -1,45 +1,54 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import GradientSeparator from "./GradientSeparator";
-import { ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { ArrowTopRightOnSquareIcon, CodeBracketIcon, CommandLineIcon } from "@heroicons/react/24/outline";
 
 // --- Project Data ---
 const projects = [
   {
     name: "Blogging Platform",
     link: "https://github.com/vedantlahane/myblog",
+    tech: ["MEAN", "Auth", "APIs"],
   },
   {
     name: "Health Platform",
     link: "https://github.com/vedantlahane/health-platform",
+    tech: ["Laravel", "MySQL", "Admin"],
   },
   {
-    name: "FundForge (Crowdfunding)",
+    name: "FundForge",
     link: "https://github.com/vedantlahane/fundforge",
+    tech: ["MERN", "Blockchain", "Web3"],
   },
   {
-    name: "Forked-Up (Restaurant)",
+    name: "Forked-Up",
     link: "https://github.com/vedantlahane/forked-up",
+    tech: ["Laravel", "Restaurant", "CMS"],
   },
   {
-    name: "Quest Search Dashboard",
+    name: "Quest Dashboard",
     link: "https://github.com/vedantlahane/quest-search-dashboard",
+    tech: ["MERN", "Analytics", "Search"],
   },
   {
-    name: "AI Safety Dashboard",
+    name: "AI Safety",
     link: "https://github.com/vedantlahane/ai-safety-dashboard",
+    tech: ["MERN", "AI", "Monitoring"],
   },
   {
     name: "ShoeMarkNet",
     link: "https://shoe-mark-net.vercel.app",
+    tech: ["React", "Node.js", "MongoDB"],
   },
   {
-    name: "This is a trap!",
-    link: "Don't Click Here",
+    name: "More Projects",
+    link: "#",
+    tech: ["Coming", "Soon", "..."],
   },
   {
-    name: "Click any project to view its details.",
-    link: "Don't Click Here",
+    name: "Explore All",
+    link: "https://github.com/vedantlahane",
+    tech: ["View", "GitHub", "Profile"],
   },
 ];
 
@@ -52,8 +61,8 @@ const projectDescriptions = [
   ],
   [
     "Comprehensive hospital platform built with Laravel.",
-    "Features: patient, doctor, appointment, billing, inventory, and role management.",
-    "Admin, doctor, nurse, and receptionist dashboards.",
+    "Features: patient, doctor, appointment, billing, inventory management.",
+    "Role-based dashboards for admin, doctor, nurse, and receptionist.",
   ],
   [
     "Decentralized crowdfunding platform using MERN stack and blockchain.",
@@ -61,7 +70,7 @@ const projectDescriptions = [
     "Empowers users to create and support projects globally.",
   ],
   [
-    "Full-featured restaurant management and ordering site built with Laravel.",
+    "Full-featured restaurant management and ordering site with Laravel.",
     "Admin can manage categories, menus, orders, and contact info.",
     "Customers can browse menu, place orders, and make reservations.",
   ],
@@ -81,15 +90,14 @@ const projectDescriptions = [
     "Built with React.js, Tailwind CSS, Node.js, and MongoDB.",
   ],
   [
-    "Don't Click Here",
-    "This is a trap!",
-    "You have been warned!",
-    "Clicking here will lead to a surprise!",
+    "More exciting projects are in development.",
+    "Stay tuned for updates on new technologies and innovations.",
+    "Always exploring and building with cutting-edge tech.",
   ],
   [
-    "Click any project to view its details.",
-    "All projects are built with passion and modern tech.",
-    "Explore my work and connect with me.",
+    "Visit my GitHub profile to explore all projects.",
+    "Open to collaboration and contributions.",
+    "Let's build something amazing together!",
   ],
 ];
 
@@ -100,7 +108,7 @@ const defaultConsoleLines = [
 ];
 
 // --- Typing Animation Hook ---
-function useTypedText(lines, speed = 18, deps = []) {
+function useTypedText(lines, speed = 20, deps = []) {
   const [displayed, setDisplayed] = useState("");
   const timeoutRef = useRef();
 
@@ -131,137 +139,152 @@ function useTypedText(lines, speed = 18, deps = []) {
   return displayed;
 }
 
-// --- Pattern & Shade Classes for Tiles ---
-const patternClasses = [
-  "bg-[linear-gradient(to_right,#73737322_1px,transparent_1px),linear-gradient(to_bottom,#73737322_1px,transparent_1px)] bg-[size:20px_20px]",
-  "bg-[radial-gradient(circle,#73737333_1.5px,transparent_1.5px)] bg-[size:14px_14px]",
-  "bg-[repeating-linear-gradient(45deg,#73737322_0_2px,transparent_2px_20px)] bg-[size:20px_20px]",
-  "bg-[repeating-linear-gradient(to_bottom,#73737322_0_2px,transparent_2px_16px)] bg-[size:100%_18px]",
-  "bg-[linear-gradient(to_right,#73737322_1px,transparent_1px),linear-gradient(to_bottom,#73737322_1px,transparent_1px)] bg-[size:30px_30px]",
-  "bg-[radial-gradient(circle,#73737344_2px,transparent_2px)] bg-[size:22px_22px]",
-  "bg-[repeating-linear-gradient(-45deg,#73737322_0_2px,transparent_2px_18px)] bg-[size:18px_18px]",
-  "bg-[repeating-linear-gradient(135deg,#73737322_0_2px,transparent_2px_20px)] bg-[size:20px_20px]",
-  "bg-[linear-gradient(to_right,#73737322_1px,transparent_1px),linear-gradient(to_bottom,#73737322_1px,transparent_1px)] bg-[size:20px_20px]",
-];
-const shadeClasses = [
-  "bg-blue-50",
-  "bg-blue-100/10",
-  "bg-blue-100/10",
-  "bg-blue-50",
-  "bg-blue-100/10",
-  "bg-blue-100/10",
-  "bg-blue-100/10",
-  "bg-blue-100/20",
-  "bg-blue-100/10",
-];
-
-// --- Grid Placement ---
-const gridClasses = [
-  "col-start-1 col-end-2 row-start-1 row-end-2",
-  "col-start-2 col-end-3 row-start-1 row-end-3",
-  "col-start-1 col-end-2 row-start-2 row-end-4",
-  "col-start-3 col-end-4 row-start-5 row-end-6",
-  "col-start-4 col-end-5 row-start-6 row-end-7",
-  "col-start-4 col-end-6 row-start-1 row-end-2",
-  "col-start-5 col-end-6 row-start-5 row-end-7",
-  "col-start-1 col-end-2 row-start-6 row-end-7",
-  "col-start-2 col-end-4 row-start-6 row-end-7",
-];
-
 // --- Blinking Cursor CSS ---
 const cursorStyles = `
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-.terminal-cursor { display: inline-block; width: 1ch; color: #22d3ee; animation: blink 1s step-end infinite; }
+.terminal-cursor { display: inline-block; width: 1ch; color: #60a5fa; animation: blink 1s step-end infinite; }
 `;
 
 export default function ProjectGrid() {
   const [selected, setSelected] = useState(null);
   const displayed = useTypedText(
     selected === null ? defaultConsoleLines : projectDescriptions[selected],
-    18,
+    20,
     [selected]
   );
 
   const hasCursor = displayed.endsWith("|");
   const displayText = hasCursor ? displayed.slice(0, -1) : displayed;
-  const selectedLink = selected !== null ? projects[selected].link : null;
+  const selectedProject = selected !== null ? projects[selected] : null;
 
   return (
     <section className="w-full mx-auto py-20 px-2">
       <style>{cursorStyles}</style>
-      <div className="h-[720px] grid grid-cols-5 grid-rows-6 gap-4 p-4 rounded-xl">
-        <div className="relative col-start-3 col-end-6 row-start-2  row-end-5  rounded-2xl shadow-2xl border border-blue-300/90 overflow-auto bg-gradient-to-br from-slate-700 via-slate-800  to-slate-900 text-[#cbd5e1] animate-pulse min-h-0 font-mono">
-          {/* Terminal header */}
-          <div className="flex items-center gap-2 px-4 py-2 bg-slate-800/90 rounded-t-2xl border-b border-slate-700">
-            <span className="w-3 h-3 rounded-full bg-red-500"></span>
-            <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
-            <span className="w-3 h-3 rounded-full bg-green-500"></span>
-            <span className="ml-4 text-xs text-slate-400 select-none">vedant@portfolio:~$projects</span>
-          </div>
-          {/* Terminal body */}
-          <div className="p-4 pt-3 text-base leading-relaxed w-full whitespace-pre-wrap">
-            {selectedLink && (
-              <div className="flex items-start">
-                <span className="text-sky-400 mr-2 select-none">$</span>
-                <a
-                  href={selectedLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold hover:underline flex items-center"
-                >
-                  {selectedLink}
-                  <ArrowTopRightOnSquareIcon className="w-4 h-4 ml-1 inline" />
-                </a>
-              </div>
-            )}
-
-            {(displayText || "").split("\n").map((line, idx) =>
-              line ? (
-                <div key={idx} className="flex items-start">
-                  <span className="text-sky-400 mr-2 select-none">$</span>
-                  <span>{line}</span>
-                </div>
-              ) : (
-                <br key={idx} />
-              )
-            )}
-
-            {hasCursor && !selectedLink && <span className="terminal-cursor">|</span>}
-          </div>
-        </div>
-
-        {projects.map((proj, i) => (
-          <motion.div
-            key={i}
-            onClick={() => setSelected(i)}
-            aria-selected={selected === i}
-            tabIndex={0}
-            className={`relative rounded-2xl flex items-center justify-center text-center text-blue-300 font-bold text-lg sm:text-xl shadow-md border border-slate-700/50 hover:border-purple-400/50 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-purple-400 ${
-              gridClasses[i]
-            } ${patternClasses[i]} ${shadeClasses[i]} ${
-              selected === i
-                ? "border-purple-400 shadow-lg scale-105 z-20 ring-2 ring-purple-400"
-                : ""
-            }`}
-            whileHover={{ scale: 1.05 }}
-            animate={selected === i ? { scale: [1, 1.05, 1] } : { scale: 1 }}
-            transition={{
-              duration: 1.5,
-              repeat: selected === i ? Infinity : 0,
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") setSelected(i);
-            }}
-          >
-            <span className="px-2">{proj.name}</span>
-          </motion.div>
-        ))}
-
-        <div className="rounded-2xl flex items-center justify-center font-semibold sm:text-6xl tracking-wide shadow-2xl border-4 border-slate-700/50 col-start-1 col-end-3 row-start-4 row-end-6  bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent animate-pulse">
-          <span className="bg-gradient-to-r from-slate-700  to-blue-200 bg-clip-text text-transparent">My </span>
-          <span className="ml-2 bg-gradient-to-r from-blue-700 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+      
+      {/* Section Header */}
+      <motion.div 
+        className="text-center mb-16"
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+      >
+        <h2 className="text-5xl md:text-7xl font-bold mb-4">
+          <span className="text-gray-300">Featured </span>
+          <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
             Projects
           </span>
+        </h2>
+        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          Click on any project to explore the details and tech stack
+        </p>
+      </motion.div>
+
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Terminal */}
+          <motion.div 
+            className="relative h-[500px] rounded-2xl shadow-2xl border border-gray-800/50 overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Terminal header */}
+            <div className="flex items-center justify-between px-4 py-3 bg-gray-900/90 border-b border-gray-800">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-red-500"></span>
+                <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
+                <span className="w-3 h-3 rounded-full bg-green-500"></span>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <CommandLineIcon className="w-4 h-4" />
+                <span className="font-mono">vedant@portfolio:~$</span>
+              </div>
+            </div>
+            
+            {/* Terminal body */}
+            <div className="p-6 font-mono text-sm md:text-base overflow-auto h-[calc(100%-48px)]">
+              {selectedProject && (
+                <motion.div 
+                  className="mb-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <div className="flex items-center gap-2 text-blue-400 mb-2">
+                    <span className="text-gray-500">$</span>
+                    <span>project --info "{selectedProject.name}"</span>
+                  </div>
+                  <div className="pl-4 text-gray-300">
+                    <a
+                      href={selectedProject.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-colors mb-2"
+                    >
+                      <span className="text-gray-500">→</span>
+                      {selectedProject.link}
+                      <ArrowTopRightOnSquareIcon className="w-4 h-4" />
+                    </a>
+                    <div className="flex items-center gap-2 text-sm text-gray-400 mt-2">
+                      <CodeBracketIcon className="w-4 h-4" />
+                      {selectedProject.tech.join(" • ")}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              <div className="space-y-2">
+                {(displayText || "").split("\n").map((line, idx) =>
+                  line ? (
+                    <div key={idx} className="flex items-start text-gray-300">
+                      <span className="text-blue-400 mr-2 select-none">$</span>
+                      <span>{line}</span>
+                    </div>
+                  ) : (
+                    <br key={idx} />
+                  )
+                )}
+                {hasCursor && <span className="terminal-cursor">|</span>}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Project Grid */}
+          <div className="grid grid-cols-3 gap-4 auto-rows-fr">
+            {projects.map((project, i) => (
+              <motion.div
+                key={i}
+                onClick={() => setSelected(i)}
+                className={`relative p-6 rounded-xl border cursor-pointer transition-all ${
+                  selected === i
+                    ? "border-purple-500 bg-purple-500/10 scale-105 shadow-lg shadow-purple-500/20"
+                    : "border-gray-800 hover:border-blue-500 hover:bg-gray-800/50"
+                }`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <h3 className={`text-sm font-bold mb-2 ${
+                  selected === i ? "text-purple-400" : "text-blue-400"
+                }`}>
+                  {project.name}
+                </h3>
+                <div className="flex flex-wrap gap-1">
+                  {project.tech.map((tech, idx) => (
+                    <span
+                      key={idx}
+                      className="text-xs px-2 py-1 rounded-full bg-gray-800/50 text-gray-400"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
       <GradientSeparator />

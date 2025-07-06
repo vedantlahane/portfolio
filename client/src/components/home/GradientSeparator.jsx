@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
 
-const GradientSeparator = () => (
-    <motion.div
-        initial={{ width: 0 }}
-        animate={{ width: "100%" }}
-        transition={{ duration: 1.5, delay: 0.8 }}
-        className="h-px left-0 mt-36 right-0 bg-gradient-to-r from-transparent via-blue-500 to-transparent rounded-4xl bottom-20"
-    />
+const GradientSeparator = ({ className = "" }) => (
+  <motion.div
+    initial={{ scaleX: 0 }}
+    whileInView={{ scaleX: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 1.5, ease: "easeOut" }}
+    className={`h-px mt-32 bg-gradient-to-r from-transparent via-blue-500 to-transparent ${className}`}
+  />
 );
 
 export default GradientSeparator;

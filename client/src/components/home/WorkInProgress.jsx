@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 const WorkInProgress = () => {
   const [showPopup, setShowPopup] = useState(true);
@@ -7,7 +8,7 @@ const WorkInProgress = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowPopup(false);
-    }, 5000); // Hide after 5 seconds
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -21,21 +22,22 @@ const WorkInProgress = () => {
           <AnimatePresence>
             {showPopup && (
               <motion.div
-                className="fixed top-20 left-56 transform -translate-x-8 px-6 mx-0 py-3 bg-gradient-to-r from-slate-800/80 to-slate-800/20 backdrop-blur-sm rounded-4xl flex items-center shadow-lg"
+                className="fixed top-20 left-1/2 transform -translate-x-1/2 px-6 py-3 bg-gray-900/95 backdrop-blur-xl rounded-2xl flex items-center gap-3 shadow-2xl border border-gray-800 z-50"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
               >
-                <span className="text-purple-300">
-                  For the best experience, please open in desktop mode.
+                <ExclamationTriangleIcon className="w-5 h-5 text-yellow-500" />
+                <span className="text-gray-300 text-sm">
+                  For the best experience, please view on desktop
                 </span>
               </motion.div>
             )}
           </AnimatePresence>
 
           <motion.div
-            className="fixed bottom-4 right-4 px-6 py-3 bg-slate-800/80 backdrop-blur-sm rounded-2xl flex items-center space-x-2 shadow-lg border border-purple-400/20"
+            className="fixed bottom-4 right-4 px-4 py-3 bg-gray-900/95 backdrop-blur-xl rounded-2xl flex items-center gap-3 shadow-2xl border border-purple-500/20 z-50"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -46,8 +48,8 @@ const WorkInProgress = () => {
             >
               🚧
             </motion.div>
-            <span className="text-purple-300">
-              Working on it - updates coming soon!
+            <span className="text-purple-300 text-sm">
+              Mobile optimization in progress
             </span>
           </motion.div>
         </>
