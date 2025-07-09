@@ -1,51 +1,66 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Home from './components/Home';
-import About from './components/About';
-import BlogList from './components/BlogList';
-import BlogDetail from './components/BlogDetail';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Hero1 from './components/Hero1';
-import WorkInProgress from './components/home/WorkInProgress';
-import MouseSmokeEffect from './components/common/MouseSmokeEffect';
+import Header from "./components/sections/Header";
+import Me1 from "./components/sections/Me1";
+import Me2 from "./components/sections/Me2";
+import About from "./components/sections/About";
+import Projects from "./components/sections/Projects";
+import Skills from "./components/sections/Skills";
+import Contact1 from "./components/sections/Contact1";
+import Contact2 from "./components/sections/Contact2";
+import Footer from "./components/sections/Footer";
 
 function App() {
   return (
-    <>
-     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 transition-all duration-500 relative overflow-hidden">
-      {/* Enhanced Background Effects */}
-      <div className="fixed inset-0 -z-10">
-        {/* Animated Gradient Orbs */}
-        <div className="absolute top-1/4 -left-48 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 -right-48 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-        
-        {/* Enhanced Grid Pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cdefs%3E%3Cpattern id=%22grid%22 width=%2260%22 height=%2260%22 patternUnits=%22userSpaceOnUse%22%3E%3Cpath d=%22M 60 0 L 0 0 0 60%22 fill=%22none%22 stroke=%22rgba(255,255,255,0.03)%22 stroke-width=%221%22/%3E%3C/pattern%3E%3C/defs%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22url(%23grid)%22/%3E%3C/svg%3E')] opacity-50">
+    <div className="min-h-screen bg-white">
+      {/* Container with responsive margins */}
+      <div className="mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16 2xl:mx-20">
+        {/* 00 Header - Full width */}
+        <Header />
+
+        {/* Main Content Grid */}
+        <div className="">
+          {/* Row 1: Me1 + Me2 */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 border-t border-gray-200">
+            <div className="md:col-span-1 lg:col-span-3 border-b md:border-b lg:border-b-0 md:border-r border-gray-200">
+              <Me1 />
+            </div>
+            <div className="md:col-span-1 lg:col-span-2 border-b md:border-b-0 border-gray-200">
+              <Me2 />
+            </div>
+          </div>
+
+          {/* Row 2: About + Projects */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-8 border-t border-gray-200">
+            <div className="md:col-span-1 lg:col-span-3 border-b md:border-b lg:border-b-0 md:border-r border-gray-200">
+              <About />
+            </div>
+            <div className="md:col-span-1 lg:col-span-5 border-b md:border-b-0 border-gray-200">
+              <Projects />
+            </div>
+          </div>
+
+          {/* Row 3: Skills - Full width */}
+          <div className="border-t border-gray-200">
+            <Skills />
+          </div>
+
+          {/* Row 4: Contact1 + Contact2 */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 border-t border-gray-200">
+            <div className="border-b sm:border-b-0 sm:border-r border-gray-200">
+              <Contact1 />
+            </div>
+            <div>
+              <Contact2 />
+            </div>
+          </div>
         </div>
-        
-        {/* Noise texture overlay */}
-        <div className="absolute inset-0 opacity-50 mix-blend-soft-light">
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-gray-900/50 to-transparent"></div>
+
+        {/* Footer - Full width */}
+        <div className="border-t border-gray-200">
+          <Footer />
         </div>
-      </div>
-      
-      <MouseSmokeEffect/>
-      <Navbar />
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-20 pb-8 relative z-10">
-        <WorkInProgress />
-        <Routes>
-          <Route path="/hero1" element={<Hero1 />} />
-          <Route path="/hero" element={<Hero />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About/>} />
-          <Route path="/blogs" element={<BlogList />} />
-          <Route path="/blogs/:id" element={<BlogDetail />} />
-        </Routes>
       </div>
     </div>
-    </>
   );
 }
 
