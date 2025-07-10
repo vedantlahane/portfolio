@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { motion } from 'framer-motion';
 
 const Footer = () => {
@@ -93,7 +93,7 @@ const Footer = () => {
           <div className="flex items-center justify-between">
             {/* Social Link */}
             <motion.a
-              href="https://linkedin.com"
+              href="https://linkedin.com/in/vedant-lahane"
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 bg-gray-900 rounded flex items-center justify-center hover:bg-gray-800 transition-colors"
@@ -105,8 +105,8 @@ const Footer = () => {
 
             {/* Location */}
             <div className="text-xs text-gray-500 font-light text-right">
-              Mumbai, Maharashtra, India<br />
-              Available for Remote Work Worldwide
+              Amravati, Maharashtra, India<br />
+              Available for Work
             </div>
           </div>
         </div>

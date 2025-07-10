@@ -1,4 +1,4 @@
-import React from 'react';
+
 import Header from "./components/sections/Header";
 import Me1 from "./components/sections/Me1";
 import Me2 from "./components/sections/Me2";
