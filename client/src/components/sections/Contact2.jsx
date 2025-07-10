@@ -5,10 +5,10 @@ const Contact2 = () => {
   const [hoveredLink, setHoveredLink] = useState(null);
 
   const socialLinks = [
-    { id: 'linkedin', name: 'LinkedIn', url: '#' },
-    { id: 'github', name: 'GitHub', url: '#' },
+    { id: 'linkedin', name: 'LinkedIn', url: 'https://linkedin.com/in/vedant-lahane' },
+    { id: 'github', name: 'GitHub', url: 'https://github.com/vedantlahane' },
     { id: 'twitter', name: 'Twitter', url: '#' },
-    { id: 'leetcode', name: 'LeetCode', url: '#' }
+    { id: 'leetcode', name: 'LeetCode', url: 'https://leetcode.com/u/vedantlahane' }
   ];
 
   return (
@@ -16,7 +16,7 @@ const Contact2 = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.8 }}
-      className="bg-gray-900 text-white p-12 lg:p-16 xl:p-20 h-full relative flex flex-col"
+      className="bg-gray-950 text-white p-12 lg:p-16 xl:p-20 h-full relative flex flex-col"
     >
       {/* Header */}
       <div className="flex justify-between items-start mb-20">

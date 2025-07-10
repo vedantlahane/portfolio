@@ -50,8 +50,8 @@ const Contact1 = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
         >
-          LET'S START<br />
-          A CONVERSATION.
+          LET'S <br />
+          CONNECT.
         </motion.h2>
 
         {/* Contact Info */}
@@ -66,7 +66,7 @@ const Contact1 = () => {
             onClick={() => handleCopy('vedant@example.com', 'email')}
           >
             <p className="text-2xl lg:text-3xl font-light text-gray-900 group-hover:translate-x-2 transition-transform">
-              vedant@example.com
+              vedantanillahane@gmail.com
             </p>
             <p className="text-xs text-gray-400 mt-1">
               {copiedItem === 'email' ? 'COPIED' : 'CLICK TO COPY'}
@@ -78,7 +78,7 @@ const Contact1 = () => {
             onClick={() => handleCopy('+919876543210', 'phone')}
           >
             <p className="text-2xl lg:text-3xl font-light text-gray-900 group-hover:translate-x-2 transition-transform">
-              +91 98765 43210
+              +91 7447335096
             </p>
             <p className="text-xs text-gray-400 mt-1">
               {copiedItem === 'phone' ? 'COPIED' : 'CLICK TO COPY'}
