@@ -18,10 +18,10 @@ const Me2 = () => {
 
   // Student-appropriate stats
   const experiences = [
-    // { label: "Projects Built", value: "15+" },
-    // { label: "Technologies", value: "12+" },
-    // { label: "GitHub Repos", value: "20+" },
-    // { label: "Cups of Coffee", value: "∞" }
+    { label: "Projects Built", value: "15+" },
+    { label: "Technologies", value: "12+" },
+    { label: "GitHub Repos", value: "20+" },
+    { label: "Cups of Coffee", value: "∞" }
   ];
 
   // Check if mobile
@@ -36,13 +36,13 @@ const Me2 = () => {
   }, []);
 
   // Reduce layers for mobile performance
-  const layerCount = isMobile ? 8 : 15;
+  const layerCount = isMobile ? 5 : 10;
   const layers = Array.from({ length: layerCount }, (_, i) => ({
     scale: 1 - (i * 0.05),
     rotate: i % 2 === 0 ? i * 3 : -i * 3,
-    opacity: 1 - (i * 0.06),
+    opacity: 1 - (i * 0.08),
     duration: 25 + (i * 5),
-    blur: i * 0.2
+    blur: i * 0.15
   }));
 
   // Mouse parallax effect (desktop only)
@@ -79,9 +79,9 @@ const Me2 = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="bg-black p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 h-full relative overflow-hidden"
+      className="bg-black p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 h-full relative overflow-hidden"
       style={{ 
-        perspective: isMobile ? '1000px' : '2000px',
+        perspective: isMobile ? '800px' : '1500px',
         '--mouse-x': 0,
         '--mouse-y': 0,
       }}
@@ -91,17 +91,17 @@ const Me2 = () => {
 
       {/* Section Label */}
       <motion.div
-        className="absolute top-4 sm:top-6 md:top-8 lg:top-12 xl:top-16 left-4 sm:left-6 md:left-8 lg:left-12 xl:left-16 z-50"
+        className="absolute top-6 sm:top-8 md:top-10 lg:top-12 xl:top-16 left-6 sm:left-8 md:left-10 lg:left-12 xl:left-16 z-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <p className="text-xs text-gray-400 font-light tracking-wider">02 &nbsp;&nbsp;ME2</p>
+        <p className="text-xs sm:text-sm text-gray-400 font-mono font-light tracking-wider">02 &nbsp;&nbsp;ME2</p>
       </motion.div>
 
       {/* Page indicator */}
       <motion.div
-        className="absolute top-4 sm:top-6 md:top-8 lg:top-12 xl:top-16 right-4 sm:right-6 md:right-8 lg:right-12 xl:right-16 text-xs text-gray-400 font-light z-50"
+        className="absolute top-6 sm:top-8 md:top-10 lg:top-12 xl:top-16 right-6 sm:right-8 md:right-10 lg:right-12 xl:right-16 text-xs sm:text-sm text-gray-400 font-mono font-light z-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
@@ -110,7 +110,7 @@ const Me2 = () => {
       </motion.div>
 
       {/* Main content - Skills Display */}
-      <div className="absolute inset-0 flex items-center justify-center z-40 px-4">
+      <div className="absolute inset-0 flex items-center justify-center z-40 px-6 sm:px-8">
         <motion.div
           className="text-center w-full max-w-lg"
           initial={{ opacity: 0, scale: 0.9 }}
@@ -124,12 +124,12 @@ const Me2 = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="mb-6 md:mb-8"
+            className="mb-6 sm:mb-8"
           >
-            <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light text-white mb-3 md:mb-4">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light text-white mb-4">
               {skills[activeSkill].name}
             </h3>
-            <div className="w-32 sm:w-40 md:w-48 h-1 bg-gray-800 mx-auto rounded-full overflow-hidden">
+            <div className="w-40 sm:w-48 md:w-56 h-1.5 bg-gray-800 mx-auto rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-gray-600 to-white"
                 initial={{ width: 0 }}
@@ -139,8 +139,8 @@ const Me2 = () => {
             </div>
           </motion.div>
 
-          {/* Experience Stats */}
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-8 md:mt-12">
+          {/* Experience Stats - Show on mobile */}
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-10 md:mt-12">
             {experiences.map((exp, index) => (
               <motion.div
                 key={exp.label}
@@ -149,10 +149,10 @@ const Me2 = () => {
                 transition={{ delay: 1 + index * 0.1 }}
                 className="text-center"
               >
-                <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-white mb-1">
+                <div className="text-xl sm:text-2xl md:text-3xl font-display font-light text-white mb-1">
                   {exp.value}
                 </div>
-                <div className="text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider">
+                <div className="text-[10px] sm:text-xs text-gray-500 font-sans uppercase tracking-wider">
                   {exp.label}
                 </div>
               </motion.div>
@@ -161,8 +161,8 @@ const Me2 = () => {
         </motion.div>
       </div>
 
-      {/* Complex layered animation system - responsive */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      {/* Complex layered animation system - optimized for mobile */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-30 sm:opacity-40">
         {layers.map((layer, index) => (
           <motion.div
             key={`layer-${index}`}
@@ -173,15 +173,15 @@ const Me2 = () => {
                 translateX(calc(var(--mouse-x) * ${index * 5}px))
                 translateY(calc(var(--mouse-y) * ${index * 5}px))
               `,
-              filter: `blur(${isMobile ? layer.blur * 0.5 : layer.blur}px)`,
+              filter: isMobile ? 'none' : `blur(${layer.blur}px)`,
             }}
             animate={{
-              rotateZ: layer.rotate + (isMobile ? 180 : 360),
+              rotateZ: layer.rotate + 360,
               scale: [layer.scale, layer.scale * 1.05, layer.scale],
             }}
             transition={{
               rotateZ: {
-                duration: layer.duration * (isMobile ? 2 : 1),
+                duration: layer.duration * (isMobile ? 1.5 : 1),
                 repeat: Infinity,
                 ease: "linear"
               },
@@ -198,72 +198,51 @@ const Me2 = () => {
               className="absolute inset-0"
               style={{
                 backgroundImage: `
-                  linear-gradient(rgba(255,255,255,${layer.opacity * 0.15}) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(255,255,255,${layer.opacity * 0.15}) 1px, transparent 1px)
+                  linear-gradient(rgba(255,255,255,${layer.opacity * 0.2}) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,${layer.opacity * 0.2}) 1px, transparent 1px)
                 `,
-                backgroundSize: isMobile ? '30px 30px' : `${40 + index * 2}px ${40 + index * 2}px`,
-                opacity: layer.opacity,
+                backgroundSize: isMobile ? '40px 40px' : `${60 + index * 3}px ${80 + index * 3}px`,
+                opacity: layer.opacity * 0.8,
               }}
             />
-
-            {/* Geometric frame */}
-            {(!isMobile || index < 5) && (
-              <motion.div
-                className="absolute inset-0 border border-white"
-                style={{
-                  margin: `${index * 5}%`,
-                  opacity: layer.opacity * 0.3,
-                  borderWidth: index < 3 ? '2px' : '1px',
-                }}
-                animate={{
-                  rotateX: [0, 45, 0, -45, 0],
-                  rotateY: [0, -45, 0, 45, 0],
-                }}
-                transition={{
-                  duration: 20 + index * 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: index * 0.2
-                }}
-              />
-            )}
           </motion.div>
         ))}
       </div>
 
-      {/* Corridor effect - reduced for mobile */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="relative w-full h-full" style={{ transformStyle: 'preserve-3d' }}>
-          {[...Array(isMobile ? 8 : 15)].map((_, i) => (
-            <motion.div
-              key={`tunnel-${i}`}
-              className="absolute inset-0 border border-white"
-              style={{
-                transform: `translateZ(${i * -100}px) scale(${1 - i * 0.06})`,
-                opacity: 0.8 - i * 0.05,
-                borderWidth: i < 3 ? '2px' : '1px',
-              }}
-              animate={{
-                rotateZ: i % 2 === 0 ? 360 : -360,
-              }}
-              transition={{
-                duration: (40 + i * 3) * (isMobile ? 2 : 1),
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            />
-          ))}
+      {/* Corridor effect - simplified for mobile */}
+      {!isMobile && (
+        <div className="absolute inset-0 flex items-center justify-center opacity-30">
+          <div className="relative w-full h-full" style={{ transformStyle: 'preserve-3d' }}>
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={`tunnel-${i}`}
+                className="absolute inset-0 border border-white/30"
+                style={{
+                  transform: `translateZ(${i * -100}px) scale(${1 - i * 0.06})`,
+                  opacity: 0.6 - i * 0.05,
+                }}
+                animate={{
+                  rotateZ: i % 2 === 0 ? 360 : -360,
+                }}
+                transition={{
+                  duration: 40 + i * 3,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Floating shapes - fewer on mobile */}
-      <div className="absolute inset-0">
-        {[...Array(isMobile ? 4 : 8)].map((_, i) => (
+      {/* Floating shapes - fewer and larger on mobile */}
+      <div className="absolute inset-0 opacity-40">
+        {[...Array(isMobile ? 3 : 6)].map((_, i) => (
           <motion.div
             key={`shape-${i}`}
             className="absolute"
             style={{
-              left: `${10 + i * 10}%`,
+              left: `${15 + i * 15}%`,
               top: `${20 + (i % 3) * 25}%`,
             }}
             animate={{
@@ -272,25 +251,25 @@ const Me2 = () => {
               rotate: [0, 180, 360],
             }}
             transition={{
-              duration: 15 + i * 2,
+              duration: 20 + i * 3,
               repeat: Infinity,
               ease: "easeInOut",
               delay: i * 0.5
             }}
           >
             <div className={`
-              w-6 h-6 md:w-8 md:h-8 border-2 border-white/40
+              w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-2 border-white/40
               ${i % 3 === 0 ? 'rounded-full' : i % 3 === 1 ? 'rounded-none' : 'rounded-lg rotate-45'}
             `} />
           </motion.div>
         ))}
       </div>
 
-      {/* Particles - reduced on mobile */}
-      {[...Array(isMobile ? 10 : 20)].map((_, i) => (
+            {/* Particles - much fewer on mobile */}
+      {[...Array(isMobile ? 6 : 15)].map((_, i) => (
         <motion.div
           key={`particle-${i}`}
-          className="absolute w-1 h-1 md:w-2 md:h-2 bg-white rounded-full"
+          className="absolute w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
@@ -301,7 +280,7 @@ const Me2 = () => {
             scale: [0.5, 1.5, 0.5],
           }}
           transition={{
-            duration: 4 + Math.random() * 3,
+            duration: 5 + Math.random() * 3,
             delay: Math.random() * 5,
             repeat: Infinity,
             ease: "easeInOut"
@@ -309,17 +288,17 @@ const Me2 = () => {
         />
       ))}
 
-            {/* Center focus element */}
+      {/* Center focus element - simplified for mobile */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div
-          className="relative w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40"
+          className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56"
           animate={{
             rotate: -360,
             scale: [1, 1.1, 1],
           }}
           transition={{
             rotate: {
-              duration: 20,
+              duration: isMobile ? 30 : 20,
               repeat: Infinity,
               ease: "linear"
             },
@@ -331,59 +310,49 @@ const Me2 = () => {
           }}
         >
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-white/60 to-gray-400/40 rounded-full blur-xl md:blur-2xl"
+            className="absolute inset-0 bg-gradient-to-r from-white/40 to-gray-400/20 rounded-full blur-2xl md:blur-3xl"
             animate={{
-              scale: [1, 2, 1],
-              opacity: [0.6, 0.3, 0.6],
+              scale: [1, 1.5, 1],
+              opacity: [0.4, 0.2, 0.4],
             }}
             transition={{
-              duration: 5,
+              duration: 6,
               repeat: Infinity,
               ease: "easeInOut"
             }}
           />
-          <div className="absolute inset-0 border-2 border-white/50 rounded-full" />
-          <div className="absolute inset-4 border border-white/30 rounded-full" />
-          <div className="absolute inset-8 border border-white/20 rounded-full" />
+          <div className="absolute inset-0 border border-white/30 rounded-full" />
+          <div className="absolute inset-4 border border-white/20 rounded-full" />
+          <div className="absolute inset-8 border border-white/10 rounded-full" />
         </motion.div>
       </div>
 
-      {/* Rotating rings - responsive */}
+      {/* Rotating rings - desktop only for performance */}
       {!isMobile && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {[
-            { size: '100%', duration: 60, direction: 1, opacity: 0.2 },
-            { size: '90%', duration: 55, direction: -1, opacity: 0.25 },
-            { size: '80%', duration: 50, direction: 1, opacity: 0.3 },
-            { size: '70%', duration: 45, direction: -1, opacity: 0.35 },
-            { size: '60%', duration: 40, direction: 1, opacity: 0.4 },
-            { size: '50%', duration: 35, direction: -1, opacity: 0.45 },
-            { size: '40%', duration: 30, direction: 1, opacity: 0.5 },
+            { size: '90%', duration: 60, direction: 1, opacity: 0.15 },
+            { size: '75%', duration: 50, direction: -1, opacity: 0.2 },
+            { size: '60%', duration: 40, direction: 1, opacity: 0.25 },
+            { size: '45%', duration: 30, direction: -1, opacity: 0.3 },
           ].map((ring, index) => (
             <motion.div
               key={`ring-${index}`}
-              className="absolute rounded-full hidden md:block"
+              className="absolute rounded-full"
               style={{
                 width: ring.size,
                 height: ring.size,
-                border: `${index < 3 ? 2 : 1}px solid rgba(255, 255, 255, ${ring.opacity})`,
+                border: `1px solid rgba(255, 255, 255, ${ring.opacity})`,
                 borderStyle: index % 2 === 0 ? 'solid' : 'dashed',
               }}
               animate={{
                 rotate: ring.direction * 360,
-                scale: [1, 1.02, 1],
               }}
               transition={{
                 rotate: {
                   duration: ring.duration,
                   repeat: Infinity,
                   ease: "linear"
-                },
-                scale: {
-                  duration: 12,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: index * 0.4
                 }
               }}
             />
@@ -392,15 +361,15 @@ const Me2 = () => {
       )}
 
       {/* Skill progress indicators */}
-      <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-4 sm:left-6 md:left-8 lg:left-12 xl:left-16 z-50">
-        <div className="flex gap-1 md:gap-2">
+      <div className="absolute bottom-6 sm:bottom-8 left-6 sm:left-8 lg:left-12 xl:left-16 z-50">
+        <div className="flex gap-1.5 sm:gap-2">
           {skills.map((_, index) => (
             <motion.div
               key={index}
-              className={`h-3 md:h-4 rounded-full transition-all duration-300 ${
+              className={`h-3 sm:h-4 rounded-full transition-all duration-300 ${
                 index === activeSkill 
-                  ? 'bg-white w-6 md:w-8' 
-                  : 'bg-white/30 w-1'
+                  ? 'bg-white w-8 sm:w-10' 
+                  : 'bg-white/30 w-1.5'
               }`}
               animate={{
                 opacity: index === activeSkill ? 1 : 0.3,
@@ -412,15 +381,15 @@ const Me2 = () => {
 
       {/* Learning status - student appropriate */}
       <motion.div
-        className="absolute bottom-4 sm:bottom-6 md:bottom-8 right-4 sm:right-6 md:right-8 lg:right-12 xl:right-16 z-50"
+        className="absolute bottom-6 sm:bottom-8 right-6 sm:right-8 lg:right-12 xl:right-16 z-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.7 }}
         whileHover={{ opacity: 1 }}
       >
-        <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-400">
+        <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-gray-400 font-sans">
           <span className="flex items-center gap-1">
             <motion.div 
-              className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"
+              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
               animate={{ 
                 scale: [1, 1.2, 1],
                 opacity: [0.5, 1, 0.5] 
@@ -431,12 +400,13 @@ const Me2 = () => {
                 ease: "easeInOut" 
               }}
             />
-            Learning
+            <span className="hidden sm:inline">Learning</span>
+            <span className="sm:hidden">Learn</span>
           </span>
           <span className="text-gray-600">•</span>
           <span className="flex items-center gap-1">
             <motion.div 
-              className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"
+              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
               animate={{ 
                 scale: [1, 1.2, 1],
                 opacity: [0.5, 1, 0.5] 
@@ -448,12 +418,13 @@ const Me2 = () => {
                 delay: 0.5
               }}
             />
-            Building
+            <span className="hidden sm:inline">Building</span>
+            <span className="sm:hidden">Build</span>
           </span>
           <span className="text-gray-600">•</span>
           <span className="flex items-center gap-1">
             <motion.div 
-              className="w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"
+              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
               animate={{ 
                 scale: [1, 1.2, 1],
                 opacity: [0.5, 1, 0.5] 
@@ -465,21 +436,22 @@ const Me2 = () => {
                 delay: 1
               }}
             />
-            Growing
+            <span className="hidden sm:inline">Growing</span>
+            <span className="sm:hidden">Grow</span>
           </span>
         </div>
       </motion.div>
 
       {/* Enhanced gradient overlays for depth and contrast */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50 opacity-60" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black/50 opacity-40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50 opacity-50 sm:opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black/50 opacity-30 sm:opacity-40" />
         <div 
           className="absolute inset-0"
           style={{
             background: `
-              radial-gradient(circle at 30% 40%, transparent 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.8) 100%),
-              radial-gradient(circle at 70% 60%, transparent 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.8) 100%)
+              radial-gradient(circle at 30% 40%, transparent 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.6) 100%),
+              radial-gradient(circle at 70% 60%, transparent 0%, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.6) 100%)
             `
           }}
         />
@@ -489,7 +461,7 @@ const Me2 = () => {
       <div 
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.7) 100%)'
+          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.7) 100%)'
         }}
       />
     </motion.section>
