@@ -70,7 +70,7 @@ const Contact2 = () => {
 
           {/* CTA Button */}
           <motion.a
-            href="/resume.pdf"
+            href="https://drive.google.com/file/d/1FF5VZ9P8ddZVfaUemFyWcIDwSeRO21WO/view?usp=sharing"
             target="_blank"
             className="inline-block px-8 py-3 border border-gray-600 text-white font-light text-sm tracking-wider
                      hover:bg-white hover:text-gray-900 hover:border-white transition-all duration-300"

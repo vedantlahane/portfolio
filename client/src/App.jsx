@@ -9,10 +9,12 @@ import Skills from "./components/sections/Skills";
 import Contact1 from "./components/sections/Contact1";
 import Contact2 from "./components/sections/Contact2";
 import Footer from "./components/sections/Footer";
+import MouseFollowerAdvanced from "./components/sections/MouseFollowerAdvanced";
 
 function App() {
   return (
     <div className="min-h-screen bg-white">
+      <MouseFollowerAdvanced style=""/>
       {/* Container with responsive margins */}
       <div className="mx-4 sm:mx-6 md:mx-8 lg:mx-12 xl:mx-16 2xl:mx-20">
         {/* 00 Header - Full width */}
