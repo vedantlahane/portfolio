@@ -1,5 +1,6 @@
 import React from "react";
-import { motion } from "framer-motion";
+
+// Component Imports: Grouping imports makes it easy to see all the section components at a glance.
 import Header from "./components/sections/Header";
 import Me1 from "./components/sections/Me1";
 import Me2 from "./components/sections/Me2";
@@ -11,65 +12,115 @@ import Contact2 from "./components/sections/Contact2";
 import Footer from "./components/sections/Footer";
 import MouseFollowerAdvanced from "./components/sections/MouseFollowerAdvanced";
 
+/**
+ * App Component
+ * * This is the main component that serves as the root of the application.
+ * It orchestrates the overall layout of the portfolio website, arranging various sections 
+ * in a responsive grid system.
+ * * The layout is built using Tailwind CSS and is designed to be mobile-first,
+ * featuring a distinct and modern bordered-grid style.
+ */
 function App() {
   return (
-    <div className="min-h-screen bg-white font-sans">
-      {/* Hide mouse follower on mobile */}
+    // The root container for the entire application.
+    // `min-h-screen` ensures it takes at least the full viewport height.
+    // `bg-white` and `font-sans` set the default background and font family.
+    <div className="bg-white font-sans text-gray-900">
+      
+      {/* Mouse Follower: A decorative element that follows the cursor. */}
+      {/* It's hidden on smaller screens (the `lg:block` class hides it on mobile/tablet) */}
+      {/* for better performance and usability on touch devices. */}
       <div className="hidden lg:block">
-        <MouseFollowerAdvanced style=""/>
+        <MouseFollowerAdvanced />
       </div>
       
-      {/* Container with responsive margins - optimized for mobile */}
-      <div className="mx-2 xs:mx-3 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-12 2xl:mx-20">
-        {/* Header - Static at top */}
-        <Header />
+      {/* Main Content Wrapper
+        This div provides consistent horizontal padding (`px-*`) across all screen sizes.
+        The padding increases on larger breakpoints for better readability and aesthetics.
+        This is a cleaner approach than the multiple `mx-*` classes used previously.
+      */}
+      <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20">
+        
+        {/* Header Section: Using the <header> semantic tag. */}
+        <header>
+          <Header />
+        </header>
 
-        {/* Main Content Grid */}
-        <div className="">
-          {/* Row 1: Me1 + Me2 - Stack on mobile */}
+        {/* Main content area: Using the <main> semantic tag for accessibility and SEO. */}
+        <main>
+
+          {/* --- Section 1: Introduction (Me1 + Me2) --- */}
+          {/* This grid contains the main introductory elements. */}
+          {/* It's a single column on mobile and a 5-column grid on large screens. */}
           <div className="grid grid-cols-1 lg:grid-cols-5 border-t border-gray-200">
-            <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[50vh] lg:min-h-[60vh]">
+            
+            {/* Me1 Component (Left/Top) */}
+            {/* Spans 3 of 5 columns on large screens. */}
+            {/* `lg:border-r` separates it from Me2 on large screens. */}
+            {/* `border-b lg:border-b-0` creates a bottom border only on mobile. */}
+            <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[60vh]">
               <Me1 />
             </div>
-            <div className="col-span-1 lg:col-span-2 border-b border-gray-200 min-h-[40vh] lg:min-h-[60vh]">
+
+            {/* Me2 Component (Right/Bottom) */}
+            {/* Spans 2 of 5 columns on large screens. */}
+            <div className="col-span-1 lg:col-span-2 min-h-[60vh]">
               <Me2 />
             </div>
           </div>
 
-          {/* Row 2: About + Projects - Stack on mobile */}
-          <div id="about" className="scroll-mt-20">
+          {/* --- Section 2: About & Projects --- */}
+          {/* `id="about"` allows for direct navigation (e.g., yoursite.com#about). */}
+          {/* `scroll-mt-20` adds a top margin when scrolling to this ID, preventing the content from being hidden by a sticky header. */}
+          <section id="about" className="scroll-mt-20">
+            {/* This grid is an 8-column layout on large screens. */}
             <div className="grid grid-cols-1 lg:grid-cols-8 border-t border-gray-200">
-              <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[50vh] lg:min-h-[70vh]">
+
+              {/* About Component (Left/Top) */}
+              <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[70vh]">
                 <About />
               </div>
-              <div id="projects" className="col-span-1 lg:col-span-5 border-b border-gray-200 min-h-[60vh] lg:min-h-[70vh] scroll-mt-20">
+
+              {/* Projects Component (Right/Bottom) */}
+              <div id="projects" className="col-span-1 lg:col-span-5 min-h-[70vh] scroll-mt-20">
                 <Projects />
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Row 3: Skills - Full width with mobile padding */}
-          <div id="skills" className="border-t border-gray-200 py-8 sm:py-12 lg:py-16 scroll-mt-20">
-            <Skills />
-          </div>
+          {/* --- Section 3: Skills --- */}
+          <section id="skills" className="border-t border-gray-200 scroll-mt-20">
+            {/* This section contains the Skills component with vertical padding for spacing. */}
+            <div className="py-16 lg:py-24">
+              <Skills />
+            </div>
+          </section>
 
-          {/* Row 4: Contact1 + Contact2 - Stack on small mobile */}
-          <div id="contact" className="scroll-mt-20">
+          {/* --- Section 4: Contact --- */}
+          <section id="contact" className="scroll-mt-20">
+            {/* A 2-column layout on small screens and up, stacking on extra-small screens. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-gray-200">
-              <div className="border-b sm:border-b-0 sm:border-r border-gray-200 min-h-[40vh] sm:min-h-[50vh]">
+              
+              {/* Contact1 Component (Left/Top) */}
+              <div className="border-b sm:border-b-0 sm:border-r border-gray-200 min-h-[50vh]">
                 <Contact1 />
               </div>
-              <div className="min-h-[40vh] sm:min-h-[50vh]">
+
+              {/* Contact2 Component (Right/Bottom) */}
+              <div className="min-h-[50vh]">
                 <Contact2 />
               </div>
             </div>
-          </div>
-        </div>
+          </section>
 
-        {/* Footer - Full width with mobile padding */}
-        <div className="border-t border-gray-200 py-4 sm:py-6 lg:py-8">
-          <Footer />
-        </div>
+        </main>
+
+        {/* Footer Section: Using the <footer> semantic tag. */}
+        <footer className="border-t border-gray-200">
+          <div className="py-6 lg:py-8">
+            <Footer />
+          </div>
+        </footer>
       </div>
     </div>
   );

@@ -6,22 +6,22 @@ const Me2 = () => {
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef(null);
 
-  // Technical skills for student portfolio
+  // Technical skills — realistic, student / early-career dev focus
   const skills = [
-    { name: "React Development", level: 85 },
-    { name: "JavaScript/TypeScript", level: 90 },
-    { name: "UI/UX Design", level: 80 },
-    { name: "Problem Solving", level: 95 },
-    { name: "Data Structures", level: 88 },
-    { name: "Web Development", level: 92 }
+    { name: "React & Next.js", level: 88 },
+    { name: "Node.js & Express", level: 85 },
+    { name: "TypeScript", level: 86 },
+    { name: "Java (DSA & Algo)", level: 90 },
+    { name: "Docker & CI/CD", level: 76 },
+    { name: "System Design (basics)", level: 72 }
   ];
 
-  // Student-appropriate stats
+  // Student-appropriate stats — factual and understated
   const experiences = [
-    { label: "Projects Built", value: "15+" },
-    { label: "Technologies", value: "12+" },
-    { label: "GitHub Repos", value: "20+" },
-    { label: "Cups of Coffee", value: "∞" }
+    { label: "Projects Built", value: "12+" },
+    { label: "GitHub Repos", value: "25+" },
+    { label: "DSA Problems", value: "400+" },
+    { label: "Open-source PRs", value: "5+" }
   ];
 
   // Check if mobile
@@ -139,7 +139,7 @@ const Me2 = () => {
             </div>
           </motion.div>
 
-          {/* Experience Stats - Show on mobile */}
+          {/* Experience Stats */}
           <div className="grid grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-10 md:mt-12">
             {experiences.map((exp, index) => (
               <motion.div
@@ -265,7 +265,7 @@ const Me2 = () => {
         ))}
       </div>
 
-            {/* Particles - much fewer on mobile */}
+      {/* Particles - much fewer on mobile */}
       {[...Array(isMobile ? 6 : 15)].map((_, i) => (
         <motion.div
           key={`particle-${i}`}
@@ -436,8 +436,8 @@ const Me2 = () => {
                 delay: 1
               }}
             />
-            <span className="hidden sm:inline">Growing</span>
-            <span className="sm:hidden">Grow</span>
+            <span className="hidden sm:inline">Interview prep</span>
+            <span className="sm:hidden">Prep</span>
           </span>
         </div>
       </motion.div>

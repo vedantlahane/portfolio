@@ -4,19 +4,20 @@ import { motion } from 'framer-motion';
 const About = () => {
   // Text segments for better mobile control
   const textSegments = [
-    { text: "Started with a", highlight: false, delay: 0.7 },
-    { text: '"Hello World"', highlight: true, delay: 0.8 },
-    { text: "three years ago.", highlight: false, delay: 0.9 },
-    { text: "Now building", highlight: false, delay: 1.0 },
-    { text: "full-stack applications", highlight: true, delay: 1.1 },
-    { text: "with AI integrations.", highlight: false, delay: 1.2 },
-    { text: "Solved", highlight: false, delay: 1.3 },
-    { text: "400+ problems", highlight: true, delay: 1.4 },
-    { text: "along the way.", highlight: false, delay: 1.5 },
-    { text: "Currently exploring", highlight: false, delay: 1.6 },
-    { text: "Web3", highlight: true, delay: 1.7 },
-    { text: "and cloud architecture.", highlight: false, delay: 1.8 }
-  ];
+  { text: "Started with a", highlight: false, delay: 0.7 },
+  { text: '"Hello World"', highlight: true, delay: 0.8 },
+  { text: "three years ago.", highlight: false, delay: 0.9 },
+  { text: "Now building", highlight: false, delay: 1.0 },
+  { text: "scalable web apps", highlight: true, delay: 1.1 },
+  { text: "with AI features.", highlight: false, delay: 1.2 },
+  { text: "Solved over", highlight: false, delay: 1.3 },
+  { text: "400 coding challenges", highlight: true, delay: 1.4 },
+  { text: "while sharpening problem-solving skills.", highlight: false, delay: 1.5 },
+  { text: "Currently learning", highlight: false, delay: 1.6 },
+  { text: "cloud systems", highlight: true, delay: 1.7 },
+  { text: "and exploring Web3.", highlight: false, delay: 1.8 }
+];
+
 
   return (
     <motion.section
