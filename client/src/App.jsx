@@ -11,8 +11,6 @@ import Contact1 from "./components/sections/Contact1";
 import Contact2 from "./components/sections/Contact2";
 import Footer from "./components/sections/Footer";
 import MouseFollowerAdvanced from "./components/sections/MouseFollowerAdvanced";
-import AuroraBackground from "./components/ui/AuroraBackground";
-import ScrollProgressBar from "./components/ui/ScrollProgressBar";
 
 /**
  * App Component
@@ -27,21 +25,29 @@ function App() {
     // The root container for the entire application.
     // `min-h-screen` ensures it takes at least the full viewport height.
     // `bg-white` and `font-sans` set the default background and font family.
-    <div className="relative min-h-screen font-sans text-gray-900 antialiased">
-      <AuroraBackground />
-      <ScrollProgressBar />
-
+    <div className="bg-white font-sans text-gray-900">
+      
+      {/* Mouse Follower: A decorative element that follows the cursor. */}
+      {/* It's hidden on smaller screens (the `lg:block` class hides it on mobile/tablet) */}
+      {/* for better performance and usability on touch devices. */}
       <div className="hidden lg:block">
         <MouseFollowerAdvanced />
       </div>
+      
+      {/* Main Content Wrapper
+        This div provides consistent horizontal padding (`px-*`) across all screen sizes.
+        The padding increases on larger breakpoints for better readability and aesthetics.
+        This is a cleaner approach than the multiple `mx-*` classes used previously.
+      */}
+      <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20">
+        
+        {/* Header Section: Using the <header> semantic tag. */}
+        <header>
+          <Header />
+        </header>
 
-      <div className="relative z-10 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20 py-8">
-        <div className="max-w-7xl mx-auto">
-          <header>
-            <Header />
-          </header>
-
-          <main className="mt-10 lg:mt-12 space-y-12 lg:space-y-20">
+        {/* Main content area: Using the <main> semantic tag for accessibility and SEO. */}
+        <main>
 
           {/* --- Section 1: Introduction (Me1 + Me2) --- */}
           {/* This grid contains the main introductory elements. */}
@@ -107,14 +113,14 @@ function App() {
             </div>
           </section>
 
-          </main>
+        </main>
 
-          <footer className="border-t border-gray-200 mt-12 lg:mt-20">
-            <div className="py-6 lg:py-8">
-              <Footer />
-            </div>
-          </footer>
-        </div>
+        {/* Footer Section: Using the <footer> semantic tag. */}
+        <footer className="border-t border-gray-200">
+          <div className="py-6 lg:py-8">
+            <Footer />
+          </div>
+        </footer>
       </div>
     </div>
   );
