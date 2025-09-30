@@ -84,11 +84,15 @@ const Projects = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.4 }}
-      className="bg-gray-50 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 h-full relative flex flex-col"
+      className="relative overflow-hidden bg-white/80 backdrop-blur-xl border border-white/70 shadow-xl shadow-gray-200/40 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 h-full flex flex-col rounded-3xl"
     >
+      <div className="pointer-events-none absolute inset-0 opacity-60">
+        <div className="absolute -inset-24 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.12),_transparent_55%)]" />
+        <div className="absolute inset-y-0 right-0 w-48 bg-gradient-to-l from-sky-100/40 via-transparent to-transparent" />
+      </div>
       {/* Header - responsive to prevent overlap */}
       <motion.div
-        className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 lg:mb-12 gap-2 pr-12"
+        className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 lg:mb-12 gap-2 pr-12"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
@@ -100,10 +104,10 @@ const Projects = () => {
       </motion.div>
 
       {/* Projects list (row style, no box) */}
-      <div className="flex-1 overflow-hidden">
+      <div className="relative z-10 flex-1 overflow-hidden">
         <div className="relative">
           <motion.div
-            className={`${showAll ? 'max-h-[50vh] sm:max-h-[40vh] overflow-y-auto pr-2 sm:pr-4' : ''}`}
+            className={`${showAll ? 'max-h-[50vh] sm:max-h-[40vh] overflow-y-auto pr-2 sm:pr-4' : ''} space-y-4`}
             style={{
               maskImage: showAll ? 'linear-gradient(to bottom, black 85%, transparent 100%)' : 'none',
               WebkitMaskImage: showAll ? 'linear-gradient(to bottom, black 85%, transparent 100%)' : 'none'
@@ -118,12 +122,20 @@ const Projects = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ delay: 0.04 * index, duration: 0.28 }}
-                  className={`group ${index !== visibleProjects.length - 1 ? 'border-b border-gray-200' : ''}`}
+                  className="relative group overflow-hidden rounded-2xl border border-gray-200/70 bg-white/70 transition-all duration-300 hover:border-indigo-200/80 hover:shadow-lg hover:shadow-indigo-200/40"
                   onMouseEnter={() => setHoveredProject(project.id)}
                   onMouseLeave={() => setHoveredProject(null)}
+                  whileHover={{ y: -4 }}
                 >
+                  <motion.div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-r from-indigo-100/70 via-sky-100/60 to-emerald-100/70"
+                    initial={false}
+                    animate={{ opacity: hoveredProject === project.id ? 1 : 0 }}
+                    transition={{ duration: 0.35 }}
+                  />
+
                   {/* Row layout (keeps original look) */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6">
+                  <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6 px-4 sm:px-6">
                     {/* Left: Year & Type */}
                     <div className="flex flex-col items-start sm:items-center gap-2 min-w-[80px] sm:min-w-[140px]">
                       <span className="text-xs lg:text-sm text-gray-400 font-mono font-light tabular-nums">
@@ -144,7 +156,16 @@ const Projects = () => {
                         `}>
                           {project.title}
                           {project.featured && (
-                            <span className="text-xs text-yellow-500 font-sans font-light ml-2" title="Featured">★</span>
+                            <motion.span
+                              className="inline-flex items-center gap-1 text-xs text-yellow-500 font-sans font-light ml-2"
+                              initial={{ opacity: 0, scale: 0.85 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ duration: 0.3 }}
+                              title="Featured"
+                            >
+                              ★
+                              <span className="hidden sm:inline text-[10px] tracking-widest text-yellow-600">FEATURED</span>
+                            </motion.span>
                           )}
                         </h4>
 
@@ -165,7 +186,7 @@ const Projects = () => {
                           {project.live && (
                             <button
                               onClick={(e) => handleLinkClick(e, project.live)}
-                              className="text-gray-500 hover:text-gray-900 transition-colors"
+                              className="text-gray-500 hover:text-indigo-600 transition-colors"
                               aria-label="Open live demo"
                               title="Live demo"
                             >
@@ -202,7 +223,7 @@ const Projects = () => {
           </motion.div>
 
           {/* Show More / Show Less */}
-          <motion.div className="mt-6 sm:mt-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
+          <motion.div className="relative z-10 mt-6 sm:mt-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
             <button
               onClick={() => setShowAll(!showAll)}
               className="text-sm text-gray-900 font-sans font-light hover:underline transition-all flex items-center gap-2"
@@ -228,7 +249,7 @@ const Projects = () => {
 
         {/* Legend — Featured / Live / In Development */}
         <motion.div
-          className="mt-8 pt-6 border-t border-gray-200 text-xs text-gray-500 flex flex-wrap items-center gap-6"
+          className="relative z-10 mt-8 pt-6 border-t border-gray-200/70 text-xs text-gray-500 flex flex-wrap items-center gap-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
@@ -252,7 +273,7 @@ const Projects = () => {
 
       {/* Page indicator - hidden on extra-small screens to avoid overlap */}
       <motion.div
-        className="hidden sm:block absolute top-6 sm:top-8 lg:top-12 xl:top-16 right-6 sm:right-8 lg:right-12 xl:right-16 text-xs sm:text-sm text-gray-400 font-mono font-light"
+        className="hidden sm:block absolute top-6 sm:top-8 lg:top-12 xl:top-16 right-6 sm:right-8 lg:right-12 xl:right-16 text-xs sm:text-sm text-gray-400 font-mono font-light z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}

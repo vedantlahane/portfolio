@@ -189,12 +189,12 @@ const Skills = () => {
   const DesktopView = () => (
     <div className="relative">
       {/* Subtle progress indicator */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gray-100 z-10">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100/30 z-10 overflow-hidden rounded-full">
         <motion.div 
-          className="h-full bg-gray-300"
+          className="h-full bg-gradient-to-r from-indigo-500/80 via-sky-400/80 to-emerald-400/80"
           style={{ 
             width: `${((Math.abs(scrollPosition) % 50) / 50) * 100}%`,
-            transition: isPaused ? 'none' : 'width 0.1s ease-out'
+            transition: isPaused ? 'none' : 'width 0.12s ease-out'
           }}
         />
       </div>
@@ -350,12 +350,17 @@ const Skills = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.6 }}
-      className="py-8 sm:py-10 md:py-12 lg:py-16 w-full relative"
+      className="relative overflow-hidden py-8 sm:py-10 md:py-12 lg:py-16 w-full bg-white/85 backdrop-blur-xl border border-white/70 rounded-3xl shadow-xl shadow-gray-200/40"
       id="skills"
     >
+      <div className="pointer-events-none absolute inset-0 opacity-70">
+        <div className="absolute -inset-24 bg-[radial-gradient(circle_at_center,_rgba(99,102,241,0.08),_transparent_60%)]" />
+        <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-emerald-100/30 via-transparent to-transparent" />
+        <div className="absolute inset-y-0 right-0 w-48 bg-gradient-to-l from-sky-100/30 via-transparent to-transparent" />
+      </div>
       {/* Header */}
-      <div className="flex justify-between items-start mb-8 sm:mb-12 lg:mb-16 
-                    px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20">
+  <div className="relative z-10 flex justify-between items-start mb-8 sm:mb-12 lg:mb-16 
+        px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -385,13 +390,13 @@ const Skills = () => {
       </div>
 
       {/* Skills Display */}
-      <div className={isMobile ? "px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20" : ""}>
+  <div className={`${isMobile ? "px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20" : ""} relative z-10`}>
         {isMobile ? <MobileView /> : <DesktopView />}
       </div>
 
       {/* Enhanced background decoration - desktop only */}
       {!isMobile && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-2">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-50">
           <motion.div
             className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2"
             animate={{ 

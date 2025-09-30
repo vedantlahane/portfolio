@@ -13,14 +13,13 @@ const Header = () => {
     { name: 'Contact', href: '#contact' }
   ];
 
-  // Update active section based on scroll position
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 24);
 
       const sections = navigationItems.map(item => item.href.substring(1));
       const scrollPosition = window.scrollY + 100;
-      
+
       let currentSection = '';
       sections.forEach(section => {
         const element = document.getElementById(section);
@@ -31,7 +30,7 @@ const Header = () => {
           }
         }
       });
-      
+
       setActiveSection(currentSection);
     };
 
@@ -40,7 +39,6 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu on resize
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -52,7 +50,6 @@ const Header = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Smooth scroll to section
   const handleNavClick = (e, href) => {
     e.preventDefault();
     const element = document.querySelector(href);
@@ -82,16 +79,13 @@ const Header = () => {
         rounded-2xl transition-all duration-500`}
     >
       <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-5 md:py-6">
-        {/* Main Header Content */}
         <div className="flex items-center justify-between">
-          {/* Logo/Name Section */}
           <motion.div 
             className="flex items-center gap-3 sm:gap-4 cursor-pointer"
             whileHover={{ x: 5 }}
-            transition={{ type: "spring", stiffness: 400 }}
+            transition={{ type: 'spring', stiffness: 400 }}
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            {/* Geometric Logo */}
             <motion.div
               className="relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex-shrink-0"
               whileHover={{ rotate: 90 }}
@@ -102,7 +96,6 @@ const Header = () => {
               <div className="absolute inset-2 bg-gray-900 transform rotate-45 rounded-sm" />
             </motion.div>
 
-            {/* Name and Label */}
             <div>
               <p className="text-[10px] sm:text-xs text-gray-400 font-light mb-0.5 font-mono hidden sm:block">
                 00 &nbsp;&nbsp;HEADER
@@ -113,7 +106,6 @@ const Header = () => {
             </div>
           </motion.div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1 lg:gap-2">
             {navigationItems.map((item, index) => (
               <motion.a
@@ -135,7 +127,7 @@ const Header = () => {
                   </span>
                   {item.name}
                 </div>
-                
+
                 <motion.div
                   className="absolute bottom-0 left-3 right-3 lg:left-5 lg:right-5 h-px bg-gray-900"
                   initial={{ scaleX: 0 }}
@@ -147,7 +139,6 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* Mobile Menu Button */}
           <motion.button
             className="md:hidden relative w-10 h-10 flex items-center justify-center -mr-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -183,7 +174,6 @@ const Header = () => {
           </motion.button>
         </div>
 
-        {/* Mobile Navigation Menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.nav
