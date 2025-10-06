@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 const Header = () => {
   const [activeSection, setActiveSection] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
 
   const navigationItems = [
     { name: 'About', href: '#about' },
@@ -16,8 +15,6 @@ const Header = () => {
   // Update active section based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 24);
-
       const sections = navigationItems.map(item => item.href.substring(1));
       const scrollPosition = window.scrollY + 100;
       
@@ -36,7 +33,6 @@ const Header = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -74,12 +70,7 @@ const Header = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className={`sticky top-3 sm:top-4 lg:top-6 z-40 mx-auto max-w-7xl
-        ${isScrolled
-          ? 'bg-white/70 backdrop-blur-xl border border-gray-200/80 shadow-xl shadow-gray-200/40'
-          : 'bg-white/90 border border-gray-200/60 shadow-lg shadow-gray-200/20'
-        }
-        rounded-2xl transition-all duration-500`}
+      className="bg-white border-b border-gray-200"
     >
       <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-5 md:py-6">
         {/* Main Header Content */}

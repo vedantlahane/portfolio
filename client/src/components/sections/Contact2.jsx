@@ -16,20 +16,16 @@ const Contact2 = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.5 }}
-      className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-16 border border-white/10 rounded-3xl shadow-2xl shadow-slate-900/60"
+      className="bg-neutral-950 text-white px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-16 border-t border-gray-800"
     >
-      <div className="pointer-events-none absolute inset-0 opacity-60">
-        <div className="absolute -inset-24 bg-[radial-gradient(circle_at_center,_rgba(56,189,248,0.22),_transparent_60%)]" />
-        <div className="absolute inset-y-0 left-0 w-36 bg-gradient-to-r from-indigo-500/20 via-transparent to-transparent" />
-      </div>
       {/* Header */}
-  <div className="relative z-10 flex justify-between items-start mb-12">
+      <div className="flex justify-between items-start mb-12">
         <div className="text-xs sm:text-sm text-gray-500 font-mono">07 &nbsp;&nbsp;CONNECT</div>
         <div className="text-xs sm:text-sm text-gray-500 font-mono">/07</div>
       </div>
 
       {/* Main content */}
-  <div className="relative z-10 flex-1 flex flex-col justify-center">
+      <div className="flex-1 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -47,7 +43,7 @@ const Contact2 = () => {
           {/* Status indicator */}
           <div className="flex items-center gap-3 mb-10">
             <motion.div
-              className="w-2 h-2 bg-emerald-400 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.6)]"
+              className="w-2 h-2 bg-green-500 rounded-full"
               animate={{
                 scale: [1, 1.2, 1],
                 opacity: [0.8, 1, 0.8]
@@ -66,9 +62,9 @@ const Contact2 = () => {
             href="https://drive.google.com/file/d/1FF5VZ9P8ddZVfaUemFyWcIDwSeRO21WO/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-white/30 text-white text-xs sm:text-sm tracking-wider uppercase rounded-full bg-white/5 backdrop-blur hover:bg-white hover:text-slate-900 hover:border-white transition-all duration-300"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
+            className="inline-block px-6 py-3 border border-gray-600 text-white text-xs sm:text-sm tracking-wider uppercase hover:bg-white hover:text-gray-900 hover:border-white transition-all duration-300"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             View Resume
           </motion.a>
@@ -76,22 +72,22 @@ const Contact2 = () => {
       </div>
 
       {/* Social links */}
-  <div className="relative z-10 mt-12">
+      <div className="mt-12">
         {/* Mobile 2x2 grid - theme matched */}
-        <div className="sm:hidden grid grid-cols-2 gap-y-3 gap-x-6 justify-items-end">
-          {socialLinks.map((link) => (
-            <a
-              key={link.id}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-slate-300 hover:text-white transition-colors relative group"
-            >
-              {link.name}
-              <span className="absolute bottom-0 right-0 w-0 h-px bg-gradient-to-l from-emerald-400 to-indigo-500 transition-all duration-300 group-hover:w-full" />
-            </a>
-          ))}
-        </div>
+<div className="sm:hidden grid grid-cols-2 gap-y-3 gap-x-6 justify-items-end">
+  {socialLinks.map((link, index) => (
+    <a
+      key={link.id}
+      href={link.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-sm text-gray-300 hover:text-white transition-colors relative group"
+    >
+      {link.name}
+      <span className="absolute bottom-0 right-0 w-0 h-px bg-white transition-all duration-300 group-hover:w-full" />
+    </a>
+  ))}
+</div>
 
 
         {/* Desktop inline */}
@@ -102,13 +98,13 @@ const Contact2 = () => {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative text-sm text-slate-300 hover:text-white transition-colors"
+              className="relative text-sm text-gray-400 hover:text-white transition-colors"
               onMouseEnter={() => setHoveredLink(link.id)}
               onMouseLeave={() => setHoveredLink(null)}
             >
               {link.name}
               <motion.span
-                className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-emerald-400 via-sky-400 to-indigo-500 origin-left"
+                className="absolute -bottom-1 left-0 right-0 h-px bg-white origin-left"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: hoveredLink === link.id ? 1 : 0 }}
                 transition={{ duration: 0.2 }}

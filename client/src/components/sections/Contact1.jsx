@@ -52,14 +52,10 @@ const Contact1 = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.7 }}
-      className="relative overflow-hidden bg-white/85 backdrop-blur-xl border border-white/70 shadow-xl shadow-gray-200/40 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 2xl:p-20 h-full flex flex-col rounded-3xl"
+      className="bg-gray-50 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 2xl:p-20 h-full relative flex flex-col"
     >
-      <div className="pointer-events-none absolute inset-0 opacity-60">
-        <div className="absolute -inset-20 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.12),_transparent_60%)]" />
-        <div className="absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-sky-100/40 via-transparent to-transparent" />
-      </div>
       {/* Header */}
-  <div className="relative z-10 flex justify-between items-start mb-8 sm:mb-12 lg:mb-20">
+      <div className="flex justify-between items-start mb-8 sm:mb-12 lg:mb-20">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -80,7 +76,7 @@ const Contact1 = () => {
       </div>
 
       {/* Main Content */}
-  <div className="relative z-10 flex-1 flex flex-col justify-center max-w-2xl w-full">
+      <div className="flex-1 flex flex-col justify-center max-w-2xl w-full">
         <motion.h2
           className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light leading-tight mb-8 sm:mb-12 lg:mb-20"
           initial={{ opacity: 0, y: 20 }}
@@ -158,7 +154,7 @@ const Contact1 = () => {
         transition={{ delay: 1.2 }}
       >
         <motion.div
-          className="h-px bg-gradient-to-r from-transparent via-indigo-400/50 to-transparent"
+          className="h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"
           animate={{
             x: [-200, 200],
             opacity: [0, 1, 0]

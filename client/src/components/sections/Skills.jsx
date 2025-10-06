@@ -189,12 +189,12 @@ const Skills = () => {
   const DesktopView = () => (
     <div className="relative">
       {/* Subtle progress indicator */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gray-100/30 z-10 overflow-hidden rounded-full">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gray-100 z-10">
         <motion.div 
-          className="h-full bg-gradient-to-r from-indigo-500/80 via-sky-400/80 to-emerald-400/80"
+          className="h-full bg-gray-300"
           style={{ 
             width: `${((Math.abs(scrollPosition) % 50) / 50) * 100}%`,
-            transition: isPaused ? 'none' : 'width 0.12s ease-out'
+            transition: isPaused ? 'none' : 'width 0.1s ease-out'
           }}
         />
       </div>
@@ -396,7 +396,7 @@ const Skills = () => {
 
       {/* Enhanced background decoration - desktop only */}
       {!isMobile && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-50">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-80">
           <motion.div
             className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2"
             animate={{ 
