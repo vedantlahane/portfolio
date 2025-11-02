@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Skills = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [visibleSkillIndex, setVisibleSkillIndex] = useState(0);
+  const animationStartRef = useRef(performance.now());
+  const pausedAtRef = useRef(null);
+  const rafRef = useRef(null);
+  const marqueeRef = useRef(null);
 
-  // Mobile detection
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Categorized skills for mobile accordion
-  const skillCategories = {
+  const skillCategories = useMemo(() => ({
     languages: {
       title: 'Languages',
       skills: ['Java', 'JavaScript', 'TypeScript', 'C++', 'C', 'PHP', 'SQL', 'HTML', 'CSS']
@@ -41,95 +37,149 @@ const Skills = () => {
       title: 'Soft Skills',
       skills: ['Problem-solving', 'Teamwork', 'Adaptability', 'Creativity']
     }
-  };
+  }), []);
 
-  // All skills flattened for desktop
-  const allSkills = Object.values(skillCategories).flatMap(category => category.skills);
+  const categoryEntries = useMemo(() => Object.entries(skillCategories), [skillCategories]);
 
-  // Handle section toggle for mobile
-  const toggleSection = (section) => {
-    setActiveSection(activeSection === section ? null : section);
-  };
+  const allSkills = useMemo(
+    () => categoryEntries.flatMap(([, category]) => category.skills),
+    [categoryEntries]
+  );
+
+  const firstCategoryKey = categoryEntries[0]?.[0] ?? null;
 
   useEffect(() => {
-    if (isMobile || isPaused) {
-      return undefined;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setVisibleSkillIndex((prev) => (prev + 1) % allSkills.length);
-    }, 2000);
-
-    return () => window.clearInterval(intervalId);
-  }, [isMobile, isPaused, allSkills.length]);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (isMobile) {
       setVisibleSkillIndex(0);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      return undefined;
     }
-  }, [isMobile]);
 
-  const handleMouseEnter = () => {
-    setIsPaused(true);
+    animationStartRef.current = performance.now();
+    pausedAtRef.current = null;
+
+    const CYCLE_DURATION_MS = 80000;
+
+    const tick = (now) => {
+      const anchorTime = pausedAtRef.current ?? now;
+      const elapsed = (anchorTime - animationStartRef.current + CYCLE_DURATION_MS) % CYCLE_DURATION_MS;
+      const progress = elapsed / CYCLE_DURATION_MS;
+      const nextIndex = Math.floor(progress * allSkills.length) % allSkills.length;
+
+      setVisibleSkillIndex((prev) => (prev === nextIndex ? prev : nextIndex));
+
+      if (marqueeRef.current) {
+        const translateX = -progress * 100;
+        marqueeRef.current.style.transform = `translateX(${translateX}%)`;
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, [allSkills.length, isMobile]);
+
+  const toggleSection = (sectionKey) => {
+    setActiveSection((prev) => (prev === sectionKey ? null : sectionKey));
   };
 
-  const handleMouseLeave = () => {
+  const pauseMarquee = () => {
+    if (!isPaused) {
+      pausedAtRef.current = performance.now();
+      setIsPaused(true);
+    }
+  };
+
+  const resumeMarquee = () => {
+    if (pausedAtRef.current != null) {
+      const resumeTime = performance.now();
+      const pausedDuration = resumeTime - pausedAtRef.current;
+      animationStartRef.current += pausedDuration;
+      pausedAtRef.current = null;
+    }
     setIsPaused(false);
   };
 
-  // Enhanced Mobile View with multi-column layout
-  const MobileView = () => (
-    <div className="space-y-0">
-      {Object.entries(skillCategories).map(([key, category], index) => (
-        <motion.div
-          key={key}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 * index }}
-        >
-          {/* Section Header */}
-          <motion.button
-            onClick={() => toggleSection(key)}
-            className="w-full px-0 py-6 flex items-center justify-between text-left 
-                     hover:bg-gray-50 transition-colors focus:outline-none 
-                     focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 rounded"
-            whileHover={{ x: 5 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="flex items-center gap-4">
-              <span className="text-xs font-mono text-gray-400">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <h3 className="text-base font-sans font-medium text-gray-900">
-                {category.title}
-              </h3>
-              <span className="text-xs text-gray-500">
-                ({category.skills.length})
-              </span>
-            </div>
-            
-            <motion.div
-              animate={{ rotate: activeSection === key ? 90 : 0 }}
-              transition={{ duration: 0.2 }}
-              className="text-gray-400"
-            >
-              →
-            </motion.div>
-          </motion.button>
+  const handleMouseEnter = () => {
+    if (!isExpanded) {
+      pauseMarquee();
+    }
+  };
 
-          {/* Expandable Content with Multi-Column */}
-          <AnimatePresence>
-            {activeSection === key && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="overflow-hidden"
+  const handleMouseLeave = () => {
+    setIsExpanded(false);
+    setActiveSection(null);
+    resumeMarquee();
+  };
+
+  const AccordionView = ({ variant }) => {
+    const spacingClass = variant === 'desktop' ? 'space-y-3 sm:space-y-4' : 'space-y-0';
+    const buttonPadding = variant === 'desktop' ? 'py-5' : 'py-6';
+    const gridColumns =
+      variant === 'desktop'
+        ? 'grid-cols-2 gap-x-6 gap-y-3 pb-6 pl-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-10'
+        : 'grid-cols-2 gap-x-6 gap-y-3 pb-6 pl-8 sm:grid-cols-3';
+
+    return (
+      <div className={spacingClass}>
+        {categoryEntries.map(([key, category], index) => (
+          <motion.div
+            key={key}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 * index }}
+            className={variant === 'desktop' ? 'rounded-2xl border border-transparent hover:border-gray-200 hover:bg-white/70 transition-colors' : ''}
+          >
+            <motion.button
+              onClick={() => toggleSection(key)}
+              className={`flex w-full items-center justify-between px-0 ${buttonPadding} text-left transition-colors hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1`}
+              whileHover={{ x: 5 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex items-center gap-4">
+                <span className="font-mono text-xs text-gray-400">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-base font-medium text-gray-900">{category.title}</h3>
+                <span className="text-xs text-gray-500">({category.skills.length})</span>
+              </div>
+
+              <motion.span
+                animate={{ rotate: activeSection === key ? 90 : 0 }}
+                transition={{ duration: 0.2 }}
+                className="text-gray-400"
               >
-                <div className="pl-8 pb-6">
-                  {/* Multi-column grid based on screen size */}
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
+                →
+              </motion.span>
+            </motion.button>
+
+            <AnimatePresence>
+              {activeSection === key && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  className="overflow-hidden"
+                >
+                  <div className={`grid ${gridColumns}`}>
                     {category.skills.map((skill, skillIndex) => (
                       <motion.div
                         key={skill}
@@ -138,251 +188,233 @@ const Skills = () => {
                         transition={{ delay: 0.03 * skillIndex }}
                         className="flex items-center gap-3 py-2"
                       >
-                        <div className="w-1 h-1 bg-gray-400 rounded-full flex-shrink-0" />
+                        <div className="h-1 w-1 flex-shrink-0 rounded-full bg-gray-400" />
                         <span className="text-sm text-gray-700">{skill}</span>
                       </motion.div>
                     ))}
                   </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {variant === 'mobile' && index < categoryEntries.length - 1 && (
+              <div className="h-px w-full bg-gray-200" />
             )}
-          </AnimatePresence>
+          </motion.div>
+        ))}
 
-          {/* Line separator (except for last item) */}
-          {index < Object.entries(skillCategories).length - 1 && (
-            <div className="w-full h-px bg-gray-200" />
-          )}
-        </motion.div>
-      ))}
+        {variant === 'mobile' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="pt-8 text-center"
+          >
+            <div className="flex items-center justify-center gap-4">
+              <div className="h-px w-12 bg-gray-300" />
+              <span className="font-mono text-xs text-gray-400">{allSkills.length} TOTAL SKILLS</span>
+              <div className="h-px w-12 bg-gray-300" />
+            </div>
+          </motion.div>
+        )}
+      </div>
+    );
+  };
 
-      {/* Summary */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="pt-8 text-center"
-      >
-        <div className="flex items-center justify-center gap-4">
-          <div className="w-12 h-px bg-gray-300" />
-          <span className="text-xs font-mono text-gray-400">
-            {allSkills.length} TOTAL SKILLS
-          </span>
-          <div className="w-12 h-px bg-gray-300" />
-        </div>
-      </motion.div>
-    </div>
-  );
-
-  // Enhanced Desktop View with minimalistic improvements
   const DesktopView = () => {
     const progress = ((visibleSkillIndex + 1) / allSkills.length) * 100;
 
     return (
       <div className="relative">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gray-100 z-10">
-          <motion.div
-            className="h-full bg-gray-300"
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.3 }}
-          />
-        </div>
+        {!isExpanded && (
+          <div className="absolute inset-x-0 top-0 z-10 h-px bg-gray-200">
+            <motion.div
+              className="h-full bg-gray-400"
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+        )}
 
         <div
-          className="relative overflow-hidden py-12"
+          className="relative overflow-hidden py-12 cursor-pointer"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
+          onClick={() => {
+            if (!isExpanded) {
+              pauseMarquee();
+              setActiveSection((prev) => prev ?? firstCategoryKey);
+              setIsExpanded(true);
+            }
+          }}
         >
-          <div className={`skills-marquee ${isPaused ? 'skills-marquee--paused' : ''}`}>
-            {[0, 1].map((iteration) => (
-              <div
-                key={iteration}
-                className="skills-marquee__track"
-                aria-hidden={iteration === 1}
-              >
-                {allSkills.map((skill, index) => {
-                  const isActive = index === visibleSkillIndex;
-                  return (
-                    <React.Fragment key={`${iteration}-${skill}`}>
-                      <motion.span
-                        className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-display font-light mx-8 md:mx-10 lg:mx-12 xl:mx-16 2xl:mx-20 select-none transition-colors duration-300 ${isActive ? 'text-gray-900' : 'text-gray-500'}`}
-                        whileHover={{ color: '#6b7280', scale: 1.05, y: -2 }}
-                      >
-                        {skill}
-                      </motion.span>
-                      {index < allSkills.length - 1 && (
-                        <span className="mx-4 text-xl text-gray-300 select-none">•</span>
-                      )}
-                    </React.Fragment>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white/90 to-transparent z-10" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white via-white/90 to-transparent z-10" />
-        </div>
-
-        <div className="absolute top-6 left-6 z-20 text-xs font-mono text-gray-400">
-          <motion.span
-            key={visibleSkillIndex}
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-block"
-          >
-            {String(visibleSkillIndex + 1).padStart(2, '0')} / {String(allSkills.length).padStart(2, '0')}
-          </motion.span>
-        </div>
-
-        <AnimatePresence>
-          {isPaused && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 10 }}
-              className="absolute top-6 right-6 z-20"
-            >
-              <div className="flex items-center gap-2 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-mono text-white">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
-                  className="h-1.5 w-1.5 rounded-full bg-white"
-                />
-                PAUSED
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <motion.div
-          className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.6 }}
-          transition={{ delay: 2 }}
-        >
-          <div className="mb-1 text-xs font-mono text-gray-400">hover to pause</div>
-          <AnimatePresence mode="wait">
-            {isPaused && (
+          <AnimatePresence initial={false} mode="wait">
+            {isExpanded ? (
               <motion.div
-                key={visibleSkillIndex}
-                initial={{ opacity: 0, y: 5 }}
+                key="expanded"
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                className="text-sm font-sans text-gray-600"
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
               >
-                {allSkills[visibleSkillIndex]}
+                <AccordionView variant="desktop" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="marquee"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="skills-marquee-wrapper"
+              >
+                <div ref={marqueeRef} className="skills-marquee">
+                  {[0, 1].map((iteration) => (
+                    <div
+                      key={iteration}
+                      className="skills-marquee__group"
+                      aria-hidden={iteration === 1}
+                    >
+                      {allSkills.map((skill, index) => {
+                        const isActive = index === visibleSkillIndex;
+                        return (
+                          <React.Fragment key={`${iteration}-${skill}`}>
+                            <motion.span
+                              className={`mx-8 select-none text-2xl font-light transition-colors duration-300 md:mx-10 md:text-3xl lg:mx-12 lg:text-4xl xl:mx-16 xl:text-5xl 2xl:mx-20 2xl:text-6xl ${isActive ? 'text-gray-900' : 'text-gray-500'}`}
+                              whileHover={{ color: '#6b7280', scale: 1.05, y: -2 }}
+                            >
+                              {skill}
+                            </motion.span>
+                            {index < allSkills.length - 1 && (
+                              <span className="mx-4 select-none text-xl text-gray-300">•</span>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
+                  ))}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
-
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {[...Array(3)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute h-1 w-1 rounded-full bg-gray-300"
-              style={{ top: `${20 + i * 30}%`, left: `${10 + i * 40}%` }}
-              animate={{
-                opacity: isPaused ? [0.2, 0.5, 0.2] : 0.2,
-                scale: isPaused ? [1, 1.5, 1] : 1,
-                y: isPaused ? [0, -10, 0] : 0,
-              }}
-              transition={{
-                duration: 2 + i * 0.5,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: i * 0.3,
-              }}
-            />
-          ))}
         </div>
+
+        {!isExpanded && (
+          <>
+            <div className="absolute left-6 top-6 z-20 font-mono text-xs text-gray-400">
+              <motion.span
+                key={visibleSkillIndex}
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="inline-block"
+              >
+                {String(visibleSkillIndex + 1).padStart(2, '0')} / {String(allSkills.length).padStart(2, '0')}
+              </motion.span>
+            </div>
+
+            <AnimatePresence>
+              {isPaused && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                  className="absolute right-6 top-6 z-20"
+                >
+                  <div className="flex items-center gap-2 rounded-full bg-gray-900 px-3 py-1.5 font-mono text-xs text-white">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                      className="h-1.5 w-1.5 rounded-full bg-white"
+                    />
+                    PAUSED
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <motion.div
+              className="absolute left-1/2 bottom-6 z-20 -translate-x-1/2 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              transition={{ delay: 2 }}
+            >
+              <div className="mb-1 font-mono text-xs text-gray-400">hover to pause</div>
+              <AnimatePresence mode="wait">
+                {isPaused && (
+                  <motion.div
+                    key={visibleSkillIndex}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    className="text-sm text-gray-600"
+                  >
+                    {allSkills[visibleSkillIndex]}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+
+            <div className="pointer-events-none absolute inset-0 overflow-hidden">
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute h-1 w-1 rounded-full bg-gray-300"
+                  style={{ top: `${20 + i * 30}%`, left: `${12 + i * 35}%` }}
+                  animate={{
+                    opacity: isPaused ? [0.2, 0.5, 0.2] : 0.2,
+                    scale: isPaused ? [1, 1.5, 1] : 1,
+                    y: isPaused ? [0, -10, 0] : 0
+                  }}
+                  transition={{ duration: 2 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.3 }}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     );
   };
 
   return (
     <motion.section
+      id="skills"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.6 }}
-      className="relative overflow-hidden py-8 sm:py-10 md:py-12 lg:py-16 w-full bg-white/85 backdrop-blur-xl border border-white/70 rounded-3xl shadow-xl shadow-gray-200/40"
-      id="skills"
+  className="relative overflow-hidden border-y border-gray-200 bg-gray-50 px-6 py-10 shadow-xl shadow-gray-200/50 sm:px-10 sm:py-14"
     >
-      <div className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute -inset-24 bg-[radial-gradient(circle_at_center,_rgba(99,102,241,0.08),_transparent_60%)]" />
-        <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-emerald-100/30 via-transparent to-transparent" />
-        <div className="absolute inset-y-0 right-0 w-48 bg-gradient-to-l from-sky-100/30 via-transparent to-transparent" />
-      </div>
-      {/* Header */}
-  <div className="relative z-10 flex justify-between items-start mb-8 sm:mb-12 lg:mb-16 
-        px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
-          className="text-xs sm:text-sm text-gray-500 font-mono uppercase tracking-wider"
-        >
-          05 &nbsp;&nbsp;SKILLS
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
-          className="text-xs sm:text-sm text-gray-500 font-mono flex items-center gap-2"
-        >
-          {isMobile && activeSection && (
-            <motion.span 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-gray-400 capitalize"
-            >
-              {skillCategories[activeSection]?.title}
-            </motion.span>
-          )}
-          <span>/05</span>
-        </motion.div>
-      </div>
+      
 
-      {/* Skills Display */}
-  <div className={`${isMobile ? "px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20" : ""} relative z-10`}>
-        {isMobile ? <MobileView /> : <DesktopView />}
-      </div>
-
-      {/* Enhanced background decoration - desktop only */}
-      {!isMobile && (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-80">
+      <div className="relative flex flex-col gap-8 sm:gap-10">
+        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <motion.div
-            className="absolute top-1/2 left-1/2 w-[800px] h-[800px] -translate-x-1/2 -translate-y-1/2"
-            animate={{ 
-              rotate: isPaused ? [null, 15] : [0, 360],
-              scale: isPaused ? [1, 1.02, 1] : 1
-            }}
-            transition={{ 
-              duration: isPaused ? 3 : 120, 
-              repeat: Infinity, 
-              ease: "linear" 
-            }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="font-mono text-xs uppercase tracking-[0.4em] text-gray-500"
           >
-            <div className="w-full h-full border border-gray-200 rounded-full" />
+            05 &nbsp;&nbsp;SKILLS
           </motion.div>
-          
+
           <motion.div
-            className="absolute top-1/3 right-1/3 w-[300px] h-[300px] -translate-x-1/2 -translate-y-1/2"
-            animate={{ 
-              rotate: isPaused ? [null, -10] : [360, 0],
-              opacity: [0.1, 0.3, 0.1]
-            }}
-            transition={{ 
-              duration: isPaused ? 2 : 80, 
-              repeat: Infinity, 
-              ease: "linear" 
-            }}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7, duration: 0.5 }}
+            className="flex items-center gap-2 font-mono text-xs text-gray-400"
           >
-            <div className="w-full h-full border border-gray-200 rounded-full" />
+            {isMobile && activeSection && (
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="capitalize">
+                {skillCategories[activeSection]?.title}
+              </motion.span>
+            )}
+            <span>/05</span>
           </motion.div>
         </div>
-      )}
+
+        <div className="relative z-10">
+          {isMobile ? <AccordionView variant="mobile" /> : <DesktopView />}
+        </div>
+      </div>
     </motion.section>
   );
 };

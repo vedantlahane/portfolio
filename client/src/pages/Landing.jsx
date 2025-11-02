@@ -45,18 +45,16 @@ const Landing = () => (
         </section>
 
         <section id="skills" className="border-t border-gray-200 scroll-mt-20">
-          <div className="py-16 lg:py-24">
             <Skills />
-          </div>
         </section>
 
         <section id="contact" className="scroll-mt-20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-gray-200">
-            <div className="border-b sm:border-b-0 sm:border-r border-gray-200 min-h-[50vh]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-gray-200 sm:auto-rows-fr">
+            <div className="border-b sm:border-b-0 sm:border-r border-gray-200 h-full">
               <Contact1 />
             </div>
 
-            <div className="min-h-[50vh]">
+            <div className="h-full">
               <Contact2 />
             </div>
           </div>
@@ -64,9 +62,7 @@ const Landing = () => (
       </main>
 
       <footer className="border-t border-gray-200">
-        <div className="py-6 lg:py-8">
-          <Footer />
-        </div>
+        <Footer />
       </footer>
     </div>
   </div>

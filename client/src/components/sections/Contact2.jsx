@@ -16,7 +16,7 @@ const Contact2 = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.5 }}
-      className="bg-neutral-950 text-white px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-16 border-t border-gray-800"
+  className="h-full bg-neutral-950 text-white px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12 border-t border-gray-800 flex flex-col"
     >
       {/* Header */}
       <div className="flex justify-between items-start mb-12">
@@ -25,7 +25,7 @@ const Contact2 = () => {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col justify-center">
+  <div className="flex-1 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -72,7 +72,7 @@ const Contact2 = () => {
       </div>
 
       {/* Social links */}
-      <div className="mt-12">
+  <div className="mt-12">
         {/* Mobile 2x2 grid - theme matched */}
 <div className="sm:hidden grid grid-cols-2 gap-y-3 gap-x-6 justify-items-end">
   {socialLinks.map((link, index) => (

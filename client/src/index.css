@@ -26,27 +26,20 @@ body::before {
 	min-height: 100vh;
 }
 
+
+.skills-marquee-wrapper {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+}
+
 .skills-marquee {
 	display: flex;
 	width: max-content;
 }
 
-.skills-marquee__track {
+.skills-marquee__group {
 	display: flex;
 	flex-shrink: 0;
 	align-items: center;
-	animation: skills-marquee-scroll 25s linear infinite;
-}
-
-.skills-marquee--paused .skills-marquee__track {
-	animation-play-state: paused;
-}
-
-@keyframes skills-marquee-scroll {
-	from {
-		transform: translateX(0);
-	}
-	to {
-		transform: translateX(-50%);
-	}
 }

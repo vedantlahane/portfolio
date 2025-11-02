@@ -8,6 +8,7 @@ const Footer = () => {
     { label: 'ABOUT', href: '#about' },
     { label: 'PROJECTS', href: '#projects' },
     { label: 'SKILLS', href: '#skills' },
+    { label: 'BLOG', href: '/blog' },
     { label: 'CONTACT', href: '#contact' }
   ];
 
@@ -18,17 +19,23 @@ const Footer = () => {
   ];
 
   const handleNavClick = (e, href) => {
+    if (!href.startsWith('#')) {
+      return;
+    }
+
     e.preventDefault();
     const element = document.querySelector(href);
-    if (element) {
-      const offset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
+    if (!element) {
+      return;
     }
+
+    const offset = 80;
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
   };
 
   return (
@@ -39,7 +46,7 @@ const Footer = () => {
       className="bg-gray-50 border-t border-gray-200"
     >
       {/* Top Section */}
-      <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-6 sm:py-8">
+  <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-6">
         <div className="flex justify-between items-center">
           <div className="text-xs sm:text-sm text-gray-400 font-mono font-light">
             08 &nbsp;&nbsp;FOOTER
@@ -51,7 +58,7 @@ const Footer = () => {
       </div>
 
       {/* Navigation Links */}
-      <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 pb-6 sm:pb-8">
+  <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 pb-4 sm:pb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           {/* Mobile Navigation Grid */}
           <nav className="grid grid-cols-2 sm:flex gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
@@ -61,7 +68,7 @@ const Footer = () => {
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
                 className="text-sm font-sans font-light text-gray-900 hover:text-gray-600 
-                         transition-all py-2 sm:py-0"
+                         transition-all py-1 sm:py-0"
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -99,10 +106,10 @@ const Footer = () => {
       </div>
 
       {/* Large Name Display - Responsive */}
-      <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-8 sm:py-12 lg:py-16 overflow-hidden">
+      <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-6 sm:py-8 lg:py-10 overflow-hidden">
         <motion.h1
-          className="text-7xl sm:text-8xl md:text-9xl lg:text-[10rem] xl:text-[12rem] 2xl:text-[16rem] 
-                     font-display font-black leading-none text-gray-900 italic
+          className="text-6xl sm:text-7xl md:text-8xl lg:text-[9rem] xl:text-[10rem] 2xl:text-[12rem] 
+                     font-display font-black leading-tight text-gray-900 italic
                      break-all sm:break-normal"
           style={{ letterSpacing: '-0.05em' }}
           initial={{ y: 50, opacity: 0 }}
@@ -115,7 +122,7 @@ const Footer = () => {
 
       {/* Bottom Section */}
       <div className="border-t border-gray-200">
-        <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-6">
+        <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {/* Social Links */}
             <div className="flex gap-3">
