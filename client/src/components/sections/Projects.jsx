@@ -1,78 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { projects as allProjects } from '../../data/projects';
 
 const Projects = () => {
   const [showAll, setShowAll] = useState(false);
   const [hoveredProject, setHoveredProject] = useState(null);
 
   // Projects (trimmed descriptions & tech). Use `live` truthiness to mark Live vs In-Development.
-  const projects = [
-    {
-      id: 'shoemarknet',
-      title: 'ShoeMarkNet',
-      year: '2025',
-      description: 'Full-stack e-commerce platform for footwear with admin dashboard and AI features.',
-      tech: 'React • Node • MongoDB • Tailwind',
-      type: 'Full Stack',
-      featured: true,
-      github: 'https://github.com/vedantlahane/ShoeMarkNet',
-      live: 'https://shoemarknet.com'
-    },
-    {
-      id: 'fundforge',
-      title: 'FundForge',
-      year: '2025',
-      description: 'Decentralized crowdfunding platform with milestone-based fund releases (Ethereum).',
-      tech: 'React • TypeScript • Solidity • Truffle',
-      type: 'Web3',
-      featured: true,
-      github: 'https://github.com/vedantlahane/fundforge',
-      live: null
-    },
-    {
-      id: 'myblog',
-      title: 'myblog',
-      year: '2025',
-      description: 'MEAN-style blogging platform with editor and publishing features.',
-      tech: 'Angular • Express • TypeScript',
-      type: 'Full Stack',
-      featured: true,
-      github: 'https://github.com/vedantlahane/myblog',
-      live: 'https://myblog.vercel.app'
-    },
-    {
-      id: 'QnA',
-      title: 'QnA',
-      year: '2025',
-      description: 'Q&A project (RAG + CSV/SQL connectors) — backend + React frontend.',
-      tech: 'FastAPI • React • LangChain',
-      type: 'Full Stack',
-      github: 'https://github.com/vedantlahane/QnA',
-      live: null
-    },
-    {
-      id: 'portfolio',
-      title: 'portfolio',
-      year: '2025',
-      description: 'Personal portfolio / landing site skeleton.',
-      tech: 'React • Tailwind • Vercel',
-      type: 'Frontend',
-      github: 'https://github.com/vedantlahane/portfolio',
-      live: null
-    },
-    {
-      id: 'shoemarknetdocker',
-      title: 'shoemarknetdocker',
-      year: '2025',
-      description: 'Docker / deployment helper for ShoeMarkNet (deployment & scripts).',
-      tech: 'Docker • Compose • Shell',
-      type: 'DevOps',
-      github: 'https://github.com/vedantlahane/shoemarknetdocker',
-      live: null
-    }
-  ];
-
-  const visibleProjects = showAll ? projects : projects.slice(0, 3);
+  const visibleProjects = showAll ? allProjects : allProjects.slice(0, 3);
 
   const handleLinkClick = (e, url) => {
     e.stopPropagation();
@@ -95,7 +30,7 @@ const Projects = () => {
       >
         <p className="text-xs sm:text-sm text-gray-400 font-mono font-light">04 &nbsp;&nbsp;PROJECTS</p>
         <p className="text-xs sm:text-sm text-gray-400 font-mono font-light flex-shrink-0 whitespace-nowrap">
-          {projects.length} TOTAL
+          {allProjects.length} TOTAL
         </p>
       </motion.div>
 
@@ -111,7 +46,7 @@ const Projects = () => {
           >
             <AnimatePresence mode="popLayout">
               {visibleProjects.map((project, index) => (
-                <motion.div
+                  <motion.div
                   key={project.id}
                   layout
                   initial={{ opacity: 0, y: 12 }}
@@ -127,10 +62,10 @@ const Projects = () => {
                     {/* Left: Year & Type */}
                     <div className="flex flex-col items-start sm:items-center gap-2 min-w-[80px] sm:min-w-[140px]">
                       <span className="text-xs lg:text-sm text-gray-400 font-mono font-light tabular-nums">
-                        {project.year}
+                          {project.year}
                       </span>
                       <span className="text-[10px] lg:text-xs text-gray-500 font-sans uppercase tracking-wider">
-                        {project.type}
+                          {project.type}
                       </span>
                     </div>
 
@@ -178,7 +113,7 @@ const Projects = () => {
                       </div>
 
                       <p className="text-sm lg:text-sm text-gray-600 font-sans mt-2">
-                        {project.description}
+                          {project.description}
                       </p>
                     </div>
 
@@ -216,7 +151,7 @@ const Projects = () => {
                 </>
               ) : (
                 <>
-                  <span>Show All {projects.length} Projects</span>
+                  <span>Show All {allProjects.length} Projects</span>
                   <motion.span animate={{ y: [0, 2, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
                     ↓
                   </motion.span>

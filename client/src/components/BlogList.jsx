@@ -1,11 +1,7 @@
 // BlogList.jsx
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-// API URL Configuration
-const API_URL = import.meta.env.DEV 
-  ? 'http://localhost:5000/api/blogs'  // Development URL
-  : `${import.meta.env.VITE_API_BASE_URL}/blogs`; // Production URL
+import { getApiBaseUrl, resolveApiUrl } from '../utils/api';
 
 // BlogPreview Component
 const BlogPreview = ({ blog }) => (
@@ -54,16 +50,24 @@ const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [apiUrl, setApiUrl] = useState('');
 
   useEffect(() => {
+    let ignore = false;
+
     const fetchBlogs = async () => {
       try {
-        setIsLoading(true);
-        setError(null);
-        
-        console.log('Fetching from:', API_URL); // Debug log
+        if (!ignore) {
+          setIsLoading(true);
+          setError(null);
+        }
 
-        const response = await fetch(API_URL, {
+        const targetUrl = resolveApiUrl('/blogs');
+        if (!ignore) {
+          setApiUrl(targetUrl);
+        }
+
+        const response = await fetch(targetUrl, {
           headers: {
             'Content-Type': 'application/json',
             // Add any additional headers if needed
@@ -75,16 +79,31 @@ const BlogList = () => {
         }
 
         const data = await response.json();
-        setBlogs(data);
+        if (!ignore) {
+          setBlogs(data);
+        }
       } catch (err) {
-        console.error('Error fetching blogs:', err);
-        setError('Failed to load blog posts. Please try again later.');
+        if (!ignore) {
+          setError(err.message || 'Failed to load blog posts. Please try again later.');
+        }
       } finally {
-        setIsLoading(false);
+        if (!ignore) {
+          setIsLoading(false);
+        }
       }
     };
 
-    fetchBlogs();
+    try {
+      // Attempt to resolve base URL early so env issues surface immediately
+      getApiBaseUrl();
+      fetchBlogs();
+    } catch (envError) {
+      setError(envError.message);
+      setIsLoading(false);
+    }
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   // Development environment indicator
@@ -92,7 +111,7 @@ const BlogList = () => {
     import.meta.env.DEV && (
       <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-4">
         <p className="text-yellow-700">
-          Development Environment - API URL: {API_URL}
+          Development Environment - API URL: {apiUrl || 'Not resolved yet'}
         </p>
       </div>
     )

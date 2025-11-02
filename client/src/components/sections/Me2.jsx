@@ -21,7 +21,7 @@ const Me2 = () => {
     { label: "Projects Built", value: "12+" },
     { label: "GitHub Repos", value: "25+" },
     { label: "DSA Problems", value: "400+" },
-    { label: "Open-source PRs", value: "5+" }
+    { label: "Technologies Learned", value: "15+" }
   ];
 
   // Check if mobile

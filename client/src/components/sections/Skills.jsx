@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Skills = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [scrollPosition, setScrollPosition] = useState(0);
   const [visibleSkillIndex, setVisibleSkillIndex] = useState(0);
-  const animationRef = useRef(null);
-  const startTimeRef = useRef(Date.now());
 
   // Mobile detection
   useEffect(() => {
@@ -54,39 +51,30 @@ const Skills = () => {
     setActiveSection(activeSection === section ? null : section);
   };
 
-  // Fixed animation with proper pause/resume and skill tracking
   useEffect(() => {
-    if (isMobile) return;
+    if (isMobile || isPaused) {
+      return undefined;
+    }
 
-    let animationId;
-    const animate = () => {
-      if (!isPaused) {
-        const now = Date.now();
-        const elapsed = (now - startTimeRef.current) / 1000;
-        const progress = (elapsed % 25) / 25; // 25 second cycle
-        setScrollPosition(progress * -50); // Move 50% of width
-        
-        // Calculate which skill is currently visible
-        const skillProgress = (progress * allSkills.length) % allSkills.length;
-        setVisibleSkillIndex(Math.floor(skillProgress));
-      }
-      animationId = requestAnimationFrame(animate);
-    };
+    const intervalId = window.setInterval(() => {
+      setVisibleSkillIndex((prev) => (prev + 1) % allSkills.length);
+    }, 2000);
 
-    animationId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationId);
-  }, [isPaused, isMobile, allSkills.length]);
+    return () => window.clearInterval(intervalId);
+  }, [isMobile, isPaused, allSkills.length]);
 
-  // Handle pause
+  useEffect(() => {
+    if (isMobile) {
+      setVisibleSkillIndex(0);
+    }
+  }, [isMobile]);
+
   const handleMouseEnter = () => {
     setIsPaused(true);
   };
 
-  // Handle resume
   const handleMouseLeave = () => {
     setIsPaused(false);
-    // Update start time to account for paused duration
-    startTimeRef.current = Date.now() - (Math.abs(scrollPosition) / 50) * 25 * 1000;
   };
 
   // Enhanced Mobile View with multi-column layout
@@ -186,164 +174,131 @@ const Skills = () => {
   );
 
   // Enhanced Desktop View with minimalistic improvements
-  const DesktopView = () => (
-    <div className="relative">
-      {/* Subtle progress indicator */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gray-100 z-10">
-        <motion.div 
-          className="h-full bg-gray-300"
-          style={{ 
-            width: `${((Math.abs(scrollPosition) % 50) / 50) * 100}%`,
-            transition: isPaused ? 'none' : 'width 0.1s ease-out'
-          }}
-        />
-      </div>
+  const DesktopView = () => {
+    const progress = ((visibleSkillIndex + 1) / allSkills.length) * 100;
 
-      <div 
-        className="relative overflow-hidden py-12"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <motion.div
-          className="flex items-center whitespace-nowrap will-change-transform"
-          style={{ 
-            transform: `translateX(${scrollPosition}%)`,
-            transition: isPaused ? 'none' : undefined
-          }}
-        >
-          {/* Create seamless loop with multiple sets */}
-          {[1, 2, 3].map((setIndex) => (
-            <div key={setIndex} className="flex items-center flex-shrink-0">
-              {allSkills.map((skill, index) => (
-                <React.Fragment key={`${setIndex}-${index}`}>
-                  <motion.span
-                    className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl 
-                             font-display font-light text-gray-900 
-                             mx-8 md:mx-10 lg:mx-12 xl:mx-16 2xl:mx-20
-                             transition-all duration-300 select-none"
-                    whileHover={{ 
-                      color: '#6b7280', 
-                      scale: 1.05,
-                      y: -2
-                    }}
-                    style={{
-                      opacity: isPaused ? 1 : (index === visibleSkillIndex ? 1 : 0.8)
-                    }}
-                  >
-                    {skill}
-                  </motion.span>
-                  {index < allSkills.length - 1 && (
-                    <motion.span 
-                      className="text-gray-300 mx-4 text-xl select-none"
-                      animate={{ 
-                        opacity: isPaused ? [0.3, 0.6, 0.3] : 0.3,
-                        scale: isPaused ? [1, 1.2, 1] : 1
-                      }}
-                      transition={{ 
-                        duration: 1.5, 
-                        repeat: isPaused ? Infinity : 0,
-                        ease: "easeInOut"
-                      }}
-                    >
-                      •
-                    </motion.span>
-                  )}
-                </React.Fragment>
-              ))}
-              <span className="text-gray-300 mx-8 text-2xl select-none">•</span>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Enhanced gradient overlays */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-32 
-                      bg-gradient-to-r from-white via-white/90 to-transparent z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-32 
-                      bg-gradient-to-l from-white via-white/90 to-transparent z-10" />
-      </div>
-
-      {/* Skill counter */}
-      <div className="absolute top-6 left-6 text-xs font-mono text-gray-400 z-20">
-        <motion.span
-          key={visibleSkillIndex}
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="inline-block"
-        >
-          {String(visibleSkillIndex + 1).padStart(2, '0')} / {String(allSkills.length).padStart(2, '0')}
-        </motion.span>
-      </div>
-
-      {/* Enhanced pause indicator */}
-      <AnimatePresence>
-        {isPaused && (
+    return (
+      <div className="relative">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gray-100 z-10">
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 10 }}
-            className="absolute top-6 right-6 z-20"
-          >
-            <div className="bg-gray-900 text-white px-3 py-1.5 rounded-full text-xs font-mono flex items-center gap-2">
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-                className="w-1.5 h-1.5 bg-white rounded-full"
-              />
-              PAUSED
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            className="h-full bg-gray-300"
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
 
-      {/* Current skill highlight */}
-      <motion.div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-center z-20"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.6 }}
-        transition={{ delay: 2 }}
-      >
-        <div className="text-xs text-gray-400 font-mono mb-1">hover to pause</div>
-        <AnimatePresence mode="wait">
+        <div
+          className="relative overflow-hidden py-12"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          <div className={`skills-marquee ${isPaused ? 'skills-marquee--paused' : ''}`}>
+            {[0, 1].map((iteration) => (
+              <div
+                key={iteration}
+                className="skills-marquee__track"
+                aria-hidden={iteration === 1}
+              >
+                {allSkills.map((skill, index) => {
+                  const isActive = index === visibleSkillIndex;
+                  return (
+                    <React.Fragment key={`${iteration}-${skill}`}>
+                      <motion.span
+                        className={`text-2xl md:text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl font-display font-light mx-8 md:mx-10 lg:mx-12 xl:mx-16 2xl:mx-20 select-none transition-colors duration-300 ${isActive ? 'text-gray-900' : 'text-gray-500'}`}
+                        whileHover={{ color: '#6b7280', scale: 1.05, y: -2 }}
+                      >
+                        {skill}
+                      </motion.span>
+                      {index < allSkills.length - 1 && (
+                        <span className="mx-4 text-xl text-gray-300 select-none">•</span>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-white via-white/90 to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-white via-white/90 to-transparent z-10" />
+        </div>
+
+        <div className="absolute top-6 left-6 z-20 text-xs font-mono text-gray-400">
+          <motion.span
+            key={visibleSkillIndex}
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block"
+          >
+            {String(visibleSkillIndex + 1).padStart(2, '0')} / {String(allSkills.length).padStart(2, '0')}
+          </motion.span>
+        </div>
+
+        <AnimatePresence>
           {isPaused && (
             <motion.div
-              key={visibleSkillIndex}
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -5 }}
-              className="text-sm font-sans text-gray-600"
+              initial={{ opacity: 0, scale: 0.8, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 10 }}
+              className="absolute top-6 right-6 z-20"
             >
-              {allSkills[visibleSkillIndex]}
+              <div className="flex items-center gap-2 rounded-full bg-gray-900 px-3 py-1.5 text-xs font-mono text-white">
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  className="h-1.5 w-1.5 rounded-full bg-white"
+                />
+                PAUSED
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
 
-      {/* Subtle floating elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-gray-300 rounded-full"
-            style={{
-              top: `${20 + i * 30}%`,
-              left: `${10 + i * 40}%`,
-            }}
-            animate={{
-              opacity: isPaused ? [0.2, 0.5, 0.2] : 0.2,
-              scale: isPaused ? [1, 1.5, 1] : 1,
-              y: isPaused ? [0, -10, 0] : 0
-            }}
-            transition={{
-              duration: 2 + i * 0.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: i * 0.3
-            }}
-          />
-        ))}
+        <motion.div
+          className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ delay: 2 }}
+        >
+          <div className="mb-1 text-xs font-mono text-gray-400">hover to pause</div>
+          <AnimatePresence mode="wait">
+            {isPaused && (
+              <motion.div
+                key={visibleSkillIndex}
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -5 }}
+                className="text-sm font-sans text-gray-600"
+              >
+                {allSkills[visibleSkillIndex]}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(3)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute h-1 w-1 rounded-full bg-gray-300"
+              style={{ top: `${20 + i * 30}%`, left: `${10 + i * 40}%` }}
+              animate={{
+                opacity: isPaused ? [0.2, 0.5, 0.2] : 0.2,
+                scale: isPaused ? [1, 1.5, 1] : 1,
+                y: isPaused ? [0, -10, 0] : 0,
+              }}
+              transition={{
+                duration: 2 + i * 0.5,
+                repeat: Infinity,
+                ease: 'easeInOut',
+                delay: i * 0.3,
+              }}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <motion.section

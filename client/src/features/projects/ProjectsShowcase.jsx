@@ -1,75 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { projects } from '../../data/projects';
 
 const ProjectsShowcase = () => {
   const [showAll, setShowAll] = useState(false);
   const [hoveredProject, setHoveredProject] = useState(null);
-
-  const projects = [
-    {
-      id: 'shoemarknet',
-      title: 'ShoeMarkNet',
-      year: '2025',
-      description: 'Full-stack e-commerce platform for footwear with admin dashboard and AI features.',
-      tech: 'React • Node • MongoDB • Tailwind',
-      type: 'Full Stack',
-      featured: true,
-      github: 'https://github.com/vedantlahane/ShoeMarkNet',
-      live: 'https://shoemarknet.com'
-    },
-    {
-      id: 'fundforge',
-      title: 'FundForge',
-      year: '2025',
-      description: 'Decentralized crowdfunding platform with milestone-based fund releases (Ethereum).',
-      tech: 'React • TypeScript • Solidity • Truffle',
-      type: 'Web3',
-      featured: true,
-      github: 'https://github.com/vedantlahane/fundforge',
-      live: null
-    },
-    {
-      id: 'myblog',
-      title: 'myblog',
-      year: '2025',
-      description: 'MEAN-style blogging platform with editor and publishing features.',
-      tech: 'Angular • Express • TypeScript',
-      type: 'Full Stack',
-      featured: true,
-      github: 'https://github.com/vedantlahane/myblog',
-      live: 'https://myblog.vercel.app'
-    },
-    {
-      id: 'QnA',
-      title: 'QnA',
-      year: '2025',
-      description: 'Q&A project (RAG + CSV/SQL connectors) — backend + React frontend.',
-      tech: 'FastAPI • React • LangChain',
-      type: 'Full Stack',
-      github: 'https://github.com/vedantlahane/QnA',
-      live: null
-    },
-    {
-      id: 'portfolio',
-      title: 'portfolio',
-      year: '2025',
-      description: 'Personal portfolio / landing site skeleton.',
-      tech: 'React • Tailwind • Vercel',
-      type: 'Frontend',
-      github: 'https://github.com/vedantlahane/portfolio',
-      live: null
-    },
-    {
-      id: 'shoemarknetdocker',
-      title: 'shoemarknetdocker',
-      year: '2025',
-      description: 'Docker / deployment helper for ShoeMarkNet (deployment & scripts).',
-      tech: 'Docker • Compose • Shell',
-      type: 'DevOps',
-      github: 'https://github.com/vedantlahane/shoemarknetdocker',
-      live: null
-    }
-  ];
 
   const visibleProjects = showAll ? projects : projects.slice(0, 3);
 

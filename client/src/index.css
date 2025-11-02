@@ -25,3 +25,28 @@ body::before {
 #root {
 	min-height: 100vh;
 }
+
+.skills-marquee {
+	display: flex;
+	width: max-content;
+}
+
+.skills-marquee__track {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	animation: skills-marquee-scroll 25s linear infinite;
+}
+
+.skills-marquee--paused .skills-marquee__track {
+	animation-play-state: paused;
+}
+
+@keyframes skills-marquee-scroll {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
