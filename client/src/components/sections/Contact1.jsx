@@ -52,7 +52,7 @@ const Contact1 = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.7 }}
-  className="bg-gray-50 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12 h-full relative flex flex-col"
+  className="bg-gradient-to-b from-transparent to-gray-50 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12 h-full relative flex flex-col"
     >
       {/* Header */}
       <div className="flex justify-between items-start mb-8 sm:mb-12 lg:mb-20">

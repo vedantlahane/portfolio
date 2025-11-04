@@ -43,7 +43,7 @@ const Footer = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.9 }}
-      className="bg-gray-50 border-t border-gray-200"
+      className="bg-gradient-to-b from-gray-50 to-transparent border-t border-gray-200"
     >
       {/* Top Section */}
   <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-6">

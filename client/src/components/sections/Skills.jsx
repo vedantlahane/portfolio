@@ -111,7 +111,7 @@ const Skills = () => {
     pausedAtRef.current = null;
 
     // Faster cycle for marquee/count sync (20 seconds)
-    const CYCLE_DURATION_MS = 100000;
+    const CYCLE_DURATION_MS = 150000;
 
     const tick = (now) => {
       const anchorTime = pausedAtRef.current ?? now;
@@ -408,7 +408,7 @@ const Skills = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.6 }}
-      className="relative overflow-hidden border-y border-gray-200 bg-gray-50 px-6 py-10 shadow-xl shadow-gray-200/50 sm:px-10 sm:py-14"
+      className="relative overflow-hidden border-y border-gray-200 bg-gradient-to-b from-gray-50 to-transparent px-6 py-10  sm:px-10 sm:py-14"
     >
       <div className="relative flex flex-col gap-8 sm:gap-10">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
