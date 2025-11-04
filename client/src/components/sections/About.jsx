@@ -2,22 +2,38 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const About = () => {
-  // Text segments for better mobile control
+  // Industry-focused narrative with concise highlights
   const textSegments = [
-  { text: "Started with a", highlight: false, delay: 0.7 },
-  { text: '"Hello World"', highlight: true, delay: 0.8 },
-  { text: "three years ago.", highlight: false, delay: 0.9 },
-  { text: "Now building", highlight: false, delay: 1.0 },
-  { text: "scalable web apps", highlight: true, delay: 1.1 },
-  { text: "with AI features.", highlight: false, delay: 1.2 },
-  { text: "Solved over", highlight: false, delay: 1.3 },
-  { text: "400 coding challenges", highlight: true, delay: 1.4 },
-  { text: "while sharpening problem-solving skills.", highlight: false, delay: 1.5 },
-  { text: "Currently learning", highlight: false, delay: 1.6 },
-  { text: "cloud systems", highlight: true, delay: 1.7 },
-  { text: "and exploring Web3.", highlight: false, delay: 1.8 }
-];
+    { text: 'Started with a', highlight: false, delay: 0.7 },
+    { text: '"Hello World"', highlight: true, delay: 0.8 },
+    { text: 'three years ago.', highlight: false, delay: 0.9 },
 
+    { text: 'Now building', highlight: false, delay: 1.0 },
+    { text: 'AI‑powered, scalable web apps', highlight: true, delay: 1.1 },
+    { text: 'with real‑world constraints.', highlight: false, delay: 1.2 },
+
+    { text: 'Currently building', highlight: false, delay: 1.3 },
+    { text: 'SafarSathi (offline‑first safety PWA)', highlight: true, delay: 1.4 },
+    { text: 'and', highlight: false, delay: 1.45 },
+    { text: 'Axon (RAG document intelligence).', highlight: true, delay: 1.5 },
+
+    { text: 'Shipped', highlight: false, delay: 1.55 },
+    { text: 'ShoeMarkNet (RBAC e‑commerce)', highlight: true, delay: 1.6 },
+    { text: 'end‑to‑end.', highlight: false, delay: 1.65 },
+
+    { text: 'Solved over', highlight: false, delay: 1.7 },
+    { text: '350+ DSA problems', highlight: true, delay: 1.8 },
+    { text: 'and keep refining system design basics.', highlight: false, delay: 1.9 },
+
+    { text: 'Core stack:', highlight: false, delay: 2.0 },
+    { text: 'React + TypeScript, Node.js, Java', highlight: true, delay: 2.1 },
+    { text: 'with MongoDB/MySQL.', highlight: false, delay: 2.2 },
+
+    { text: 'Learning', highlight: false, delay: 2.3 },
+    { text: 'Cloud & DevOps (AWS, Docker, CI/CD)', highlight: true, delay: 2.4 },
+    { text: 'and deepening', highlight: false, delay: 2.5 },
+    { text: 'LLM/RAG systems.', highlight: true, delay: 2.6 },
+  ];
 
   return (
     <motion.section
@@ -55,9 +71,7 @@ const About = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: segment.delay }}
               className={`inline-block mr-2 ${
-                segment.highlight 
-                  ? 'text-white font-medium' 
-                  : 'text-gray-400'
+                segment.highlight ? 'text-white font-medium' : 'text-gray-400'
               }`}
             >
               {segment.text}
@@ -65,27 +79,27 @@ const About = () => {
           ))}
         </motion.div>
 
-        {/* Journey milestones - Mobile friendly
+        {/* Journey milestones - keep commented for now; update values if enabling
         <motion.div
           className="mt-8 sm:mt-12 grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2 }}
+          transition={{ delay: 2.8 }}
         >
           {[
             { label: "Years Coding", value: "3+" },
-            { label: "Projects", value: "15+" },
-            { label: "Problems Solved", value: "400+" },
-            { label: "Technologies", value: "12+" },
-            { label: "GitHub Repos", value: "20+" },
-            { label: "Lines of Code", value: "50k+" }
+            { label: "Flagship Projects", value: "3" },
+            { label: "Problems Solved", value: "350+" },
+            { label: "Technologies", value: "15+" },
+            { label: "Certifications", value: "2" },
+            { label: "CGPA (LPU)", value: "7.89" }
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
               className="text-center sm:text-left"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 2.2 + index * 0.1 }}
+              transition={{ delay: 3 + index * 0.08 }}
             >
               <div className="text-xl sm:text-2xl md:text-3xl font-display font-light text-white mb-1">
                 {stat.value}
@@ -95,11 +109,10 @@ const About = () => {
               </div>
             </motion.div>
           ))}
-        </motion.div> */}
+        </motion.div>
+        */}
       </div>
 
-      {/* Decorative Elements */}
-      
       {/* Floating CSE text - Responsive */}
       <motion.div
         className="absolute bottom-6 sm:bottom-10 lg:bottom-16 left-6 sm:left-10 lg:left-16 text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-light text-gray-800/30 pointer-events-none"
@@ -119,9 +132,10 @@ const About = () => {
       >
         <pre>
 {`function grow() {
-  while(learning) {
-    code++;
-    solve++;
+  while (learning) {
+    build();
+    iterate();
+    ship();
   }
 }`}
         </pre>
@@ -138,14 +152,14 @@ const About = () => {
       </motion.div>
 
       {/* Subtle grid pattern */}
-      <div 
+      <div
         className="absolute inset-0 opacity-5"
         style={{
           backgroundImage: `
             linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
           `,
-          backgroundSize: '50px 50px'
+          backgroundSize: '50px 50px',
         }}
       />
 
@@ -165,8 +179,8 @@ const About = () => {
           transition={{
             duration: 4 + i,
             repeat: Infinity,
-            ease: "easeInOut",
-            delay: i * 0.5
+            ease: 'easeInOut',
+            delay: i * 0.5,
           }}
         />
       ))}
