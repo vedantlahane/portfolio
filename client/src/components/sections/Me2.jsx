@@ -6,22 +6,22 @@ const Me2 = () => {
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef(null);
 
-  // Technical skills — realistic, student / early-career dev focus
+  // Curated, industry-relevant skill highlights (not GitHub-driven)
   const skills = [
-    { name: "React & Next.js", level: 88 },
-    { name: "Node.js & Express", level: 85 },
-    { name: "TypeScript", level: 86 },
-    { name: "Java (DSA & Algo)", level: 90 },
-    { name: "Docker & CI/CD", level: 76 },
-    { name: "System Design (basics)", level: 72 }
+    { name: "React + TypeScript", level: 85 },
+    { name: "Node.js + Express", level: 82 },
+    { name: "Java (Backend/DSA)", level: 82 },
+    { name: "AI/LLM (RAG, LangChain)", level: 78 },
+    { name: "Cloud & DevOps (AWS, Docker, CI/CD)", level: 75 },
+    { name: "Databases (MongoDB, MySQL)", level: 72 },
   ];
 
-  // Student-appropriate stats — factual and understated
+  // Industry-oriented, factual stats
   const experiences = [
-    { label: "Projects Built", value: "12+" },
-    { label: "GitHub Repos", value: "25+" },
-    { label: "DSA Problems", value: "400+" },
-    { label: "Technologies Learned", value: "15+" }
+    { label: "Flagship Projects", value: "3+" },          // SafarSathi, Axon, ShoeMarkNet
+    { label: "DSA Problems", value: "350+" },
+    { label: "Certifications", value: "10+" },             // Coursera GenAI, Udemy TF2
+    { label: "Known Technologies", value: "15+" },
   ];
 
   // Check if mobile
@@ -140,7 +140,7 @@ const Me2 = () => {
           </motion.div>
 
           {/* Experience Stats */}
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 mt-8 sm:mt-10 md:mt-12">
+          <div className="mx-8 grid grid-cols-2 gap-4 sm:gap-6 mt-10 sm:mt-10 md:mt-12">
             {experiences.map((exp, index) => (
               <motion.div
                 key={exp.label}
@@ -216,7 +216,7 @@ const Me2 = () => {
             {[...Array(8)].map((_, i) => (
               <motion.div
                 key={`tunnel-${i}`}
-                className="absolute inset-0 border border-white/30"
+                className="absolute inset-0 border border-white/60"
                 style={{
                   transform: `translateZ(${i * -100}px) scale(${1 - i * 0.06})`,
                   opacity: 0.6 - i * 0.05,
@@ -258,7 +258,7 @@ const Me2 = () => {
             }}
           >
             <div className={`
-              w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-2 border-white/40
+              w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 border-2 border-white/30
               ${i % 3 === 0 ? 'rounded-full' : i % 3 === 1 ? 'rounded-none' : 'rounded-lg rotate-45'}
             `} />
           </motion.div>
@@ -310,7 +310,7 @@ const Me2 = () => {
           }}
         >
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-white/40 to-gray-400/20 rounded-full blur-2xl md:blur-3xl"
+            className="absolute inset-0 bg-gradient-to-r from-white/60 to-gray-400/35 rounded-full blur-2xl md:blur-3xl"
             animate={{
               scale: [1, 1.5, 1],
               opacity: [0.4, 0.2, 0.4],
@@ -379,7 +379,7 @@ const Me2 = () => {
         </div>
       </div>
 
-      {/* Learning status - student appropriate */}
+      {/* Learning status - industry aligned wording */}
       <motion.div
         className="absolute bottom-6 sm:bottom-8 right-6 sm:right-8 lg:right-12 xl:right-16 z-50"
         initial={{ opacity: 0 }}
@@ -400,8 +400,8 @@ const Me2 = () => {
                 ease: "easeInOut" 
               }}
             />
-            <span className="hidden sm:inline">Learning</span>
-            <span className="sm:hidden">Learn</span>
+            <span className="hidden sm:inline">Building</span>
+            <span className="sm:hidden">Building</span>
           </span>
           <span className="text-gray-600">•</span>
           <span className="flex items-center gap-1">
@@ -418,8 +418,8 @@ const Me2 = () => {
                 delay: 0.5
               }}
             />
-            <span className="hidden sm:inline">Building</span>
-            <span className="sm:hidden">Build</span>
+            <span className="hidden sm:inline">RAG, RBAC</span>
+            <span className="sm:hidden">Focus</span>
           </span>
           <span className="text-gray-600">•</span>
           <span className="flex items-center gap-1">
@@ -436,8 +436,8 @@ const Me2 = () => {
                 delay: 1
               }}
             />
-            <span className="hidden sm:inline">Interview prep</span>
-            <span className="sm:hidden">Prep</span>
+            <span className="hidden sm:inline">Open to SDE/AI Intern</span>
+            <span className="sm:hidden">Open</span>
           </span>
         </div>
       </motion.div>
