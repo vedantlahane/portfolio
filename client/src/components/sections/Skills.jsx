@@ -139,6 +139,10 @@ const Skills = () => {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
       }
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = null;
+      }
     };
   }, [allSkills.length, isMobile]);
 
@@ -163,14 +167,24 @@ const Skills = () => {
     setIsPaused(false);
   };
 
+  const closeTimeoutRef = useRef(null);
+
   const handleMouseEnter = () => {
+    // Cancel any pending close
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
     if (!isExpanded) pauseMarquee();
   };
 
   const handleMouseLeave = () => {
-    setIsExpanded(false);
-    setActiveSection(null);
-    resumeMarquee();
+    // Delay the closing to make it feel smoother
+    closeTimeoutRef.current = setTimeout(() => {
+      setIsExpanded(false);
+      setActiveSection(null);
+      resumeMarquee();
+    }, 600);
   };
 
   const AccordionView = ({  }) => {
@@ -267,15 +281,20 @@ const Skills = () => {
 
     return (
       <div className="relative">
-        {!isExpanded && (
-          <div className="absolute inset-x-0 top-0 z-10 h-px bg-gray-200">
-            <motion.div
-              className="h-full bg-gray-400"
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.7 }}
-            />
-          </div>
-        )}
+        {/* Progress bar - use CSS transition */}
+        <div 
+          className="absolute inset-x-0 top-0 z-10 h-px bg-gray-200"
+          style={{ 
+            opacity: isExpanded ? 0 : 1,
+            transition: isExpanded ? 'opacity 0.3s ease-out' : 'opacity 0.8s ease-out 0.3s'
+          }}
+        >
+          <motion.div
+            className="h-full bg-gray-400"
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.7 }}
+          />
+        </div>
 
         {/* Entire section clickable */}
         <div
@@ -312,31 +331,35 @@ const Skills = () => {
               : "Click to expand "
           }
         >
-          <AnimatePresence initial={false} mode="wait">
-            {isExpanded ? (
-              <motion.div
-                key="expanded"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{
-                  duration: 0.8,
-                  exit: { duration: 1.5, ease: "easeInOut" }
-                }}
-                layout
-              >
-                <AccordionView variant="desktop" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="marquee"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.8, ease: "easeInOut" }}
-                layout
-                className="skills-marquee-wrapper"
-              >
+          {/* Expanded accordion view */}
+          <div 
+            className="transition-all ease-out"
+            style={{ 
+              opacity: isExpanded ? 1 : 0,
+              maxHeight: isExpanded ? '2000px' : '0px',
+              overflow: 'hidden',
+              position: isExpanded ? 'relative' : 'absolute',
+              width: '100%',
+              transition: isExpanded 
+                ? 'opacity 0.4s ease-out, max-height 0.5s ease-out' 
+                : 'opacity 0.6s ease-out 0.2s, max-height 0.7s ease-out 0.2s'
+            }}
+          >
+            <AccordionView variant="desktop" />
+          </div>
+
+          {/* Marquee view */}
+          <div 
+            className="skills-marquee-wrapper"
+            style={{ 
+              opacity: isExpanded ? 0 : 1,
+              visibility: isExpanded ? 'hidden' : 'visible',
+              position: isExpanded ? 'absolute' : 'relative',
+              transition: isExpanded 
+                ? 'opacity 0.3s ease-out, visibility 0s 0.3s' 
+                : 'opacity 0.8s ease-out 0.4s, visibility 0s 0s'
+            }}
+          >
                 <div
                   ref={marqueeRef}
                   className="skills-marquee flex whitespace-nowrap select-none"
@@ -374,9 +397,7 @@ const Skills = () => {
                     </div>
                   ))}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          </div>
         </div>
 
         {/* Instructions Text */}
@@ -387,17 +408,16 @@ const Skills = () => {
         </div>
 
         {/* Count below marquee */}
-        {!isExpanded && (
-          <motion.div
-            className="mt-1 text-center font-mono text-xs text-gray-400 select-none"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            {String(visibleSkillIndex + 1).padStart(2, "0")} /{" "}
-            {String(allSkills.length).padStart(2, "0")}
-          </motion.div>
-        )}
+        <div 
+          className="mt-1 text-center font-mono text-xs text-gray-400 select-none"
+          style={{ 
+            opacity: isExpanded ? 0 : 1,
+            transition: isExpanded ? 'opacity 0.3s ease-out' : 'opacity 0.8s ease-out 0.3s'
+          }}
+        >
+          {String(visibleSkillIndex + 1).padStart(2, "0")} /{" "}
+          {String(allSkills.length).padStart(2, "0")}
+        </div>
       </div>
     );
   };
