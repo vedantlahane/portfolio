@@ -429,75 +429,75 @@ const PracticeList = () => {
           >
             {/* Header */}
             <div className="mb-8">
-            <p className="text-xs sm:text-sm text-gray-400 font-mono font-light mb-6">
-              TOPICS
-            </p>
+              <p className="text-xs sm:text-sm text-gray-400 font-mono font-light mb-6">
+                TOPICS
+              </p>
 
-            {/* Overall Progress */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600 font-sans">Overall Progress</span>
-                <span className="text-xs text-gray-500 font-mono">
-                  {overallStats.done}/{overallStats.total}
-                </span>
+              {/* Overall Progress */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600 font-sans">Overall Progress</span>
+                  <span className="text-xs text-gray-500 font-mono">
+                    {overallStats.done}/{overallStats.total}
+                  </span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gray-900"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${overallStats.progress}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-gray-900"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${overallStats.progress}%` }}
-                  transition={{ duration: 0.5 }}
+
+              {/* Search */}
+              <div className="mb-4">
+                <input
+                  type="text"
+                  placeholder="Search problems..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full text-xs px-3 py-2 border border-gray-200 rounded bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1"
                 />
               </div>
-            </div>
 
-            {/* Search */}
-            <div className="mb-4">
-              <input
-                type="text"
-                placeholder="Search problems..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full text-xs px-3 py-2 border border-gray-200 rounded bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1"
-              />
-            </div>
+              {/* Status Filter */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {['All', STATUS.TODO, STATUS.IN_PROGRESS, STATUS.DONE].map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setStatusFilter(f)}
+                    className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${statusFilter === f
+                      ? 'bg-gray-900 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
 
-            {/* Status Filter */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              {['All', STATUS.TODO, STATUS.IN_PROGRESS, STATUS.DONE].map((f) => (
+              {/* Toggle Completed */}
+              <div className="flex items-center gap-2 mb-4">
                 <button
-                  key={f}
-                  onClick={() => setStatusFilter(f)}
-                  className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${statusFilter === f
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  onClick={() => setShowCompleted(!showCompleted)}
+                  className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${showCompleted
+                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-900 text-white'
                     }`}
                 >
-                  {f}
+                  {showCompleted ? 'Hide Completed' : 'Show Completed'}
                 </button>
-              ))}
-            </div>
+              </div>
 
-            {/* Toggle Completed */}
-            <div className="flex items-center gap-2 mb-4">
+              {/* Reset Button */}
               <button
-                onClick={() => setShowCompleted(!showCompleted)}
-                className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${showCompleted
-                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  : 'bg-gray-900 text-white'
-                  }`}
+                onClick={handleReset}
+                className="text-xs px-3 py-1.5 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-sans w-full"
               >
-                {showCompleted ? 'Hide Completed' : 'Show Completed'}
+                Reset Progress
               </button>
-            </div>
-
-            {/* Reset Button */}
-            <button
-              onClick={handleReset}
-              className="text-xs px-3 py-1.5 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-sans w-full"
-            >
-              Reset Progress
-            </button>
             </div>
           </motion.div>
 
