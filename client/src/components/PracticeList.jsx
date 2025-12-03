@@ -7,7 +7,8 @@ const STATUS = {
   DONE: 'Done'
 };
 
-const PracticeList = () => {
+const PracticeList = ({ authorized = true, onRequestAuth = () => {} }) => {
+  const [compactHeader, setCompactHeader] = useState(false);
   const STORAGE_KEY = 'practice-statuses-v1';
   const [selectedTopic, setSelectedTopic] = useState(null);
   const [activeTopic, setActiveTopic] = useState(null); // For scroll-sync
@@ -425,13 +426,40 @@ const PracticeList = () => {
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="mb-6 lg:mb-8 lg:sticky lg:top-0 bg-white z-10"
+            className="mb-6 lg:mb-8 sticky top-0 bg-white z-10"
           >
             {/* Header */}
             <div className="mb-8">
-              <p className="text-xs sm:text-sm text-gray-400 font-mono font-light mb-6">
-                TOPICS
-              </p>
+              {/* Top row with Title and Compact/Lock controls */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <p className="text-xs sm:text-sm text-gray-400 font-mono font-light mb-0.5">
+                    TOPICS
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCompactHeader(!compactHeader)}
+                    className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    aria-pressed={compactHeader}
+                  >
+                    {compactHeader ? 'Expand' : 'Compact'}
+                  </button>
+                  {authorized ? (
+                    <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded bg-green-50 text-green-700">
+                      🔓 Unlocked
+                    </span>
+                  ) : (
+                    <button
+                      onClick={onRequestAuth}
+                      className="text-xs px-2 py-1 rounded bg-red-50 text-red-700 hover:bg-red-100"
+                    >
+                      🔒 Unlock
+                    </button>
+                  )}
+                </div>
+              </div>
+              {/* Topic label and controls moved above */}
 
               {/* Overall Progress */}
               <div className="mb-6">
@@ -452,22 +480,26 @@ const PracticeList = () => {
               </div>
 
               {/* Search */}
-              <div className="mb-4">
-                <input
-                  type="text"
-                  placeholder="Search problems..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full text-xs px-3 py-2 border border-gray-200 rounded bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1"
-                />
-              </div>
+              {!compactHeader && (
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    placeholder={authorized ? 'Search problems...' : 'Locked — Enter passkey in footer or click Unlock'}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => { if (!authorized) onRequestAuth(); }}
+                    disabled={!authorized}
+                    className={`w-full text-xs px-3 py-2 border border-gray-200 rounded bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 ${!authorized ? 'opacity-60 cursor-not-allowed' : ''}`}
+                  />
+                </div>
+              )}
 
               {/* Status Filter */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {['All', STATUS.TODO, STATUS.IN_PROGRESS, STATUS.DONE].map((f) => (
                   <button
                     key={f}
-                    onClick={() => setStatusFilter(f)}
+                    onClick={() => { if (authorized) setStatusFilter(f); else onRequestAuth(); }}
                     className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${statusFilter === f
                       ? 'bg-gray-900 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -481,7 +513,7 @@ const PracticeList = () => {
               {/* Toggle Completed */}
               <div className="flex items-center gap-2 mb-4">
                 <button
-                  onClick={() => setShowCompleted(!showCompleted)}
+                  onClick={() => { if (authorized) setShowCompleted(!showCompleted); else onRequestAuth(); }}
                   className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${showCompleted
                     ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     : 'bg-gray-900 text-white'
@@ -493,7 +525,7 @@ const PracticeList = () => {
 
               {/* Reset Button */}
               <button
-                onClick={handleReset}
+                onClick={() => { if (authorized) handleReset(); else onRequestAuth(); }}
                 className="text-xs px-3 py-1.5 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-sans w-full"
               >
                 Reset Progress
@@ -547,7 +579,7 @@ const PracticeList = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleQuickMarkDone(index);
+                        if (authorized) handleQuickMarkDone(index); else onRequestAuth();
                       }}
                       className="ml-12 mt-1 text-xs px-2 py-1 rounded bg-green-50 text-green-700 hover:bg-green-100 transition-colors font-sans"
                     >
@@ -564,7 +596,7 @@ const PracticeList = () => {
       {/* Right Side - Practice Items */}
       <div
         ref={rightSideRef}
-        className="col-span-1 lg:col-span-5 bg-gray-50 lg:h-screen lg:overflow-y-auto"
+        className="col-span-1 lg:col-span-5 bg-gray-50 lg:h-screen lg:overflow-y-auto relative"
       >
         <div className="p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16">
           {allSections.length === 0 ? (
@@ -619,8 +651,9 @@ const PracticeList = () => {
                         <div className="flex items-center gap-3 flex-shrink-0">
                           <select
                             value={status}
-                            onChange={(e) => handleStatusChange(item.id, e.target.value)}
-                            className="text-xs border border-gray-200 rounded px-2 py-1 bg-white text-gray-700 hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1"
+                            onChange={(e) => { if (authorized) handleStatusChange(item.id, e.target.value); }}
+                            disabled={!authorized}
+                            className={`text-xs border border-gray-200 rounded px-2 py-1 bg-white text-gray-700 hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 ${!authorized ? 'opacity-60 cursor-not-allowed' : ''}`}
                           >
                             <option value={STATUS.TODO}>{STATUS.TODO}</option>
                             <option value={STATUS.IN_PROGRESS}>{STATUS.IN_PROGRESS}</option>
@@ -647,6 +680,13 @@ const PracticeList = () => {
             ))
           )}
         </div>
+        {!authorized && (
+          <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-auto">
+            <div className="bg-white/70 backdrop-blur-sm rounded p-6 text-center">
+              <p className="text-sm text-gray-700">This section is locked. Enter passkey to unlock practices.</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

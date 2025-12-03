@@ -1,9 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import PracticeList from '../components/PracticeList';
 
-const PracticePage = () => (
+const PracticePage = () => {
+  const [authorized, setAuthorized] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [passKey, setPassKey] = useState('');
+  const [authError, setAuthError] = useState(null);
+
+  useEffect(() => {
+    // Show auth modal when visiting page; allow session persisting
+    const savedAuth = localStorage.getItem('practice-authorized');
+    if (savedAuth === 'true') {
+      setAuthorized(true);
+      setShowAuthModal(false);
+    } else {
+      setShowAuthModal(true);
+    }
+  }, []);
+
+  // Optional: If you'd like to add a "remember" checkbox, we could persist authorization in localStorage.
+
+  const handleSubmitPass = (e) => {
+    e.preventDefault();
+    if (String(passKey).trim() === '9420') {
+      setAuthorized(true);
+      setAuthError(null);
+      setShowAuthModal(false);
+      localStorage.setItem('practice-authorized', 'true');
+    } else {
+      setAuthError('Incorrect passkey — try again');
+      setAuthorized(false);
+    }
+  };
+
+  const handleRequestAuth = () => {
+    setShowAuthModal(true);
+  };
+
+  return (
   <div className="bg-white font-sans text-gray-900">
     <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20">
       <header className=''>
@@ -66,19 +102,76 @@ const PracticePage = () => (
       </header>
 
       <main>
-        <PracticeList />
+        <PracticeList authorized={authorized} onRequestAuth={handleRequestAuth} />
       </main>
 
       <footer className="border-t border-gray-200">
         <div className="py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-mono">
             <p>Practice tracking powered by local storage</p>
+            <p className="flex items-center gap-2">
+              {authorized ? (
+                <span className="text-green-600">🔓 Unlocked</span>
+              ) : (
+                <button
+                  onClick={() => setShowAuthModal(true)}
+                  className="text-xs text-red-600 hover:underline"
+                >
+                  🔒 Locked — enter passkey
+                </button>
+              )}
+            </p>
             <p>© 2024 Vedant. All rights reserved.</p>
           </div>
         </div>
       </footer>
     </div>
+    {/* Auth Modal */}
+    {showAuthModal && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+        <motion.div
+          initial={{ opacity: 0, y: -6 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-lg shadow-lg max-w-md w-full p-6"
+        >
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Enter passkey</h3>
+          <p className="text-xs text-gray-500 mb-4">This practice page requires a passkey to access. (Hint: 4 digits)</p>
+          <form onSubmit={handleSubmitPass} className="flex gap-2">
+            <input
+              type="password"
+              value={passKey}
+              onChange={(e) => setPassKey(e.target.value)}
+              className="flex-1 px-3 py-2 border border-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-gray-900"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-gray-900 text-white rounded text-sm"
+            >
+              Unlock
+            </button>
+          </form>
+          {authError && <p className="text-xs text-red-600 mt-2">{authError}</p>}
+          <div className="mt-4 flex items-center justify-between">
+            {/* <button
+              onClick={() => { setShowAuthModal(false); setPassKey(''); setAuthError(null); }}
+              className="text-xs text-gray-600 hover:underline"
+            >
+              Close
+            </button> */}
+            {/* <button
+              onClick={() => { setPassKey('9420'); setAuthorized(true); setAuthError(null); setShowAuthModal(false); localStorage.setItem('practice-authorized', 'true'); }}
+              className="text-xs text-gray-600 hover:underline"
+              title="Autofill"
+            >
+              Autofill (for demos)
+            </button> */}
+          </div>
+        </motion.div>
+      </div>
+    )}
+
   </div>
-);
+  );
+};
 
 export default PracticePage;
