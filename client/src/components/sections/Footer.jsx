@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -8,7 +9,8 @@ const Footer = () => {
     { label: 'ABOUT', href: '#about' },
     { label: 'PROJECTS', href: '#projects' },
     { label: 'SKILLS', href: '#skills' },
-    { label: 'BLOG', href: '/blog' },
+    { label: 'BLOG', href: '/blogs' },
+    { label: 'PRACTICE', href: '/practice' },
     { label: 'CONTACT', href: '#contact' }
   ];
 
@@ -63,17 +65,32 @@ const Footer = () => {
           {/* Mobile Navigation Grid */}
           <nav className="grid grid-cols-2 sm:flex gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
             {navLinks.map((link) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                className="text-sm font-sans font-light text-gray-900 hover:text-gray-600 
-                         transition-all py-1 sm:py-0"
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {link.label}
-              </motion.a>
+              link.href.startsWith('#') ? (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  className="text-sm font-sans font-light text-gray-900 hover:text-gray-600 
+                           transition-all py-1 sm:py-0"
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {link.label}
+                </motion.a>
+              ) : (
+                <motion.span
+                  key={link.label}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Link
+                    to={link.href}
+                    className="text-sm font-sans font-light text-gray-900 hover:text-gray-600 transition-all py-1 sm:py-0"
+                  >
+                    {link.label}
+                  </Link>
+                </motion.span>
+              )
             ))}
           </nav>
           

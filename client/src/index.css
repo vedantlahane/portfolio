@@ -43,3 +43,30 @@ body::before {
 	flex-shrink: 0;
 	align-items: center;
 }
+
+/* Custom Scrollbar Styling */
+/* For Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #e5e7eb;
+	border-radius: 4px;
+	transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: #d1d5db;
+}
+
+/* For Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: #e5e7eb transparent;
+}
