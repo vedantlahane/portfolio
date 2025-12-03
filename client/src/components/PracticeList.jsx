@@ -420,228 +420,143 @@ const PracticeList = () => {
       {/* Left Sidebar - Topics */}
       <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 bg-white lg:h-screen lg:sticky lg:top-0 lg:overflow-y-auto">
         <div className="p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16">
-          {/* Enhanced Header Container */}
+          {/* NEW: Moving Header Container on top of Left Sidebar */}
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="mb-6 lg:mb-8 pb-6 border-b border-gray-200"
+            className="mb-6 lg:mb-8 lg:sticky lg:top-0 bg-white z-10"
           >
-            {/* Section Label */}
-            <div className="mb-6">
-              <p className="text-xs sm:text-sm text-gray-400 font-mono font-light">
-                PRACTICE TRACKER
+            {/* Header */}
+            <div className="mb-8">
+              <p className="text-xs sm:text-sm text-gray-400 font-mono font-light mb-6">
+                TOPICS
               </p>
-            </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              <motion.div
-                className="bg-gradient-to-br from-green-50 to-green-100 p-3 rounded-lg"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="text-xl sm:text-2xl font-display font-bold text-green-700">
-                  {overallStats.done}
+              {/* Overall Progress */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600 font-sans">Overall Progress</span>
+                  <span className="text-xs text-gray-500 font-mono">
+                    {overallStats.done}/{overallStats.total}
+                  </span>
                 </div>
-                <div className="text-[10px] sm:text-xs text-green-600 font-sans uppercase tracking-wide mt-1">
-                  Done
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gray-900"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${overallStats.progress}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
                 </div>
-              </motion.div>
-
-              <motion.div
-                className="bg-gradient-to-br from-blue-50 to-blue-100 p-3 rounded-lg"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="text-xl sm:text-2xl font-display font-bold text-blue-700">
-                  {overallStats.inProgress}
-                </div>
-                <div className="text-[10px] sm:text-xs text-blue-600 font-sans uppercase tracking-wide mt-1">
-                  Active
-                </div>
-              </motion.div>
-
-              <motion.div
-                className="bg-gradient-to-br from-gray-50 to-gray-100 p-3 rounded-lg"
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.2 }}
-              >
-                <div className="text-xl sm:text-2xl font-display font-bold text-gray-700">
-                  {overallStats.todo}
-                </div>
-                <div className="text-[10px] sm:text-xs text-gray-600 font-sans uppercase tracking-wide mt-1">
-                  Todo
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Overall Progress Bar */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-900 font-sans font-medium">Overall Progress</span>
-                <span className="text-sm text-gray-900 font-mono font-semibold">
-                  {Math.round(overallStats.progress)}%
-                </span>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-gray-900 to-gray-700"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${overallStats.progress}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-              <div className="flex items-center justify-between mt-1 text-[10px] text-gray-500 font-mono">
-                <span>{overallStats.done} completed</span>
-                <span>{overallStats.total} total</span>
-              </div>
-            </div>
 
-            {/* Search with Icon */}
-            <div className="mb-4">
-              <div className="relative">
-                <svg
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+              {/* Search */}
+              <div className="mb-4">
                 <input
                   type="text"
                   placeholder="Search problems..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full text-xs pl-9 pr-3 py-2.5 border border-gray-200 rounded-lg bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                  className="w-full text-xs px-3 py-2 border border-gray-200 rounded bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1"
                 />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                )}
               </div>
-            </div>
 
-            {/* Status Filter with Counts */}
-            <div className="mb-4">
-              <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wide mb-2">Filter by Status</p>
-              <div className="flex flex-wrap gap-2">
-                {[
-                  { label: 'All', count: overallStats.total },
-                  { label: STATUS.TODO, count: overallStats.todo },
-                  { label: STATUS.IN_PROGRESS, count: overallStats.inProgress },
-                  { label: STATUS.DONE, count: overallStats.done }
-                ].map((filter) => (
+              {/* Status Filter */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {['All', STATUS.TODO, STATUS.IN_PROGRESS, STATUS.DONE].map((f) => (
                   <button
-                    key={filter.label}
-                    onClick={() => setStatusFilter(filter.label)}
-                    className={`text-xs px-3 py-1.5 rounded-lg transition-all duration-200 font-sans flex items-center gap-1.5 ${statusFilter === filter.label
-                      ? 'bg-gray-900 text-white shadow-sm'
+                    key={f}
+                    onClick={() => setStatusFilter(f)}
+                    className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${statusFilter === f
+                      ? 'bg-gray-900 text-white'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                   >
-                    <span>{filter.label}</span>
-                    <span className={`text-[10px] font-mono ${statusFilter === filter.label ? 'text-gray-300' : 'text-gray-500'
-                      }`}>
-                      {filter.count}
-                    </span>
+                    {f}
                   </button>
                 ))}
               </div>
-            </div>
 
-            {/* Quick Actions */}
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowCompleted(!showCompleted)}
-                className={`flex-1 text-xs px-3 py-2 rounded-lg transition-all duration-200 font-sans ${showCompleted
-                  ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  : 'bg-gray-900 text-white hover:bg-gray-800'
-                  }`}
-              >
-                {showCompleted ? '👁️ Hide Done' : '👁️ Show Done'}
-              </button>
+              {/* Toggle Completed */}
+              <div className="flex items-center gap-2 mb-4">
+                <button
+                  onClick={() => setShowCompleted(!showCompleted)}
+                  className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${showCompleted
+                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-900 text-white'
+                    }`}
+                >
+                  {showCompleted ? 'Hide Completed' : 'Show Completed'}
+                </button>
+              </div>
 
+              {/* Reset Button */}
               <button
                 onClick={handleReset}
-                className="flex-1 text-xs px-3 py-2 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 transition-colors font-sans"
-                title="Reset all progress"
+                className="text-xs px-3 py-1.5 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-sans w-full"
               >
-                🔄 Reset
+                Reset Progress
               </button>
             </div>
           </motion.div>
 
-          {/* Topics Section */}
-          <div>
-            <div className="mb-4">
-              <p className="text-[10px] text-gray-500 font-mono uppercase tracking-wide">Topics ({sections.length})</p>
-            </div>
-
-            {/* Topic List */}
-            <div className="space-y-1">
-              {sections.map((sec, index) => {
-                const isActive = selectedTopic === null ? activeTopic === index : selectedTopic === index;
-                return (
-                  <motion.div
-                    key={sec.title}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.02 * index }}
+          {/* Topic List */}
+          <div className="space-y-1">
+            {sections.map((sec, index) => {
+              const isActive = selectedTopic === null ? activeTopic === index : selectedTopic === index;
+              return (
+                <motion.div
+                  key={sec.title}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.02 * index }}
+                >
+                  <button
+                    ref={(el) => (topicButtonRefs.current[index] = el)}
+                    onClick={() => handleTopicClick(index)}
+                    className="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900"
                   >
-                    <button
-                      ref={(el) => (topicButtonRefs.current[index] = el)}
-                      onClick={() => handleTopicClick(index)}
-                      className="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900"
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        {/* Arrow indicator - pushes content to right when active */}
-                        {isActive && (
-                          <span className="text-sm font-mono text-gray-900">
-                            →
-                          </span>
-                        )}
-                        <span className="text-xs font-mono text-gray-400">
-                          {String(index + 1).padStart(2, '0')}
+                    <div className="flex items-center gap-2 mb-2">
+                      {/* Arrow indicator - pushes content to right when active */}
+                      {isActive && (
+                        <span className="text-sm font-mono text-gray-900">
+                          →
                         </span>
-                        <span className={`text-sm font-sans flex-1 transition-colors duration-200 ${isActive ? 'text-gray-900 font-medium' : ''
-                          }`}>{sec.title}</span>
-                        <span className="text-xs font-mono text-gray-500">
-                          {topicStats[index].done}/{topicStats[index].total}
-                        </span>
-                      </div>
-                      {topicStats[index].progress > 0 && (
-                        <div className={`h-1 bg-gray-200 rounded-full overflow-hidden transition-all duration-200 ${isActive ? 'ml-8' : 'ml-6'
-                          }`}>
-                          <div
-                            className="h-full bg-gray-900 transition-all duration-300"
-                            style={{ width: `${topicStats[index].progress}%` }}
-                          />
-                        </div>
                       )}
-                    </button>
-                    {isActive && topicStats[index].done < topicStats[index].total && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQuickMarkDone(index);
-                        }}
-                        className="ml-12 mt-1 text-xs px-2 py-1 rounded bg-green-50 text-green-700 hover:bg-green-100 transition-colors font-sans"
-                      >
-                        Mark all done
-                      </button>
+                      <span className="text-xs font-mono text-gray-400">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span className={`text-sm font-sans flex-1 transition-colors duration-200 ${isActive ? 'text-gray-900 font-medium' : ''
+                        }`}>{sec.title}</span>
+                      <span className="text-xs font-mono text-gray-500">
+                        {topicStats[index].done}/{topicStats[index].total}
+                      </span>
+                    </div>
+                    {topicStats[index].progress > 0 && (
+                      <div className={`h-1 bg-gray-200 rounded-full overflow-hidden transition-all duration-200 ${isActive ? 'ml-8' : 'ml-6'
+                        }`}>
+                        <div
+                          className="h-full bg-gray-900 transition-all duration-300"
+                          style={{ width: `${topicStats[index].progress}%` }}
+                        />
+                      </div>
                     )}
-                  </motion.div>
-                );
-              })}
-            </div>
+                  </button>
+                  {isActive && topicStats[index].done < topicStats[index].total && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleQuickMarkDone(index);
+                      }}
+                      className="ml-12 mt-1 text-xs px-2 py-1 rounded bg-green-50 text-green-700 hover:bg-green-100 transition-colors font-sans"
+                    >
+                      Mark all done
+                    </button>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>
