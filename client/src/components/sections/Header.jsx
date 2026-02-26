@@ -14,26 +14,36 @@ const Header = () => {
 
   // Update active section based on scroll position
   useEffect(() => {
+    let timeoutId = null;
+
     const handleScroll = () => {
-      const sections = navigationItems.map(item => item.href.substring(1));
-      const scrollPosition = window.scrollY + 100;
+      if (timeoutId) return;
 
-      let currentSection = '';
-      sections.forEach(section => {
-        const element = document.getElementById(section);
-        if (element) {
-          const { offsetTop, offsetHeight } = element;
-          if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-            currentSection = `#${section}`;
+      timeoutId = setTimeout(() => {
+        const sections = navigationItems.map(item => item.href.substring(1));
+        const scrollPosition = window.scrollY + 100;
+
+        let currentSection = '';
+        sections.forEach(section => {
+          const element = document.getElementById(section);
+          if (element) {
+            const { offsetTop, offsetHeight } = element;
+            if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+              currentSection = `#${section}`;
+            }
           }
-        }
-      });
+        });
 
-      setActiveSection(currentSection);
+        setActiveSection(prev => prev !== currentSection ? currentSection : prev);
+        timeoutId = null;
+      }, 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (timeoutId) clearTimeout(timeoutId);
+    }
   }, []);
 
   // Close mobile menu on resize
@@ -117,8 +127,8 @@ const Header = () => {
                 className="relative group"
               >
                 <div className={`px-3 lg:px-5 xl:px-6 py-2 text-sm lg:text-base font-sans font-light transition-all duration-300 ${activeSection === item.href
-                    ? 'text-gray-900 font-medium'
-                    : 'text-gray-500 hover:text-gray-900'
+                  ? 'text-gray-900 font-medium'
+                  : 'text-gray-500 hover:text-gray-900'
                   }`}>
                   <span className="text-[10px] lg:text-xs font-mono font-light text-gray-400 mr-1.5 lg:mr-2">
                     {String(index + 1).padStart(2, '0')}
@@ -194,8 +204,8 @@ const Header = () => {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ delay: 0.05 * index }}
                     className={`flex items-center px-2 py-3 rounded-lg transition-all duration-300 ${activeSection === item.href
-                        ? 'text-gray-900 bg-gray-100 font-medium'
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'text-gray-900 bg-gray-100 font-medium'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                       }`}
                   >
                     <span className="text-xs font-mono font-light text-gray-400 mr-3 w-6">

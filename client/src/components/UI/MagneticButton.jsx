@@ -12,29 +12,45 @@ export default function MagneticButton({ children, href, onClick, className = ''
     const y = useSpring(0, springConfig);
 
     useEffect(() => {
+        let ticking = false;
+        let rect = null;
+
+        const updateRect = () => {
+            if (ref.current) {
+                rect = ref.current.getBoundingClientRect();
+            }
+        };
+
         const handleMouseMove = (e) => {
-            if (!ref.current) return;
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    if (!ref.current || !rect) return;
 
-            const rect = ref.current.getBoundingClientRect();
-            const clientX = e.clientX;
-            const clientY = e.clientY;
+                    const clientX = e.clientX;
+                    const clientY = e.clientY;
 
-            // Calculate distance from center of button
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
+                    // Calculate distance from center of button
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
 
-            // Distance threshold for magnetism
-            const distance = Math.max(Math.abs(clientX - centerX), Math.abs(clientY - centerY));
+                    // Distance threshold for magnetism
+                    const distanceX = Math.abs(clientX - centerX);
+                    const distanceY = Math.abs(clientY - centerY);
+                    const distance = Math.max(distanceX, distanceY);
 
-            if (distance < 100) { // 100px magnetic radius
-                setIsHovered(true);
-                // Only pull 30% towards the mouse
-                x.set((clientX - centerX) * 0.3);
-                y.set((clientY - centerY) * 0.3);
-            } else {
-                setIsHovered(false);
-                x.set(0);
-                y.set(0);
+                    if (distance < 100) { // 100px magnetic radius
+                        setIsHovered(true);
+                        // Only pull 30% towards the mouse
+                        x.set((clientX - centerX) * 0.3);
+                        y.set((clientY - centerY) * 0.3);
+                    } else {
+                        setIsHovered(false);
+                        x.set(0);
+                        y.set(0);
+                    }
+                    ticking = false;
+                });
+                ticking = true;
             }
         };
 
@@ -44,9 +60,31 @@ export default function MagneticButton({ children, href, onClick, className = ''
             y.set(0);
         };
 
-        window.addEventListener('mousemove', handleMouseMove);
+        const handleMouseEnter = () => {
+            updateRect();
+        };
+
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
+        window.addEventListener('scroll', updateRect, { passive: true });
+        window.addEventListener('resize', updateRect, { passive: true });
+
+        const currentRef = ref.current;
+        if (currentRef) {
+            currentRef.addEventListener('mouseenter', handleMouseEnter);
+            currentRef.addEventListener('mouseleave', handleMouseLeave);
+        }
+
+        // initial capture
+        updateRect();
+
         return () => {
             window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('scroll', updateRect);
+            window.removeEventListener('resize', updateRect);
+            if (currentRef) {
+                currentRef.removeEventListener('mouseenter', handleMouseEnter);
+                currentRef.removeEventListener('mouseleave', handleMouseLeave);
+            }
         };
     }, [x, y]);
 

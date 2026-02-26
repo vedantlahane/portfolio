@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 
-const MouseFollower = ({ 
+const MouseFollower = ({
   showOnMobile = false,
   style = 'inception' // 'inception', 'vortex', 'ripple', 'constellation', 'neural', 'quantum'
 }) => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
   const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isDarkBackground, setIsDarkBackground] = useState(true);
   const [hoverType, setHoverType] = useState('default'); // 'default', 'link', 'button', 'input'
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  
+
   // Spring animations for smooth following
   const springConfig = { stiffness: 150, damping: 20 };
   const springX = useSpring(mouseX, springConfig);
   const springY = useSpring(mouseY, springConfig);
 
-// Improved background brightness detection
-const detectBackgroundBrightness = (x, y) => {
+  // Improved background brightness detection
+  const detectBackgroundBrightness = (x, y) => {
     const element = document.elementFromPoint(x, y);
     if (!element) return;
 
@@ -27,25 +27,25 @@ const detectBackgroundBrightness = (x, y) => {
     let el = element;
     let bgColor = '';
     while (el && el !== document.body) {
-        bgColor = window.getComputedStyle(el).backgroundColor;
-        if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') break;
-        el = el.parentElement;
+      bgColor = window.getComputedStyle(el).backgroundColor;
+      if (bgColor && bgColor !== 'rgba(0, 0, 0, 0)' && bgColor !== 'transparent') break;
+      el = el.parentElement;
     }
     if (!bgColor || bgColor === 'rgba(0, 0, 0, 0)' || bgColor === 'transparent') {
-        bgColor = window.getComputedStyle(document.body).backgroundColor || 'rgb(0,0,0)';
+      bgColor = window.getComputedStyle(document.body).backgroundColor || 'rgb(0,0,0)';
     }
 
     // Parse rgb/rgba color
     const rgb = bgColor.match(/\d+/g);
     if (rgb && rgb.length >= 3) {
-        const r = parseInt(rgb[0], 10);
-        const g = parseInt(rgb[1], 10);
-        const b = parseInt(rgb[2], 10);
-        // Perceived brightness formula
-        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-        setIsDarkBackground(brightness < 128);
+      const r = parseInt(rgb[0], 10);
+      const g = parseInt(rgb[1], 10);
+      const b = parseInt(rgb[2], 10);
+      // Perceived brightness formula
+      const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+      setIsDarkBackground(brightness < 128);
     }
-};
+  };
 
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
@@ -54,14 +54,16 @@ const detectBackgroundBrightness = (x, y) => {
     // Hide default cursor
     document.body.style.cursor = 'none';
 
+    let lastBrightnessCheck = 0;
     const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
       setIsVisible(true);
-      
-      // Detect background brightness periodically
-      if (Math.random() > 0.95) {
+
+      // Detect background brightness periodically (max 10 times a second)
+      const now = performance.now();
+      if (now - lastBrightnessCheck > 100) {
+        lastBrightnessCheck = now;
         detectBackgroundBrightness(e.clientX, e.clientY);
       }
     };
@@ -75,9 +77,9 @@ const detectBackgroundBrightness = (x, y) => {
       const isLink = target.tagName === 'A' || target.closest('a');
       const isButton = target.tagName === 'BUTTON' || target.closest('button');
       const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
-      
+
       setIsHovering(isLink || isButton || isInput);
-      
+
       if (isLink) setHoverType('link');
       else if (isButton) setHoverType('button');
       else if (isInput) setHoverType('input');
@@ -159,14 +161,14 @@ const detectBackgroundBrightness = (x, y) => {
                   opacity: layer.opacity,
                 }}
                 animate={{
-                  borderRadius: hoverType === 'link' ? '50%' : 
-                               hoverType === 'button' ? '25%' : 
-                               hoverType === 'input' ? '10%' : '0%',
+                  borderRadius: hoverType === 'link' ? '50%' :
+                    hoverType === 'button' ? '25%' :
+                      hoverType === 'input' ? '10%' : '0%',
                   rotate: index * 15,
                 }}
                 transition={{ duration: 0.3 }}
               />
-              
+
               {/* Inner geometric patterns */}
               {index < 3 && (
                 <>
@@ -194,7 +196,7 @@ const detectBackgroundBrightness = (x, y) => {
                       },
                     }}
                   />
-                  
+
                   {/* Floating particles */}
                   <motion.div
                     className="absolute inset-0"
@@ -253,8 +255,8 @@ const detectBackgroundBrightness = (x, y) => {
             style={{ backgroundColor: cursorColor }}
             animate={{
               scale: isHovering ? [1, 1.8, 1] : 1,
-              borderRadius: hoverType === 'link' ? '50%' : 
-                           hoverType === 'button' ? '25%' : '0%',
+              borderRadius: hoverType === 'link' ? '50%' :
+                hoverType === 'button' ? '25%' : '0%',
             }}
             transition={{
               scale: { duration: 0.5, repeat: isHovering ? Infinity : 0 },
@@ -412,14 +414,14 @@ const detectBackgroundBrightness = (x, y) => {
                 repeat: Infinity,
               }}
             />
-            
+
             {/* Inner pulse */}
             <motion.div
               className="absolute inset-1 rounded-full"
               style={{
                 backgroundColor: isDarkBackground ? 'black' : 'white',
               }}
-                            animate={{
+              animate={{
                 scale: [0.5, 0.8, 0.5],
                 opacity: [0.3, 0.6, 0.3],
               }}
@@ -511,7 +513,7 @@ const detectBackgroundBrightness = (x, y) => {
           {quantumStates.map((state, i) => {
             const angle = (state.offset * Math.PI) / 180;
             const radius = isHovering ? 30 : 20;
-            
+
             return (
               <motion.circle
                 key={`entangle-${i}`}
@@ -708,9 +710,9 @@ const detectBackgroundBrightness = (x, y) => {
                 marginTop: -12,
               }}
               animate={{
-                borderRadius: hoverType === 'link' ? '50%' : 
-                             hoverType === 'button' ? '30%' : 
-                             hoverType === 'input' ? '20%' : '10%',
+                borderRadius: hoverType === 'link' ? '50%' :
+                  hoverType === 'button' ? '30%' :
+                    hoverType === 'input' ? '20%' : '10%',
                 scale: isHovering ? [1, 1.4, 1] : 1,
               }}
               transition={{
@@ -816,9 +818,9 @@ const detectBackgroundBrightness = (x, y) => {
               height: isHovering ? [16, 24, 16] : 16,
               marginLeft: isHovering ? [-8, -12, -8] : -8,
               marginTop: isHovering ? [-8, -12, -8] : -8,
-              borderRadius: hoverType === 'link' ? '50%' : 
-                           hoverType === 'button' ? '30%' : 
-                           hoverType === 'input' ? '20%' : '40%',
+              borderRadius: hoverType === 'link' ? '50%' :
+                hoverType === 'button' ? '30%' :
+                  hoverType === 'input' ? '20%' : '40%',
             }}
             transition={{
               duration: 0.8,
@@ -885,28 +887,28 @@ const detectBackgroundBrightness = (x, y) => {
       >
         <defs>
           <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
             <feMerge>
-              <feMergeNode in="coloredBlur"/>
-              <feMergeNode in="SourceGraphic"/>
+              <feMergeNode in="coloredBlur" />
+              <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
         </defs>
-        
+
         {constellationNodes.map((node, i) => {
           const connections = [
             (i + 1) % constellationNodes.length,
             (i + 3) % constellationNodes.length,
             (i + 5) % constellationNodes.length,
           ];
-          
+
           return connections.map((targetIndex) => {
             const targetNode = constellationNodes[targetIndex];
             const x1 = springX.get() + Math.cos((node.angle * Math.PI) / 180) * node.distance;
             const y1 = springY.get() + Math.sin((node.angle * Math.PI) / 180) * node.distance;
             const x2 = springX.get() + Math.cos((targetNode.angle * Math.PI) / 180) * targetNode.distance;
             const y2 = springY.get() + Math.sin((targetNode.angle * Math.PI) / 180) * targetNode.distance;
-            
+
             return (
               <motion.line
                 key={`line-${i}-${targetIndex}`}
@@ -914,7 +916,7 @@ const detectBackgroundBrightness = (x, y) => {
                 y1={y1}
                 x2={x2}
                 y2={y2}
-                                stroke={cursorColor}
+                stroke={cursorColor}
                 strokeWidth="0.5"
                 filter="url(#glow)"
                 initial={{ pathLength: 0, opacity: 0 }}
@@ -976,7 +978,7 @@ const detectBackgroundBrightness = (x, y) => {
                 ease: "easeInOut",
               }}
             />
-            
+
             {/* Node glow effect */}
             <motion.div
               className="absolute inset-0 rounded-full"
@@ -1030,16 +1032,16 @@ const detectBackgroundBrightness = (x, y) => {
             }}
             animate={{
               scale: isHovering ? [1, 1.3, 1] : 1,
-              borderRadius: hoverType === 'link' ? '50%' : 
-                           hoverType === 'button' ? '30%' : 
-                           hoverType === 'input' ? '20%' : '50%',
+              borderRadius: hoverType === 'link' ? '50%' :
+                hoverType === 'button' ? '30%' :
+                  hoverType === 'input' ? '20%' : '50%',
             }}
             transition={{
               scale: { duration: 1, repeat: isHovering ? Infinity : 0 },
               borderRadius: { duration: 0.3 },
             }}
           />
-          
+
           {/* Inner core */}
           <motion.div
             className="absolute rounded-full"
@@ -1062,7 +1064,7 @@ const detectBackgroundBrightness = (x, y) => {
               ease: "easeInOut",
             }}
           />
-          
+
           {/* Rotating satellites */}
           {hoverType !== 'default' && [0, 120, 240].map((angle) => (
             <motion.div
@@ -1108,7 +1110,7 @@ const detectBackgroundBrightness = (x, y) => {
             {[...Array(12)].map((_, i) => {
               const angle = (i * 30 * Math.PI) / 180;
               const distance = 60;
-              
+
               return (
                 <motion.div
                   key={`burst-${i}`}

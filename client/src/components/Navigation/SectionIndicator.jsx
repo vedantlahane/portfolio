@@ -18,45 +18,52 @@ export default function SectionIndicator() {
     useEffect(() => {
         if (location.pathname !== '/') return;
 
+        let timeoutId = null;
+
         const handleScroll = () => {
-            const scrollY = window.scrollY;
-            const windowHeight = window.innerHeight;
+            if (timeoutId) return;
 
-            // Calculate active section based on proximity to vertical center
-            let closestIdx = 0;
-            let minDistance = Infinity;
+            timeoutId = setTimeout(() => {
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
 
-            sections.forEach((section, index) => {
-                // Special cases for top and bottom of page
-                if (index === 0) {
-                    if (scrollY < windowHeight * 0.3) {
-                        closestIdx = 0;
-                        return;
+                // Calculate active section based on proximity to vertical center
+                let closestIdx = 0;
+                let minDistance = Infinity;
+
+                sections.forEach((section, index) => {
+                    // Special cases for top and bottom of page
+                    if (index === 0) {
+                        if (scrollY < windowHeight * 0.3) {
+                            closestIdx = 0;
+                            return;
+                        }
                     }
-                }
-                if (index === sections.length - 1) {
-                    if (scrollY + windowHeight >= document.documentElement.scrollHeight - windowHeight * 0.3) {
-                        closestIdx = index;
-                        return;
+                    if (index === sections.length - 1) {
+                        if (scrollY + windowHeight >= document.documentElement.scrollHeight - windowHeight * 0.3) {
+                            closestIdx = index;
+                            return;
+                        }
                     }
-                }
 
-                const el = document.getElementById(section.id);
-                if (el) {
-                    const rect = el.getBoundingClientRect();
-                    const distanceToCenter = Math.abs(rect.top + rect.height / 2 - windowHeight / 2);
-                    if (distanceToCenter < minDistance) {
-                        minDistance = distanceToCenter;
-                        closestIdx = index;
+                    const el = document.getElementById(section.id);
+                    if (el) {
+                        const rect = el.getBoundingClientRect();
+                        const distanceToCenter = Math.abs(rect.top + rect.height / 2 - windowHeight / 2);
+                        if (distanceToCenter < minDistance) {
+                            minDistance = distanceToCenter;
+                            closestIdx = index;
+                        }
                     }
-                }
-            });
+                });
 
-            setActiveIdx(closestIdx);
+                setActiveIdx(prev => prev !== closestIdx ? closestIdx : prev);
+                timeoutId = null;
+            }, 50);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
+        handleScroll(); // Initial check
 
         return () => window.removeEventListener('scroll', handleScroll);
     }, [location.pathname]);
@@ -105,10 +112,10 @@ export default function SectionIndicator() {
                         >
                             <div
                                 className={`rounded-full transition-all duration-300 ease-out ${isActive
-                                        ? 'w-2 h-2 bg-gray-900 scale-125'
-                                        : isAdjacent
-                                            ? 'w-[6px] h-[6px] bg-gray-400'
-                                            : 'w-1.5 h-1.5 bg-gray-300'
+                                    ? 'w-2 h-2 bg-gray-900 scale-125'
+                                    : isAdjacent
+                                        ? 'w-[6px] h-[6px] bg-gray-400'
+                                        : 'w-1.5 h-1.5 bg-gray-300'
                                     }`}
                             />
                         </button>

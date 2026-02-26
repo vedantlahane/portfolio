@@ -283,53 +283,53 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
   useEffect(() => {
     if (selectedTopic !== null) return; // Don't auto-sync when manually filtered
 
-    let ticking = false;
+    let timeoutId = null;
 
     const handleScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          if (!rightSideRef.current || sectionRefs.current.length === 0) {
-            ticking = false;
-            return;
-          }
+      if (timeoutId) return;
 
-          const container = rightSideRef.current;
-          const containerTop = container.getBoundingClientRect().top;
+      timeoutId = setTimeout(() => {
+        if (!rightSideRef.current || sectionRefs.current.length === 0) {
+          timeoutId = null;
+          return;
+        }
 
-          // Find which section is currently most visible
-          let currentActive = 0;
-          for (let i = 0; i < sectionRefs.current.length; i++) {
-            const section = sectionRefs.current[i];
-            if (section) {
-              const rect = section.getBoundingClientRect();
-              const sectionTop = rect.top - containerTop;
+        const container = rightSideRef.current;
+        const containerTop = container.getBoundingClientRect().top;
 
-              // If section is in view (with some offset)
-              if (sectionTop <= 150) {
-                currentActive = i;
-              }
+        // Find which section is currently most visible
+        let currentActive = 0;
+        for (let i = 0; i < sectionRefs.current.length; i++) {
+          const section = sectionRefs.current[i];
+          if (section) {
+            const rect = section.getBoundingClientRect();
+            const sectionTop = rect.top - containerTop;
+
+            // If section is in view (with some offset)
+            if (sectionTop <= 150) {
+              currentActive = i;
             }
           }
+        }
 
-          setActiveTopic(currentActive);
-          ticking = false;
-        });
-        ticking = true;
-      }
+        setActiveTopic(prev => (prev !== currentActive ? currentActive : prev));
+        timeoutId = null;
+      }, 50);
     };
 
     const rightSide = rightSideRef.current;
     if (rightSide) {
       rightSide.addEventListener('scroll', handleScroll, { passive: true });
-      handleScroll(); // Initial check
+      setTimeout(handleScroll, 100); // Initial check after a slight delay
     }
 
     return () => {
       if (rightSide) {
         rightSide.removeEventListener('scroll', handleScroll);
       }
+      if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [selectedTopic]);
+  }, [selectedTopic, allSections]);
 
   // Auto-scroll sidebar when active topic changes
   useEffect(() => {

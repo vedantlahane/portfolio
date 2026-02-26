@@ -23,33 +23,39 @@ export default function BottomNav() {
         }
 
         let lastScrollY = window.scrollY;
+        let timeoutId = null;
 
         const handleScroll = () => {
-            const scrollY = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
+            if (timeoutId) return;
 
-            // Hide if at very bottom
-            if (scrollY + windowHeight >= documentHeight - 50) {
-                setIsVisible(false);
-            } else {
-                setIsVisible(true);
-            }
+            timeoutId = setTimeout(() => {
+                const scrollY = window.scrollY;
+                const windowHeight = window.innerHeight;
+                const documentHeight = document.documentElement.scrollHeight;
 
-            // Check active section
-            let currentSection = navItems[0].id;
-            navItems.forEach(item => {
-                const element = document.getElementById(item.id);
-                if (element) {
-                    const rect = element.getBoundingClientRect();
-                    // If section is in the top half of viewport
-                    if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
-                        currentSection = item.id;
-                    }
+                // Hide if at very bottom
+                if (scrollY + windowHeight >= documentHeight - 50) {
+                    setIsVisible(false);
+                } else {
+                    setIsVisible(true);
                 }
-            });
-            setActiveSection(currentSection);
-            lastScrollY = scrollY;
+
+                // Check active section
+                let currentSection = navItems[0].id;
+                navItems.forEach(item => {
+                    const element = document.getElementById(item.id);
+                    if (element) {
+                        const rect = element.getBoundingClientRect();
+                        // If section is in the top half of viewport
+                        if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
+                            currentSection = item.id;
+                        }
+                    }
+                });
+                setActiveSection(prev => prev !== currentSection ? currentSection : prev);
+                lastScrollY = scrollY;
+                timeoutId = null;
+            }, 50);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -66,6 +72,7 @@ export default function BottomNav() {
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize);
+            if (timeoutId) clearTimeout(timeoutId);
         };
     }, [location.pathname]);
 

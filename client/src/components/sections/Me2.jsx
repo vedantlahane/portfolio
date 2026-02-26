@@ -29,7 +29,7 @@ const Me2 = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
@@ -49,19 +49,40 @@ const Me2 = () => {
   useEffect(() => {
     if (isMobile) return;
 
-    const handleMouseMove = (e) => {
-      if (!sectionRef.current) return;
-      
-      const rect = sectionRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      
-      sectionRef.current.style.setProperty('--mouse-x', x);
-      sectionRef.current.style.setProperty('--mouse-y', y);
+    let ticking = false;
+    let rect = null;
+
+    const updateRect = () => {
+      if (sectionRef.current) {
+        rect = sectionRef.current.getBoundingClientRect();
+      }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    updateRect();
+    window.addEventListener('resize', updateRect);
+    window.addEventListener('scroll', updateRect, { passive: true });
+
+    const handleMouseMove = (e) => {
+      if (!ticking && rect && sectionRef.current) {
+        window.requestAnimationFrame(() => {
+          if (!sectionRef.current) return;
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+          sectionRef.current.style.setProperty('--mouse-x', x);
+          sectionRef.current.style.setProperty('--mouse-y', y);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('resize', updateRect);
+      window.removeEventListener('scroll', updateRect);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, [isMobile]);
 
   // Cycle through skills
@@ -69,7 +90,7 @@ const Me2 = () => {
     const interval = setInterval(() => {
       setActiveSkill((prev) => (prev + 1) % skills.length);
     }, 2500);
-    
+
     return () => clearInterval(interval);
   }, [skills.length]);
 
@@ -80,7 +101,7 @@ const Me2 = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.2 }}
       className="bg-black p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 h-full relative overflow-hidden"
-      style={{ 
+      style={{
         perspective: isMobile ? '800px' : '1500px',
         '--mouse-x': 0,
         '--mouse-y': 0,
@@ -194,7 +215,7 @@ const Me2 = () => {
             }}
           >
             {/* High contrast grid pattern */}
-            <div 
+            <div
               className="absolute inset-0"
               style={{
                 backgroundImage: `
@@ -366,11 +387,10 @@ const Me2 = () => {
           {skills.map((_, index) => (
             <motion.div
               key={index}
-              className={`h-3 sm:h-4 rounded-full transition-all duration-300 ${
-                index === activeSkill 
-                  ? 'bg-white w-8 sm:w-10' 
+              className={`h-3 sm:h-4 rounded-full transition-all duration-300 ${index === activeSkill
+                  ? 'bg-white w-8 sm:w-10'
                   : 'bg-white/30 w-1.5'
-              }`}
+                }`}
               animate={{
                 opacity: index === activeSkill ? 1 : 0.3,
               }}
@@ -388,16 +408,16 @@ const Me2 = () => {
       >
         <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-gray-400 font-sans">
           <span className="flex items-center gap-1">
-            <motion.div 
+            <motion.div
               className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
-              animate={{ 
+              animate={{
                 scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5] 
+                opacity: [0.5, 1, 0.5]
               }}
-              transition={{ 
-                duration: 2, 
+              transition={{
+                duration: 2,
                 repeat: Infinity,
-                ease: "easeInOut" 
+                ease: "easeInOut"
               }}
             />
             <span className="hidden sm:inline">Building</span>
@@ -405,14 +425,14 @@ const Me2 = () => {
           </span>
           <span className="text-gray-600">•</span>
           <span className="flex items-center gap-1">
-            <motion.div 
+            <motion.div
               className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
-              animate={{ 
+              animate={{
                 scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5] 
+                opacity: [0.5, 1, 0.5]
               }}
-              transition={{ 
-                duration: 2, 
+              transition={{
+                duration: 2,
                 repeat: Infinity,
                 ease: "easeInOut",
                 delay: 0.5
@@ -423,14 +443,14 @@ const Me2 = () => {
           </span>
           <span className="text-gray-600">•</span>
           <span className="flex items-center gap-1">
-            <motion.div 
+            <motion.div
               className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
-              animate={{ 
+              animate={{
                 scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5] 
+                opacity: [0.5, 1, 0.5]
               }}
-              transition={{ 
-                duration: 2, 
+              transition={{
+                duration: 2,
                 repeat: Infinity,
                 ease: "easeInOut",
                 delay: 1
@@ -446,7 +466,7 @@ const Me2 = () => {
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50 opacity-50 sm:opacity-60" />
         <div className="absolute inset-0 bg-gradient-to-r from-black via-transparent to-black/50 opacity-30 sm:opacity-40" />
-        <div 
+        <div
           className="absolute inset-0"
           style={{
             background: `
@@ -458,7 +478,7 @@ const Me2 = () => {
       </div>
 
       {/* Vignette effect for better focus */}
-      <div 
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.7) 100%)'

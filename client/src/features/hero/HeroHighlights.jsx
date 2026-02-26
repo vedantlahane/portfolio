@@ -43,17 +43,39 @@ const HeroHighlights = () => {
   useEffect(() => {
     if (isMobile) return;
 
-    const handleMouseMove = (e) => {
-      if (!sectionRef.current) return;
-      const rect = sectionRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      sectionRef.current.style.setProperty('--mouse-x', x);
-      sectionRef.current.style.setProperty('--mouse-y', y);
+    let ticking = false;
+    let rect = null;
+
+    const updateRect = () => {
+      if (sectionRef.current) {
+        rect = sectionRef.current.getBoundingClientRect();
+      }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    updateRect();
+    window.addEventListener('resize', updateRect);
+    window.addEventListener('scroll', updateRect, { passive: true });
+
+    const handleMouseMove = (e) => {
+      if (!ticking && rect && sectionRef.current) {
+        window.requestAnimationFrame(() => {
+          if (!sectionRef.current) return;
+          const x = (e.clientX - rect.left) / rect.width - 0.5;
+          const y = (e.clientY - rect.top) / rect.height - 0.5;
+          sectionRef.current.style.setProperty('--mouse-x', x);
+          sectionRef.current.style.setProperty('--mouse-y', y);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('resize', updateRect);
+      window.removeEventListener('scroll', updateRect);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
   }, [isMobile]);
 
   useEffect(() => {
@@ -171,7 +193,7 @@ const HeroHighlights = () => {
               }
             }}
           >
-            <div 
+            <div
               className="absolute inset-0"
               style={{
                 backgroundImage: `
@@ -283,9 +305,8 @@ const HeroHighlights = () => {
           {skills.map((_, index) => (
             <motion.div
               key={index}
-              className={`h-3 sm:h-4 rounded-full transition-all duration-300 ${
-                index === activeSkill ? 'bg-white w-8 sm:w-10' : 'bg-white/30 w-1.5'
-              }`}
+              className={`h-3 sm:h-4 rounded-full transition-all duration-300 ${index === activeSkill ? 'bg-white w-8 sm:w-10' : 'bg-white/30 w-1.5'
+                }`}
               animate={{ opacity: index === activeSkill ? 1 : 0.3 }}
             />
           ))}
@@ -300,7 +321,7 @@ const HeroHighlights = () => {
       >
         <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-gray-400 font-sans">
           <span className="flex items-center gap-1">
-            <motion.div 
+            <motion.div
               className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
               animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
