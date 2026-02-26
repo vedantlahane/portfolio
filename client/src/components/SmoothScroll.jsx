@@ -13,12 +13,16 @@ const SmoothScroll = ({ children }) => {
     });
     lenisRef.current = lenis;
 
+    let rafId;
     const raf = (time) => {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
+    rafId = requestAnimationFrame(raf);
 
-    return () => {      lenis.destroy();
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
     }
   }, []);
 

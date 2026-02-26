@@ -17,7 +17,7 @@ const Header = () => {
     const handleScroll = () => {
       const sections = navigationItems.map(item => item.href.substring(1));
       const scrollPosition = window.scrollY + 100;
-      
+
       let currentSection = '';
       sections.forEach(section => {
         const element = document.getElementById(section);
@@ -28,7 +28,7 @@ const Header = () => {
           }
         }
       });
-      
+
       setActiveSection(currentSection);
     };
 
@@ -76,7 +76,7 @@ const Header = () => {
         {/* Main Header Content */}
         <div className="flex items-center justify-between">
           {/* Logo/Name Section */}
-          <motion.div 
+          <motion.div
             className="flex items-center gap-3 sm:gap-4 cursor-pointer"
             whileHover={{ x: 5 }}
             transition={{ type: "spring", stiffness: 400 }}
@@ -116,17 +116,16 @@ const Header = () => {
                 transition={{ delay: 0.1 * index, duration: 0.5 }}
                 className="relative group"
               >
-                <div className={`px-3 lg:px-5 xl:px-6 py-2 text-sm lg:text-base font-sans font-light transition-all duration-300 ${
-                  activeSection === item.href
+                <div className={`px-3 lg:px-5 xl:px-6 py-2 text-sm lg:text-base font-sans font-light transition-all duration-300 ${activeSection === item.href
                     ? 'text-gray-900 font-medium'
                     : 'text-gray-500 hover:text-gray-900'
-                }`}>
+                  }`}>
                   <span className="text-[10px] lg:text-xs font-mono font-light text-gray-400 mr-1.5 lg:mr-2">
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   {item.name}
                 </div>
-                
+
                 <motion.div
                   className="absolute bottom-0 left-3 right-3 lg:left-5 lg:right-5 h-px bg-gray-900"
                   initial={{ scaleX: 0 }}
@@ -194,11 +193,10 @@ const Header = () => {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ delay: 0.05 * index }}
-                    className={`flex items-center px-2 py-3 rounded-lg transition-all duration-300 ${
-                      activeSection === item.href
+                    className={`flex items-center px-2 py-3 rounded-lg transition-all duration-300 ${activeSection === item.href
                         ? 'text-gray-900 bg-gray-100 font-medium'
                         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     <span className="text-xs font-mono font-light text-gray-400 mr-3 w-6">
                       {String(index + 1).padStart(2, '0')}

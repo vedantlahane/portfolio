@@ -7,7 +7,7 @@ const STATUS = {
   DONE: 'Done'
 };
 
-const PracticeList = ({ authorized = true, onRequestAuth = () => {} }) => {
+const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
   const [compactHeader, setCompactHeader] = useState(false);
   const STORAGE_KEY = 'practice-statuses-v1';
   const [selectedTopic, setSelectedTopic] = useState(null);
@@ -283,34 +283,44 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => {} }) => {
   useEffect(() => {
     if (selectedTopic !== null) return; // Don't auto-sync when manually filtered
 
+    let ticking = false;
+
     const handleScroll = () => {
-      if (!rightSideRef.current || sectionRefs.current.length === 0) return;
-
-      const container = rightSideRef.current;
-      const scrollTop = container.scrollTop;
-      const containerTop = container.getBoundingClientRect().top;
-
-      // Find which section is currently most visible
-      let currentActive = 0;
-      for (let i = 0; i < sectionRefs.current.length; i++) {
-        const section = sectionRefs.current[i];
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          const sectionTop = rect.top - containerTop;
-
-          // If section is in view (with some offset)
-          if (sectionTop <= 150) {
-            currentActive = i;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          if (!rightSideRef.current || sectionRefs.current.length === 0) {
+            ticking = false;
+            return;
           }
-        }
-      }
 
-      setActiveTopic(currentActive);
+          const container = rightSideRef.current;
+          const containerTop = container.getBoundingClientRect().top;
+
+          // Find which section is currently most visible
+          let currentActive = 0;
+          for (let i = 0; i < sectionRefs.current.length; i++) {
+            const section = sectionRefs.current[i];
+            if (section) {
+              const rect = section.getBoundingClientRect();
+              const sectionTop = rect.top - containerTop;
+
+              // If section is in view (with some offset)
+              if (sectionTop <= 150) {
+                currentActive = i;
+              }
+            }
+          }
+
+          setActiveTopic(currentActive);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     const rightSide = rightSideRef.current;
     if (rightSide) {
-      rightSide.addEventListener('scroll', handleScroll);
+      rightSide.addEventListener('scroll', handleScroll, { passive: true });
       handleScroll(); // Initial check
     }
 

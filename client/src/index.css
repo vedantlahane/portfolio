@@ -18,7 +18,7 @@ body::before {
 	pointer-events: none;
 	opacity: 0.15;
 	mix-blend-mode: soft-light;
-	background-image: url('data:image/svg+xml,%3Csvg xmlns%3D"http://www.w3.org/2000/svg" viewBox%3D"0 0 200 200"%3E%3Cfilter id%3D"n"%3E%3CfeTurbulence type%3D"fractalNoise" baseFrequency%3D"1.2"/%3E%3C/filter%3E%3Crect width%3D"100%25" height%3D"100%25" filter%3D"url(%23n)" opacity%3D"0.5"/%3E%3C/svg%3E');
+	background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMS4yIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI24pIiBvcGFjaXR5PSIwLjUiLz48L3N2Zz4=');
 	z-index: -1;
 }
 

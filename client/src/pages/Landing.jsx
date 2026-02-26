@@ -9,6 +9,8 @@ import Contact1 from '../components/sections/Contact1';
 import Contact2 from '../components/sections/Contact2';
 import Footer from '../components/sections/Footer';
 import MouseFollowerAdvanced from '../components/sections/MouseFollowerAdvanced';
+import BottomNav from '../components/Navigation/BottomNav';
+import SectionIndicator from '../components/Navigation/SectionIndicator';
 
 const Landing = () => (
   <div className="bg-white font-sans text-gray-900">
@@ -16,13 +18,13 @@ const Landing = () => (
       <MouseFollowerAdvanced />
     </div>
 
+    <BottomNav />
+
     <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20">
-      <header>
-        <Header />
-      </header>
+      <Header />
 
       <main>
-        <div className="grid grid-cols-1 lg:grid-cols-5 border-t border-gray-200">
+        <div id="hero" className="grid grid-cols-1 lg:grid-cols-5 border-t border-gray-200">
           <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[60vh]">
             <Me1 />
           </div>
@@ -34,18 +36,19 @@ const Landing = () => (
 
         <section id="about" className="scroll-mt-20">
           <div className="grid grid-cols-1 lg:grid-cols-8 border-t border-gray-200">
-            <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[70vh]">
+            {/* About dictates row height on desktop */}
+            <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200">
               <About />
             </div>
 
-            <div id="projects" className="col-span-1 lg:col-span-5 min-h-[70vh] scroll-mt-20">
+            <div id="projects" className="col-span-1 lg:col-span-5 scroll-mt-20 bg-gray-50">
               <Projects />
             </div>
           </div>
         </section>
 
         <section id="skills" className="border-t border-gray-200 scroll-mt-20">
-            <Skills />
+          <Skills />
         </section>
 
         <section id="contact" className="scroll-mt-20">
@@ -61,7 +64,7 @@ const Landing = () => (
         </section>
       </main>
 
-      <footer className="border-t border-gray-200">
+      <footer id="footer" className="border-t border-gray-200">
         <Footer />
       </footer>
     </div>

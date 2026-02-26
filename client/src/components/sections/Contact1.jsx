@@ -6,7 +6,31 @@ const Contact1 = () => {
 
   const handleCopy = useCallback(async (text, itemId) => {
     try {
-      await navigator.clipboard.writeText(text);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback for non-secure contexts (e.g. local network dev)
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+
+        // Ensure it stays off-screen and doesn't scroll the page
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+
+        textArea.focus();
+        textArea.select();
+
+        try {
+          document.execCommand('copy');
+        } catch (err) {
+          console.error('Fallback copy failed', err);
+        }
+
+        document.body.removeChild(textArea);
+      }
+
       setCopiedItem(itemId);
       setTimeout(() => setCopiedItem(null), 2000);
     } catch (error) {
@@ -52,7 +76,7 @@ const Contact1 = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.7 }}
-  className="bg-gradient-to-b from-transparent to-gray-50 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12 h-full relative flex flex-col"
+      className="bg-gradient-to-b from-transparent to-gray-50 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12 h-full relative flex flex-col"
     >
       {/* Header */}
       <div className="flex justify-between items-start mb-8 sm:mb-12 lg:mb-20">

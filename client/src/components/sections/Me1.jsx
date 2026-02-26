@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import ScrambleText from '../UI/ScrambleText';
 
 const Me1 = () => {
   const [downloadStatus, setDownloadStatus] = useState('idle');
@@ -17,13 +18,13 @@ const Me1 = () => {
   const handleDownloadCV = useCallback(() => {
     try {
       setDownloadStatus('downloading');
-      
+
       // Open Google Drive link in new tab
       window.open('https://drive.google.com/file/d/1FF5VZ9P8ddZVfaUemFyWcIDwSeRO21WO/view?usp=sharing', '_blank', 'noopener,noreferrer');
-      
+
       setDownloadStatus('success');
       setTimeout(() => setDownloadStatus('idle'), 3000);
-      
+
     } catch (error) {
       console.error('Failed to open CV:', error);
       setDownloadStatus('error');
@@ -98,53 +99,59 @@ const Me1 = () => {
       >
         <p className="text-xs sm:text-sm text-gray-400 font-mono font-light">01 &nbsp;&nbsp;ME</p>
       </motion.div>
-      
+
       {/* Main Content */}
       <div className="flex-1 flex flex-col justify-center w-full">
-        <motion.h1 
+        <motion.h1
           className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-light text-gray-900 mb-4 sm:mb-6 lg:mb-8"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.8 }}
         >
-          Hello<motion.span
+          <ScrambleText text="Hello" delay={400} />
+          <motion.span
             animate={{ opacity: [0, 1, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+            className="text-gray-900"
           >
-            .
+            _
           </motion.span>
         </motion.h1>
-        
-        <motion.h2 
+
+        <motion.h2
           className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light text-gray-900 mb-4 sm:mb-6 lg:mb-8"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         >
-          I'm Vedant Lahane
+          I'm <ScrambleText text="Vedant Lahane" delay={800} duration={1200} />
         </motion.h2>
 
         {/* Animated role */}
         <motion.div
-          className="text-lg sm:text-xl md:text-2xl font-sans font-light text-gray-500 mb-8 sm:mb-10 lg:mb-12"
+          className="text-lg sm:text-xl md:text-2xl font-sans font-light text-gray-500 mb-8 sm:mb-10 lg:mb-12 flex items-center gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.55, duration: 0.8 }}
         >
           a passionate{' '}
-          <motion.span
-            key={currentWord}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="text-gray-900 font-medium"
-          >
-            {words[currentWord]}
-          </motion.span>
+          <div className="relative inline-flex min-w-[140px]">
+            <motion.span
+              key={currentWord}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="text-gray-900 font-medium absolute left-0"
+            >
+              <ScrambleText text={words[currentWord]} delay={0} duration={600} />
+            </motion.span>
+            {/* invisible placeholder to keep width */}
+            <span className="invisible text-gray-900 font-medium">engineering</span>
+          </div>
         </motion.div>
 
         {/* Description - responsive alignment */}
-        <motion.div 
+        <motion.div
           className="w-full flex justify-start lg:justify-end mb-8 sm:mb-10 lg:mb-12"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -156,7 +163,7 @@ const Me1 = () => {
             Building projects that challenge me to grow.
           </p>
         </motion.div>
-        
+
         {/* Download Button - responsive alignment */}
         <motion.div
           className="w-full flex justify-start"
@@ -164,15 +171,15 @@ const Me1 = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6 }}
         >
-          <button 
+          <button
             onClick={handleDownloadCV}
             disabled={downloadStatus === 'downloading'}
             className={`
               px-6 sm:px-8 py-2.5 sm:py-3 border border-gray-900 
               font-sans font-light text-xs sm:text-sm tracking-wider uppercase
               transition-all duration-300 relative overflow-hidden group
-              ${downloadStatus === 'downloading' 
-                ? 'opacity-50 cursor-not-allowed' 
+              ${downloadStatus === 'downloading'
+                ? 'opacity-50 cursor-not-allowed'
                 : 'hover:bg-gray-900 hover:text-white cursor-pointer'
               }
             `}
@@ -211,13 +218,13 @@ const Me1 = () => {
       </div>
 
       {/* Decorative elements - hide on mobile */}
-      <motion.div 
+      <motion.div
         className="hidden md:block absolute bottom-16 right-16"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.1 }}
         transition={{ delay: 0.8 }}
       >
-        <motion.div 
+        <motion.div
           className="w-12 h-12 lg:w-16 lg:h-16 border border-gray-300 transform rotate-45"
           animate={{ rotate: [45, 90, 45] }}
           transition={{ duration: 10, repeat: Infinity }}
@@ -232,7 +239,7 @@ const Me1 = () => {
         transition={{ delay: 1 }}
       >
         <pre>
-{`while(true) {
+          {`while(true) {
   learn();
   code();
   repeat();

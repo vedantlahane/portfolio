@@ -1,8 +1,8 @@
-import HeroSection from "./home/HeroSection";
-import AboutSection from "./home/AboutSection";
-import SkillsSection from "./home/SkillsSection";
-import ProjectsSection from "./home/ProjectSection";
-import ContactSection from "./home/ContactSection";
+import HeroSection from "./components/HeroSection";
+import AboutSection from "./components/AboutSection";
+import SkillsSection from "./components/SkillsSection";
+import ProjectsSection from "./components/ProjectSection";
+import ContactSection from "./components/ContactSection";
 
 // Move this to a separate data.js file if preferred
 const skillsData = [
