@@ -25,16 +25,23 @@ exports.login = async (req, res) => {
     // Find admin by email
     const admin = await Admin.findOne({ email });
 
-    if (admin && (await bcrypt.compare(password, admin.password))) {
-      res.json({
-        _id: admin._id,
-        username: admin.username,
-        email: admin.email,
-        token: generateToken(admin._id),
-      });
-    } else {
-      res.status(401).json({ message: 'Invalid email or password' });
+    if (!admin) {
+      console.log(`❌ Login failed: No admin found with email "${email}"`);
+      return res.status(401).json({ message: 'Invalid email or password' });
     }
+
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      console.log(`❌ Login failed: Password mismatch for email "${email}"`);
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    res.json({
+      _id: admin._id,
+      username: admin.username,
+      email: admin.email,
+      token: generateToken(admin._id),
+    });
   } catch (error) {
     console.error('Login Error:', error.message);
     res.status(500).json({ message: 'Server error during login' });
