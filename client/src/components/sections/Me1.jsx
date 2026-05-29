@@ -1,26 +1,35 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrambleText from '../UI/ScrambleText';
+import EditableText from '../UI/EditableText';
+import { useAdmin } from '../../context/AdminContext';
 
-const Me1 = () => {
+const Me1 = ({ profile, updateProfile }) => {
+  const { isAdmin } = useAdmin();
   const [downloadStatus, setDownloadStatus] = useState('idle');
   const [currentWord, setCurrentWord] = useState(0);
 
-  const words = ['learner', 'creator', 'developer', 'student'];
+  const words = profile?.roles && profile.roles.length > 0 
+    ? profile.roles 
+    : ['developer'];
 
   useEffect(() => {
+    if (words.length === 0) return;
     const interval = setInterval(() => {
       setCurrentWord((prev) => (prev + 1) % words.length);
     }, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [words.length]);
+
+  const activeWordIndex = currentWord % (words.length || 1);
 
   const handleDownloadCV = useCallback(() => {
     try {
       setDownloadStatus('downloading');
 
       // Open Google Drive link in new tab
-      window.open('https://drive.google.com/file/d/1FF5VZ9P8ddZVfaUemFyWcIDwSeRO21WO/view?usp=sharing', '_blank', 'noopener,noreferrer');
+      const link = profile?.cvLink || 'https://drive.google.com/file/d/1FF5VZ9P8ddZVfaUemFyWcIDwSeRO21WO/view?usp=sharing';
+      window.open(link, '_blank', 'noopener,noreferrer');
 
       setDownloadStatus('success');
       setTimeout(() => setDownloadStatus('idle'), 3000);
@@ -30,7 +39,7 @@ const Me1 = () => {
       setDownloadStatus('error');
       setTimeout(() => setDownloadStatus('idle'), 3000);
     }
-  }, []);
+  }, [profile?.cvLink]);
 
   const getButtonContent = () => {
     switch (downloadStatus) {
@@ -108,7 +117,16 @@ const Me1 = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.8 }}
         >
-          <ScrambleText text="Hello" delay={400} />
+          {isAdmin ? (
+            <EditableText
+              value={profile?.greeting || 'Hello'}
+              onSave={(val) => updateProfile({ greeting: val })}
+              isAdmin={true}
+              textClassName="text-gray-900"
+            />
+          ) : (
+            <ScrambleText text={profile?.greeting || 'Hello'} delay={400} />
+          )}
           <motion.span
             animate={{ opacity: [0, 1, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
@@ -124,7 +142,17 @@ const Me1 = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
         >
-          I'm <ScrambleText text="Vedant Lahane" delay={800} duration={1200} />
+          I'm{' '}
+          {isAdmin ? (
+            <EditableText
+              value={profile?.name || 'Vedant Lahane'}
+              onSave={(val) => updateProfile({ name: val })}
+              isAdmin={true}
+              textClassName="text-gray-900 font-medium"
+            />
+          ) : (
+            <ScrambleText text={profile?.name || 'Vedant Lahane'} delay={800} duration={1200} />
+          )}
         </motion.h2>
 
         {/* Animated role */}
@@ -135,19 +163,32 @@ const Me1 = () => {
           transition={{ delay: 0.55, duration: 0.8 }}
         >
           a passionate{' '}
-          <div className="relative inline-flex min-w-[140px]">
-            <motion.span
-              key={currentWord}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="text-gray-900 font-medium absolute left-0"
-            >
-              <ScrambleText text={words[currentWord]} delay={0} duration={600} />
-            </motion.span>
-            {/* invisible placeholder to keep width */}
-            <span className="invisible text-gray-900 font-medium">engineering</span>
-          </div>
+          {isAdmin ? (
+            <EditableText
+              value={words.join(', ')}
+              onSave={(val) => {
+                const newRoles = val.split(',').map(s => s.trim()).filter(Boolean);
+                updateProfile({ roles: newRoles });
+              }}
+              isAdmin={true}
+              textClassName="text-gray-900 font-medium"
+              placeholder="Roles separated by commas..."
+            />
+          ) : (
+            <div className="relative inline-flex min-w-[140px]">
+              <motion.span
+                key={activeWordIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="text-gray-900 font-medium absolute left-0"
+              >
+                <ScrambleText text={words[activeWordIndex]} delay={0} duration={600} />
+              </motion.span>
+              {/* invisible placeholder to keep width */}
+              <span className="invisible text-gray-900 font-medium">engineering</span>
+            </div>
+          )}
         </motion.div>
 
         {/* Description - responsive alignment */}
@@ -157,16 +198,26 @@ const Me1 = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}
         >
-          <p className="text-base sm:text-lg md:text-xl font-sans font-light text-gray-600 leading-relaxed max-w-full lg:max-w-xl text-left lg:text-right">
-            Computer Science student exploring the endless possibilities of technology.
-            Currently diving deep into web development, algorithms, and system design.
-            Building projects that challenge me to grow.
-          </p>
+          {isAdmin ? (
+            <div className="w-full max-w-xl text-left lg:text-right">
+              <EditableText
+                type="textarea"
+                value={profile?.heroDescription || 'Describe yourself here...'}
+                onSave={(val) => updateProfile({ heroDescription: val })}
+                isAdmin={true}
+                textClassName="text-base sm:text-lg md:text-xl font-sans font-light text-gray-600 leading-relaxed"
+              />
+            </div>
+          ) : (
+            <p className="text-base sm:text-lg md:text-xl font-sans font-light text-gray-600 leading-relaxed max-w-full lg:max-w-xl text-left lg:text-right">
+              {profile?.heroDescription || 'Describe yourself here...'}
+            </p>
+          )}
         </motion.div>
 
         {/* Download Button - responsive alignment */}
         <motion.div
-          className="w-full flex justify-start"
+          className="w-full flex flex-col items-start gap-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6 }}
@@ -192,28 +243,56 @@ const Me1 = () => {
               transition={{ duration: 0.3 }}
             />
           </button>
+          {isAdmin && (
+            <div className="text-xs text-gray-500 font-mono mt-1 w-full max-w-md">
+              Resume Link:{' '}
+              <EditableText
+                value={profile?.cvLink || ''}
+                onSave={(val) => updateProfile({ cvLink: val })}
+                isAdmin={true}
+                textClassName="text-gray-900 font-mono"
+                placeholder="Enter resume drive link..."
+              />
+            </div>
+          )}
         </motion.div>
 
         {/* Status indicators - responsive */}
         <motion.div
-          className="flex flex-wrap gap-x-4 gap-y-2 mt-4"
+          className="flex flex-col gap-2 mt-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
         >
-          {['Open to internships', 'Learning daily', 'Project enthusiast'].map((status, i) => (
-            <span
-              key={status}
-              className="text-xs text-gray-400 flex items-center gap-1 font-sans"
-            >
-              <motion.span
-                className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-700 rounded-full"
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {(profile?.statusIndicators || ['Available']).map((status, i) => (
+              <span
+                key={status}
+                className="text-xs text-gray-400 flex items-center gap-1 font-sans"
+              >
+                <motion.span
+                  className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-700 rounded-full"
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
+                />
+                {status}
+              </span>
+            ))}
+          </div>
+          {isAdmin && (
+            <div className="text-[10px] text-gray-500 font-mono">
+              Edit tags (comma separated):{' '}
+              <EditableText
+                value={(profile?.statusIndicators || ['Available']).join(', ')}
+                onSave={(val) => {
+                  const newTags = val.split(',').map(s => s.trim()).filter(Boolean);
+                  updateProfile({ statusIndicators: newTags });
+                }}
+                isAdmin={true}
+                textClassName="text-gray-900"
               />
-              {status}
-            </span>
-          ))}
+            </div>
+          )}
         </motion.div>
       </div>
 

@@ -2,11 +2,23 @@
 
 :root {
 	color-scheme: light;
+	--accent-rgb: 104 136 142;
+	--accent-soft-rgb: 188 205 209;
+	--font-sans: "Inter", sans-serif;
+	--font-display: "Sora", sans-serif;
+	--font-mono: "JetBrains Mono", monospace;
+}
+
+@theme {
+	--font-sans: var(--font-sans);
+	--font-display: var(--font-display);
+	--font-mono: var(--font-mono);
 }
 
 body {
 	background-color: #f1f5f9;
 	color: #0f172a;
+	font-family: var(--font-sans);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
@@ -24,6 +36,28 @@ body::before {
 
 #root {
 	min-height: 100vh;
+}
+
+.accent-text {
+	color: rgb(var(--accent-rgb));
+}
+
+.accent-text-soft {
+	color: rgba(var(--accent-rgb), 0.72);
+}
+
+.accent-bg {
+	background-color: rgb(var(--accent-rgb));
+}
+
+.accent-glow {
+	box-shadow: 0 0 0 1px rgba(var(--accent-rgb), 0.16), 0 18px 40px rgba(var(--accent-rgb), 0.12);
+}
+
+.accent-grid {
+	background-image:
+		linear-gradient(rgba(var(--accent-soft-rgb), 0.08) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(var(--accent-soft-rgb), 0.08) 1px, transparent 1px);
 }
 
 

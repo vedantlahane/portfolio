@@ -1,13 +1,221 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { projects as allProjects } from '../../data/projects';
+import { useAdmin, API_URL } from '../../context/AdminContext';
+
+const ProjectForm = ({ project, onSave, onCancel }) => {
+  const [formData, setFormData] = useState(project || {
+    title: '', year: new Date().getFullYear().toString(), description: '', tech: '', type: '', featured: false, github: '', live: '', order: 0
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="bg-white border border-gray-200 p-6 space-y-4 mb-8 font-sans text-left">
+      <h3 className="text-lg font-display font-light text-gray-900 border-b border-gray-100 pb-2">
+        {project ? 'Edit Project' : 'Add New Project'}
+      </h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Title</label>
+          <input
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Year</label>
+          <input
+            name="year"
+            value={formData.year}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Tech Stack</label>
+          <input
+            name="tech"
+            value={formData.tech}
+            onChange={handleChange}
+            placeholder="e.g. React • Node.js • MongoDB"
+            required
+            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Project Type</label>
+          <input
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+            placeholder="e.g. E‑Commerce, AI / LLM"
+            required
+            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">GitHub URL</label>
+          <input
+            name="github"
+            value={formData.github}
+            onChange={handleChange}
+            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Live Demo URL</label>
+          <input
+            name="live"
+            value={formData.live || ''}
+            onChange={handleChange}
+            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+          />
+        </div>
+        <div>
+          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Display Order</label>
+          <input
+            type="number"
+            name="order"
+            value={formData.order}
+            onChange={handleChange}
+            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+          />
+        </div>
+        <div className="flex items-center pt-5">
+          <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer select-none font-sans">
+            <input
+              type="checkbox"
+              name="featured"
+              checked={formData.featured}
+              onChange={handleChange}
+              className="border border-gray-200 text-gray-900 focus:ring-0 focus:outline-none"
+            />
+            Featured Project
+          </label>
+        </div>
+      </div>
+      <div>
+        <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Description</label>
+        <textarea
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+          rows={3}
+          className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+        />
+      </div>
+      <div className="flex justify-end gap-3 pt-2">
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-4 py-2 border border-gray-200 text-xs tracking-wider uppercase font-light hover:bg-gray-50 cursor-pointer text-gray-900"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-gray-900 text-white border border-gray-900 text-xs tracking-wider uppercase font-light hover:bg-white hover:text-gray-900 transition-colors cursor-pointer"
+        >
+          Save Project
+        </button>
+      </div>
+    </form>
+  );
+};
 
 const Projects = () => {
+  const { isAdmin, token } = useAdmin();
+  const [projects, setProjects] = useState([]);
   const [showAll, setShowAll] = useState(false);
   const [hoveredProject, setHoveredProject] = useState(null);
+  
+  // Admin Form state
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState(null);
 
-  // Projects (trimmed descriptions & tech). Use `live` truthiness to mark Live vs In-Development.
-  const visibleProjects = showAll ? allProjects : allProjects.slice(0, 5);
+  const fetchProjects = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/projects`);
+      if (res.ok) {
+        const data = await res.json();
+        setProjects(data);
+      }
+    } catch (err) {
+      console.error('Fetch projects failed:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
+
+  const handleSaveProject = async (projectData) => {
+    try {
+      const url = projectData._id 
+        ? `${API_URL}/api/projects/${projectData._id}` 
+        : `${API_URL}/api/projects`;
+      const method = projectData._id ? 'PUT' : 'POST';
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(projectData)
+      });
+
+      if (res.ok) {
+        fetchProjects();
+        setIsFormOpen(false);
+        setEditingProject(null);
+      }
+    } catch (err) {
+      console.error('Save project failed:', err);
+    }
+  };
+
+  const handleDeleteProject = async (e, id) => {
+    e.stopPropagation();
+    if (!window.confirm('Are you sure you want to delete this project?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/projects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        fetchProjects();
+      }
+    } catch (err) {
+      console.error('Delete project failed:', err);
+    }
+  };
+
+  const handleEditClick = (e, project) => {
+    e.stopPropagation();
+    setEditingProject(project);
+    setIsFormOpen(true);
+  };
+
+  const visibleProjects = showAll ? projects : projects.slice(0, 5);
 
   const handleLinkClick = (e, url) => {
     e.stopPropagation();
@@ -29,28 +237,51 @@ const Projects = () => {
         transition={{ delay: 0.5 }}
       >
         <p className="text-xs sm:text-sm text-gray-400 font-mono font-light">04 &nbsp;&nbsp;PROJECTS</p>
-        <p className="text-xs sm:text-sm text-gray-400 font-mono font-light flex-shrink-0 whitespace-nowrap">
-          {allProjects.length} TOTAL
-        </p>
+        <div className="flex items-center gap-4">
+          {isAdmin && (
+            <button
+              onClick={() => {
+                setEditingProject(null);
+                setIsFormOpen(true);
+              }}
+              className="text-xs font-mono font-medium text-gray-900 border border-gray-900 px-3 py-1 hover:bg-gray-900 hover:text-white transition-colors cursor-pointer"
+            >
+              + ADD PROJECT
+            </button>
+          )}
+          <p className="text-xs sm:text-sm text-gray-400 font-mono font-light flex-shrink-0 whitespace-nowrap">
+            {projects.length} TOTAL
+          </p>
+        </div>
       </motion.div>
+
+      {/* Admin Form */}
+      {isFormOpen && (
+        <ProjectForm
+          project={editingProject}
+          onSave={handleSaveProject}
+          onCancel={() => {
+            setIsFormOpen(false);
+            setEditingProject(null);
+          }}
+        />
+      )}
 
       {/* Projects list (row style, no box) */}
       <div className="flex-1 overflow-hidden">
         <div className="relative">
-          <motion.div
-            className=""
-          >
+          <motion.div className="">
             <AnimatePresence mode="popLayout">
               {visibleProjects.map((project, index) => (
                 <motion.div
-                  key={project.id}
+                  key={project._id || project.id}
                   layout
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ delay: 0.04 * index, duration: 0.28 }}
                   className={`group ${index !== visibleProjects.length - 1 ? 'border-b border-gray-200' : ''}`}
-                  onMouseEnter={() => setHoveredProject(project.id)}
+                  onMouseEnter={() => setHoveredProject(project._id || project.id)}
                   onMouseLeave={() => setHoveredProject(null)}
                 >
                   {/* Row layout (keeps original look) */}
@@ -71,7 +302,7 @@ const Projects = () => {
                         <h4 className={`
                           text-lg lg:text-xl font-display font-light text-gray-900
                           transition-transform duration-200
-                          ${hoveredProject === project.id ? 'translate-x-1' : ''}
+                          ${hoveredProject === (project._id || project.id) ? 'translate-x-1' : ''}
                         `}>
                           {project.title}
                           {project.featured && (
@@ -79,12 +310,12 @@ const Projects = () => {
                           )}
                         </h4>
 
-                        {/* Links area: github & live icons (live icon shown when project.live exists) */}
+                        {/* Links area: github & live icons */}
                         <div className="ml-auto sm:ml-0 flex items-center gap-3">
                           {project.github && (
                             <button
                               onClick={(e) => handleLinkClick(e, project.github)}
-                              className="text-gray-500 hover:text-gray-900 transition-colors"
+                              className="text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                               aria-label="View GitHub repository"
                             >
                               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -96,7 +327,7 @@ const Projects = () => {
                           {project.live && (
                             <button
                               onClick={(e) => handleLinkClick(e, project.live)}
-                              className="text-gray-500 hover:text-gray-900 transition-colors"
+                              className="text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
                               aria-label="Open live demo"
                               title="Live demo"
                             >
@@ -104,6 +335,23 @@ const Projects = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                               </svg>
                             </button>
+                          )}
+
+                          {isAdmin && (
+                            <div className="flex items-center gap-2 pl-4 border-l border-gray-200">
+                              <button
+                                onClick={(e) => handleEditClick(e, project)}
+                                className="text-xs font-mono text-blue-600 hover:underline cursor-pointer"
+                              >
+                                EDIT
+                              </button>
+                              <button
+                                onClick={(e) => handleDeleteProject(e, project._id)}
+                                className="text-xs font-mono text-red-600 hover:underline cursor-pointer"
+                              >
+                                DELETE
+                              </button>
+                            </div>
                           )}
                         </div>
                       </div>
@@ -113,7 +361,7 @@ const Projects = () => {
                       </p>
                     </div>
 
-                    {/* Right: Tech stack + status dot (green = live, gray = in development) */}
+                    {/* Right: Tech stack + status dot */}
                     <div className="text-right sm:text-right mt-4 sm:mt-0 min-w-[120px] sm:min-w-[180px]">
                       <div className="flex items-center justify-end gap-2">
                         <span
@@ -133,31 +381,33 @@ const Projects = () => {
           </motion.div>
 
           {/* Show More / Show Less */}
-          <motion.div className="mt-6 sm:mt-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
-            <button
-              onClick={() => setShowAll(!showAll)}
-              className="text-sm text-gray-900 font-sans font-light hover:underline transition-all flex items-center gap-2"
-            >
-              {showAll ? (
-                <>
-                  <span>Show Less</span>
-                  <motion.span animate={{ y: [-2, 0, -2] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                    ↑
-                  </motion.span>
-                </>
-              ) : (
-                <>
-                  <span>Show All {allProjects.length} Projects</span>
-                  <motion.span animate={{ y: [0, 2, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                    ↓
-                  </motion.span>
-                </>
-              )}
-            </button>
-          </motion.div>
+          {projects.length > 5 && (
+            <motion.div className="mt-6 sm:mt-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="text-sm text-gray-900 font-sans font-light hover:underline transition-all flex items-center gap-2 cursor-pointer"
+              >
+                {showAll ? (
+                  <>
+                    <span>Show Less</span>
+                    <motion.span animate={{ y: [-2, 0, -2] }} transition={{ duration: 1.5, repeat: Infinity }}>
+                      ↑
+                    </motion.span>
+                  </>
+                ) : (
+                  <>
+                    <span>Show All {projects.length} Projects</span>
+                    <motion.span animate={{ y: [0, 2, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
+                      ↓
+                    </motion.span>
+                  </>
+                )}
+              </button>
+            </motion.div>
+          )}
         </div>
 
-        {/* Legend — Featured / Live / In Development */}
+        {/* Legend */}
         <motion.div
           className="mt-8 pt-6 border-t border-gray-200 text-xs text-gray-500 flex flex-wrap items-center gap-6"
           initial={{ opacity: 0 }}
@@ -181,7 +431,7 @@ const Projects = () => {
         </motion.div>
       </div>
 
-      {/* Page indicator - hidden on extra-small screens to avoid overlap */}
+      {/* Page indicator */}
       <motion.div
         className="hidden sm:block absolute top-6 sm:top-8 lg:top-12 xl:top-16 right-6 sm:right-8 lg:right-12 xl:right-16 text-xs sm:text-sm text-gray-400 font-mono font-light"
         initial={{ opacity: 0 }}

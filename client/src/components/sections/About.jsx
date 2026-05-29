@@ -3,21 +3,33 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useAdmin } from '../../context/AdminContext';
+import EditableText from '../UI/EditableText';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const About = () => {
+const About = ({ profile, updateProfile }) => {
+  const { isAdmin } = useAdmin();
   const containerRef = useRef(null);
   const textRef = useRef(null);
   const subheadRef = useRef(null);
 
-  // Industry-focused narrative with concise highlights
-  const rawText = "Started with a \"Hello World\" three years ago. Now building AI‑powered, scalable web apps with real‑world constraints. Currently building SafarSathi (offline‑first safety PWA) and Axon (RAG document intelligence). Shipped ShoeMarkNet (RBAC e‑commerce) end‑to‑end. Solved over 350+ DSA problems and keep refining system design basics. Core stack: React + TypeScript, Node.js, Java with MongoDB/MySQL. Learning Cloud & DevOps (AWS, Docker, CI/CD) and deepening LLM/RAG systems.";
+  const rawText = profile?.aboutText || "Write details about your career and background here...";
+  
+  const subhead = profile?.aboutSubhead || "Your slogan or tagline.\nFocused on outcomes.";
+  const highlightKeywords = profile?.highlightKeywords || ["career", "background"];
 
   // Split into words for animation
   const words = rawText.split(" ");
 
   useGSAP(() => {
+    // Clean up any existing ScrollTriggers to prevent duplicates on text updates
+    ScrollTrigger.getAll().forEach(trigger => {
+      if (trigger.trigger === containerRef.current) {
+        trigger.kill();
+      }
+    });
+
     // Reveal text word-by-word on scroll
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -55,7 +67,16 @@ const About = () => {
       }
     );
 
-  }, { scope: containerRef });
+  }, { scope: containerRef, dependencies: [rawText, subhead] });
+
+  const renderSubhead = (text) => {
+    return text.split('\n').map((line, i) => (
+      <React.Fragment key={i}>
+        {i > 0 && <br />}
+        {i === 1 ? <span className="text-white font-medium">{line}</span> : line}
+      </React.Fragment>
+    ));
+  };
 
   return (
     <motion.section
@@ -76,34 +97,62 @@ const About = () => {
           {/* Sliding Sub-header */}
           <div ref={subheadRef} className="mb-4 lg:mb-6 overflow-hidden">
             <h2 className="text-xl md:text-3xl lg:text-4xl font-display font-light text-gray-400 leading-tight">
-              Driven by curiosity.
-              <br />
-              <span className="text-white font-medium">Defined by execution.</span>
+              {isAdmin ? (
+                <EditableText
+                  type="textarea"
+                  value={subhead}
+                  onSave={(val) => updateProfile({ aboutSubhead: val })}
+                  isAdmin={true}
+                  textClassName="text-xl md:text-3xl lg:text-4xl font-display font-light text-gray-400 leading-tight"
+                />
+              ) : (
+                renderSubhead(subhead)
+              )}
             </h2>
           </div>
 
-          {/* Flowing Text - GSAP ScrolLTrigger */}
+          {/* Flowing Text - GSAP ScrollTrigger */}
           <div
             ref={textRef}
             className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-sans font-light leading-relaxed lg:leading-[1.6]"
           >
-            {words.map((word, index) => {
-              // Re-highlight key terms
-              const isHighlight = [
-                "scalable", "AI‑powered,", "SafarSathi", "Axon", "ShoeMarkNet",
-                "350+", "DSA", "React", "TypeScript,", "Node.js,", "Java",
-                "Cloud", "&", "DevOps", "(AWS,", "Docker,", "CI/CD)", "LLM/RAG"
-              ].some(term => word.includes(term));
+            {isAdmin ? (
+              <div className="w-full">
+                <EditableText
+                  type="textarea"
+                  value={rawText}
+                  onSave={(val) => updateProfile({ aboutText: val })}
+                  isAdmin={true}
+                  textClassName="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-sans font-light leading-relaxed lg:leading-[1.6] text-gray-300"
+                />
+                <div className="mt-4 text-[10px] text-gray-500 font-mono bg-black/60 p-2 border border-gray-800 rounded-none max-w-md">
+                  Edit Highlights (comma separated):{' '}
+                  <EditableText
+                    value={highlightKeywords.join(', ')}
+                    onSave={(val) => {
+                      const list = val.split(',').map(s => s.trim()).filter(Boolean);
+                      updateProfile({ highlightKeywords: list });
+                    }}
+                    isAdmin={true}
+                    textClassName="text-white border-b border-dashed border-gray-600"
+                  />
+                </div>
+              </div>
+            ) : (
+              words.map((word, index) => {
+                // Re-highlight key terms
+                const isHighlight = highlightKeywords.some(term => word.includes(term));
 
-              return (
-                <span
-                  key={index}
-                  className={`about-word inline-block mr-1.5 lg:mr-2 ${isHighlight ? 'text-white font-medium' : 'text-gray-300'}`}
-                >
-                  {word}
-                </span>
-              );
-            })}
+                return (
+                  <span
+                    key={index}
+                    className={`about-word inline-block mr-1.5 lg:mr-2 ${isHighlight ? 'text-white font-medium' : 'text-gray-300'}`}
+                  >
+                    {word}
+                  </span>
+                );
+              })
+            )}
           </div>
         </div>
 

@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import LoginModal from '../UI/LoginModal';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   
   const navLinks = [
     { label: 'ABOUT', href: '#about' },
@@ -48,19 +50,26 @@ const Footer = () => {
       className="bg-gradient-to-b from-gray-50 to-transparent border-t border-gray-200"
     >
       {/* Top Section */}
-  <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-6">
+      <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-6">
         <div className="flex justify-between items-center">
           <div className="text-xs sm:text-sm text-gray-400 font-mono font-light">
             08 &nbsp;&nbsp;FOOTER
           </div>
-          <div className="text-xs sm:text-sm text-gray-400 font-mono font-light">
-            © VEDANT {currentYear}
+          <div className="text-xs sm:text-sm text-gray-400 font-mono font-light flex items-center gap-3 sm:gap-4">
+            <span>© VEDANT {currentYear}</span>
+            <span className="text-gray-300">|</span>
+            <button
+              onClick={() => setIsLoginOpen(true)}
+              className="text-[10px] text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-wider font-medium cursor-pointer"
+            >
+              Owner
+            </button>
           </div>
         </div>
       </div>
 
       {/* Navigation Links */}
-  <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 pb-4 sm:pb-6">
+      <div className="px-6 sm:px-8 md:px-10 lg:px-12 xl:px-16 2xl:px-20 pb-4 sm:pb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           {/* Mobile Navigation Grid */}
           <nav className="grid grid-cols-2 sm:flex gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
@@ -209,6 +218,8 @@ const Footer = () => {
       >
         ↑ Back to top
       </motion.button>
+
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </motion.footer>
   );
 };

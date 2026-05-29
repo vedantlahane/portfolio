@@ -1,28 +1,48 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useAdmin } from '../../context/AdminContext';
+import EditableText from '../UI/EditableText';
 
-const Me2 = () => {
+const Me2 = ({ profile, updateProfile }) => {
+  const { isAdmin } = useAdmin();
   const [activeSkill, setActiveSkill] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef(null);
 
-  // Curated, industry-relevant skill highlights (not GitHub-driven)
-  const skills = [
-    { name: "React + TypeScript", level: 85 },
-    { name: "Node.js + Express", level: 82 },
-    { name: "Java (Backend/DSA)", level: 82 },
-    { name: "AI/LLM (RAG, LangChain)", level: 78 },
-    { name: "Cloud & DevOps (AWS, Docker, CI/CD)", level: 75 },
-    { name: "Databases (MongoDB, MySQL)", level: 72 },
+  // Dynamic values with static fallbacks
+  const skills = profile?.featuredSkills || [
+    { name: "Core Skill", level: 80 }
   ];
 
-  // Industry-oriented, factual stats
-  const experiences = [
-    { label: "Flagship Projects", value: "3+" },          // SafarSathi, Axon, ShoeMarkNet
-    { label: "DSA Problems", value: "350+" },
-    { label: "Certifications", value: "10+" },             // Coursera GenAI, Udemy TF2
-    { label: "Known Technologies", value: "15+" },
+  const experiences = profile?.experiences || [
+    { label: "Projects", value: "0" }
   ];
+
+  const bottomLabels = profile?.me2StatusLabels || [
+    'Building'
+  ];
+
+  // Handlers for Admin Mode
+  const updateExp = (index, field, newVal) => {
+    const nextExps = [...experiences];
+    nextExps[index] = { ...nextExps[index], [field]: newVal };
+    updateProfile({ experiences: nextExps });
+  };
+
+  const updateSkill = (index, field, newVal) => {
+    const nextSkills = [...skills];
+    if (field === 'level') {
+      nextSkills[index] = { ...nextSkills[index], [field]: Math.min(100, Math.max(0, parseInt(newVal, 10) || 0)) };
+    } else {
+      nextSkills[index] = { ...nextSkills[index], [field]: newVal };
+    }
+    updateProfile({ featuredSkills: nextSkills });
+  };
+
+  const handleUpdateBottomLabels = (val) => {
+    const labels = val.split(',').map(s => s.trim()).filter(Boolean);
+    updateProfile({ me2StatusLabels: labels });
+  };
 
   // Check if mobile
   useEffect(() => {
@@ -87,12 +107,15 @@ const Me2 = () => {
 
   // Cycle through skills
   useEffect(() => {
+    if (skills.length === 0 || isAdmin) return;
     const interval = setInterval(() => {
       setActiveSkill((prev) => (prev + 1) % skills.length);
     }, 2500);
 
     return () => clearInterval(interval);
-  }, [skills.length]);
+  }, [skills.length, isAdmin]);
+
+  const activeSkillIndex = skills.length > 0 ? activeSkill % skills.length : 0;
 
   return (
     <motion.section
@@ -105,10 +128,19 @@ const Me2 = () => {
         perspective: isMobile ? '800px' : '1500px',
         '--mouse-x': 0,
         '--mouse-y': 0,
+        '--accent-rgb': '95 143 136',
       }}
     >
       {/* High contrast gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-950 via-black to-gray-900" />
+      <div className="absolute inset-0 opacity-30 accent-grid" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-80"
+        style={{
+          background:
+            "radial-gradient(circle at 22% 22%, rgba(95, 143, 136, 0.24) 0%, transparent 28%), radial-gradient(circle at 78% 76%, rgba(95, 143, 136, 0.18) 0%, transparent 24%)",
+        }}
+      />
 
       {/* Section Label */}
       <motion.div
@@ -138,43 +170,86 @@ const Me2 = () => {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.8, duration: 1 }}
         >
-          {/* Current Skill Display */}
-          <motion.div
-            key={activeSkill}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-            className="mb-6 sm:mb-8"
-          >
-            <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light text-white mb-4">
-              {skills[activeSkill].name}
-            </h3>
-            <div className="w-40 sm:w-48 md:w-56 h-1.5 bg-gray-800 mx-auto rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-gradient-to-r from-gray-600 to-white"
-                initial={{ width: 0 }}
-                animate={{ width: `${skills[activeSkill].level}%` }}
-                transition={{ duration: 1, ease: "easeOut" }}
-              />
+          {/* Current Skill Display or Skill Editor */}
+          {isAdmin ? (
+            <div className="mb-6 sm:mb-8 space-y-4 max-h-[40vh] overflow-y-auto bg-black/60 p-4 border border-gray-800">
+              <span className="text-[10px] text-gray-500 font-mono block uppercase tracking-wider mb-2">Featured Skills Editor</span>
+              {skills.map((skill, index) => (
+                <div key={index} className="flex gap-2 items-center justify-between text-left border-b border-gray-900 pb-2">
+                  <EditableText
+                    value={skill.name}
+                    onSave={(val) => updateSkill(index, 'name', val)}
+                    isAdmin={true}
+                    textClassName="text-sm text-white font-medium"
+                    placeholder="Skill Name..."
+                  />
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-gray-500 font-mono">Level (0-100):</span>
+                    <EditableText
+                      value={String(skill.level)}
+                      onSave={(val) => updateSkill(index, 'level', val)}
+                      isAdmin={true}
+                      textClassName="text-sm font-mono text-white"
+                      placeholder="80"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-          </motion.div>
+          ) : (
+            skills.length > 0 && (
+              <motion.div
+                key={activeSkillIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="mb-6 sm:mb-8"
+              >
+                <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light text-white mb-4">
+                  {skills[activeSkillIndex]?.name}
+                </h3>
+                <div className="w-40 sm:w-48 md:w-56 h-1.5 bg-gray-800 mx-auto rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, rgba(95, 143, 136, 0.55) 0%, rgba(191, 220, 215, 0.96) 55%, rgba(255,255,255,1) 100%)",
+                    }}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${skills[activeSkillIndex]?.level}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                  />
+                </div>
+              </motion.div>
+            )
+          )}
 
           {/* Experience Stats */}
           <div className="mx-8 grid grid-cols-2 gap-4 sm:gap-6 mt-10 sm:mt-10 md:mt-12">
             {experiences.map((exp, index) => (
               <motion.div
-                key={exp.label}
+                key={index}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 1 + index * 0.1 }}
                 className="text-center"
               >
                 <div className="text-xl sm:text-2xl md:text-3xl font-display font-light text-white mb-1">
-                  {exp.value}
+                  <EditableText
+                    value={exp.value}
+                    onSave={(val) => updateExp(index, 'value', val)}
+                    isAdmin={isAdmin}
+                    textClassName="text-white"
+                  />
                 </div>
                 <div className="text-[10px] sm:text-xs text-gray-500 font-sans uppercase tracking-wider">
-                  {exp.label}
+                  <EditableText
+                    value={exp.label}
+                    onSave={(val) => updateExp(index, 'label', val)}
+                    isAdmin={isAdmin}
+                    textClassName="text-gray-500"
+                  />
                 </div>
               </motion.div>
             ))}
@@ -219,8 +294,8 @@ const Me2 = () => {
               className="absolute inset-0"
               style={{
                 backgroundImage: `
-                  linear-gradient(rgba(255,255,255,${layer.opacity * 0.2}) 1px, transparent 1px),
-                  linear-gradient(90deg, rgba(255,255,255,${layer.opacity * 0.2}) 1px, transparent 1px)
+                  linear-gradient(rgba(191,220,215,${layer.opacity * 0.16}) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(191,220,215,${layer.opacity * 0.16}) 1px, transparent 1px)
                 `,
                 backgroundSize: isMobile ? '40px 40px' : `${60 + index * 3}px ${80 + index * 3}px`,
                 opacity: layer.opacity * 0.8,
@@ -290,10 +365,11 @@ const Me2 = () => {
       {[...Array(isMobile ? 6 : 15)].map((_, i) => (
         <motion.div
           key={`particle-${i}`}
-          className="absolute w-1.5 h-1.5 md:w-2 md:h-2 bg-white rounded-full"
+          className="absolute w-1.5 h-1.5 md:w-2 md:h-2 rounded-full"
           style={{
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
+            backgroundColor: i % 4 === 0 ? "rgba(191, 220, 215, 0.9)" : "rgba(255,255,255,0.92)",
           }}
           animate={{
             y: [0, -30, 0],
@@ -331,7 +407,11 @@ const Me2 = () => {
           }}
         >
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-white/60 to-gray-400/35 rounded-full blur-2xl md:blur-3xl"
+            className="absolute inset-0 rounded-full blur-2xl md:blur-3xl"
+            style={{
+              background:
+                "linear-gradient(90deg, rgba(191, 220, 215, 0.78) 0%, rgba(95, 143, 136, 0.45) 40%, rgba(255,255,255,0.2) 100%)",
+            }}
             animate={{
               scale: [1, 1.5, 1],
               opacity: [0.4, 0.2, 0.4],
@@ -387,12 +467,13 @@ const Me2 = () => {
           {skills.map((_, index) => (
             <motion.div
               key={index}
-              className={`h-3 sm:h-4 rounded-full transition-all duration-300 ${index === activeSkill
-                  ? 'bg-white w-8 sm:w-10'
+              className={`h-3 sm:h-4 rounded-full transition-all duration-300 ${index === activeSkillIndex
+                  ? 'w-8 sm:w-10'
                   : 'bg-white/30 w-1.5'
                 }`}
+              style={index === activeSkillIndex ? { backgroundColor: "rgb(95, 143, 136)" } : undefined}
               animate={{
-                opacity: index === activeSkill ? 1 : 0.3,
+                opacity: index === activeSkillIndex ? 1 : 0.3,
               }}
             />
           ))}
@@ -401,65 +482,47 @@ const Me2 = () => {
 
       {/* Learning status - industry aligned wording */}
       <motion.div
-        className="absolute bottom-6 sm:bottom-8 right-6 sm:right-8 lg:right-12 xl:right-16 z-50"
+        className="absolute bottom-6 sm:bottom-8 right-6 sm:right-8 lg:right-12 xl:right-16 z-50 flex flex-col items-end gap-1"
         initial={{ opacity: 0 }}
         animate={{ opacity: 0.7 }}
         whileHover={{ opacity: 1 }}
       >
         <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-gray-400 font-sans">
-          <span className="flex items-center gap-1">
-            <motion.div
-              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-            <span className="hidden sm:inline">Building</span>
-            <span className="sm:hidden">Building</span>
-          </span>
-          <span className="text-gray-600">•</span>
-          <span className="flex items-center gap-1">
-            <motion.div
-              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 0.5
-              }}
-            />
-            <span className="hidden sm:inline">RAG, RBAC</span>
-            <span className="sm:hidden">Focus</span>
-          </span>
-          <span className="text-gray-600">•</span>
-          <span className="flex items-center gap-1">
-            <motion.div
-              className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.5, 1, 0.5]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1
-              }}
-            />
-            <span className="hidden sm:inline">Open to SDE/AI Intern</span>
-            <span className="sm:hidden">Open</span>
-          </span>
+          {bottomLabels.map((label, idx) => (
+            <React.Fragment key={idx}>
+              <span className="flex items-center gap-1">
+                <motion.div
+                  className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full"
+                  style={{ backgroundColor: "rgb(95, 143, 136)" }}
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: idx * 0.5
+                  }}
+                />
+                <span>{label}</span>
+              </span>
+              {idx < bottomLabels.length - 1 && <span className="text-gray-600">•</span>}
+            </React.Fragment>
+          ))}
         </div>
+
+        {isAdmin && (
+          <div className="bg-black/85 p-2 border border-gray-800 text-[10px] text-gray-400 font-mono mt-1 z-[99]">
+            Edit labels (comma separated):{' '}
+            <EditableText
+              value={bottomLabels.join(', ')}
+              onSave={handleUpdateBottomLabels}
+              isAdmin={true}
+              textClassName="text-white"
+            />
+          </div>
+        )}
       </motion.div>
 
       {/* Enhanced gradient overlays for depth and contrast */}

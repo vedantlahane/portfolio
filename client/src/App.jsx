@@ -21,7 +21,30 @@ import BrutalistPortfolio from "./pages/Lab/BrutalistPortfolio";
 import NotFound from "./pages/NotFound";
 import V2Portfolio from "./pages/V2Portfolio";
 
-const App = () => {
+// Admin Imports
+import { AdminProvider, useAdmin } from "./context/AdminContext";
+
+const AdminToolbar = () => {
+  const { isAdmin, logout } = useAdmin();
+  if (!isAdmin) return null;
+  return (
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] bg-gray-950 border border-gray-800 px-4 py-2.5 text-white flex items-center gap-4 text-xs font-mono tracking-widest shadow-2xl">
+      <span className="flex items-center gap-2">
+        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+        ADMIN MODE ACTIVE
+      </span>
+      <span className="text-gray-700">|</span>
+      <button
+        onClick={logout}
+        className="hover:text-red-400 font-bold transition-colors uppercase cursor-pointer"
+      >
+        Log Out
+      </button>
+    </div>
+  );
+};
+
+const MainApp = () => {
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
 
   return (
@@ -55,9 +78,18 @@ const App = () => {
             </Routes>
           </PageTransition>
 
+          <AdminToolbar />
         </ErrorBoundary>
       </SmoothScroll>
     </CommandPaletteProvider>
+  );
+};
+
+const App = () => {
+  return (
+    <AdminProvider>
+      <MainApp />
+    </AdminProvider>
   );
 };
 
