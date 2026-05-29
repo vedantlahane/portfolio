@@ -43,6 +43,36 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());  // Parse JSON bodies
 
+// Middleware to ensure DB connection and seeding are complete before handling routes
+let dbPromise = null;
+const connectDB = () => {
+  if (!dbPromise) {
+    dbPromise = (async () => {
+      if (!MONGODB_URI) {
+        throw new Error('MONGO_DB or MONGODB_URI environment variable is missing.');
+      }
+      await mongoose.connect(MONGODB_URI);
+      console.log('✅ MongoDB connected successfully');
+      await seedDatabase();
+    })();
+  }
+  return dbPromise;
+};
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error('🔴 DB connection middleware error:', error.message);
+    res.status(500).json({
+      status: "error",
+      message: "Database connection failed",
+      error: process.env.NODE_ENV === 'development' ? error.message : {}
+    });
+  }
+});
+
 /**
  * Seeding Helper
  * Seeds default data into MongoDB if collections are empty
@@ -59,12 +89,13 @@ const seedDatabase = async () => {
     const email = process.env.ADMIN_EMAIL || 'vedantanillahane@gmail.com';
     const password = process.env.ADMIN_PASSWORD || 'Val%9420';
     
-    const adminExists = await Admin.findOne({ email });
-    if (!adminExists) {
-      // Clear other admin accounts for safety
-      await Admin.deleteMany({});
-      
-      const hashedPassword = await bcrypt.hash(password, 10);
+    // Clear other admin accounts for safety
+    await Admin.deleteMany({ email: { $ne: email } });
+    
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const admin = await Admin.findOne({ email });
+    
+    if (!admin) {
       const newAdmin = new Admin({
         email,
         password: hashedPassword,
@@ -72,6 +103,11 @@ const seedDatabase = async () => {
       });
       await newAdmin.save();
       console.log('✅ Admin seeded successfully:', email);
+    } else {
+      admin.password = hashedPassword;
+      admin.username = 'admin';
+      await admin.save();
+      console.log('✅ Admin password synchronized successfully:', email);
     }
 
     // 2. Seed Profile
@@ -217,27 +253,8 @@ const seedDatabase = async () => {
   }
 };
 
-/**
- * Database Connection
- * Establishes connection to MongoDB using mongoose
- * Exits process if connection fails
- */
-const connectDB = async () => {
-  try {
-    if (!MONGODB_URI) {
-      throw new Error('MONGO_DB or MONGODB_URI environment variable is missing.');
-    }
-    await mongoose.connect(MONGODB_URI);
-    console.log('✅ MongoDB connected successfully');
-    await seedDatabase();
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error.message);
-    process.exit(1);
-  }
-};
-
-// Initialize database connection
-connectDB();
+// Initialize database connection immediately
+connectDB().catch(err => console.error('❌ MongoDB initial connection error:', err.message));
 
 /**
  * Route Definitions
