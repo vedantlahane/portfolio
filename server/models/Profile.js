@@ -53,6 +53,10 @@ const profileSchema = new mongoose.Schema({
     default: ["scalable", "AI‑powered,", "SafarSathi", "Axon", "ShoeMarkNet", "350+", "DSA", "React", "TypeScript,", "Node.js,", "Java", "Cloud", "&", "DevOps", "(AWS,", "Docker,", "CI/CD)", "LLM/RAG"] 
   },
   
+  // Contact
+  email: { type: String, default: 'vedantanillahane@gmail.com' },
+  phone: { type: String, default: '+91 7447335096' },
+
   updatedAt: { type: Date, default: Date.now }
 });
 

@@ -5,8 +5,9 @@ import { useCommandPalette } from './CommandPaletteContext';
 import {
     Home, FileText, Code2,
     User, Briefcase, Sparkles, Mail,
-    Github, ExternalLink
+    Github, ExternalLink, Lock
 } from 'lucide-react';
+import { useAdmin } from '../../context/AdminContext';
 
 const STATIC_ITEMS = [
     { id: 'home', type: 'page', title: 'Home', icon: Home, action: '/' },
@@ -24,14 +25,26 @@ const STATIC_ITEMS = [
 
 export default function CommandPalette() {
     const { isOpen, close } = useCommandPalette();
+    const { isAdmin, openLoginModal, logout } = useAdmin();
     const [query, setQuery] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
     const inputRef = useRef(null);
     const navigate = useNavigate();
     const location = useLocation();
 
+    const items = [
+        ...STATIC_ITEMS,
+        {
+            id: 'admin-action',
+            type: 'admin',
+            title: isAdmin ? 'Admin: Log Out' : 'Admin: Unlock (Passkey: 7447)',
+            icon: Lock,
+            action: isAdmin ? logout : openLoginModal
+        }
+    ];
+
     // Filter items based on query
-    const filteredItems = STATIC_ITEMS.filter(item =>
+    const filteredItems = items.filter(item =>
         item.title.toLowerCase().includes(query.toLowerCase())
     );
 
@@ -70,7 +83,9 @@ export default function CommandPalette() {
         close();
         setQuery('');
 
-        if (item.type === 'page') {
+        if (typeof item.action === 'function') {
+            item.action();
+        } else if (item.type === 'page') {
             navigate(item.action);
         } else if (item.type === 'section') {
             if (location.pathname !== '/') {
@@ -93,6 +108,7 @@ export default function CommandPalette() {
     const groups = [
         { label: 'Pages', type: 'page' },
         { label: 'Sections', type: 'section' },
+        { label: 'Admin', type: 'admin' },
         { label: 'Links', type: 'link' }
     ].map(group => ({
         ...group,

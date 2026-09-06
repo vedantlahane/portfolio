@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { login, verify } = require('../controllers/authController');
+const { login, unlock, verify } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
-// POST /api/auth/login
+// POST /api/auth/login & /api/auth/unlock
 router.post('/login', login);
+router.post('/unlock', unlock || login);
 
 // GET /api/auth/verify
 router.get('/verify', protect, verify);

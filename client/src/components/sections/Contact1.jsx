@@ -1,7 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
+import { useAdmin } from '../../context/AdminContext';
+import EditableText from '../UI/EditableText';
 
-const Contact1 = () => {
+const Contact1 = ({ profile, updateProfile }) => {
+  const { isAdmin } = useAdmin();
   const [copiedItem, setCopiedItem] = useState(null);
 
   const handleCopy = useCallback(async (text, itemId) => {
@@ -42,7 +45,7 @@ const Contact1 = () => {
     {
       id: 'email',
       label: 'Email',
-      value: 'vedantanillahane@gmail.com',
+      value: profile?.email || 'vedantanillahane@gmail.com',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -57,7 +60,7 @@ const Contact1 = () => {
     {
       id: 'phone',
       label: 'Phone',
-      value: '+91 7447335096',
+      value: profile?.phone || '+91 7447335096',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -133,12 +136,21 @@ const Contact1 = () => {
                   <div className="text-gray-600 opacity-70 group-hover:opacity-100 transition-opacity">
                     {item.icon}
                   </div>
-                  <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-light text-gray-900 break-all">
-                    {item.value}
-                  </p>
+                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-light text-gray-900 break-all">
+                    {isAdmin ? (
+                      <EditableText
+                        value={item.value}
+                        onSave={(val) => updateProfile && updateProfile({ [item.id]: val })}
+                        isAdmin={true}
+                        textClassName="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-light text-gray-900"
+                      />
+                    ) : (
+                      item.value
+                    )}
+                  </div>
                 </div>
                 <p className="text-xs text-gray-400 font-mono mt-1 ml-9">
-                  {copiedItem === item.id ? 'COPIED ✓' : 'CLICK TO COPY'}
+                  {isAdmin ? 'ADMIN: CLICK TO EDIT VALUE' : (copiedItem === item.id ? 'COPIED ✓' : 'CLICK TO COPY')}
                 </p>
               </div>
             </motion.div>

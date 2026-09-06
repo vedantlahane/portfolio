@@ -11,18 +11,48 @@ const generateToken = (id) => {
   );
 };
 
-// @desc    Auth admin & get token
-// @route   POST /api/auth/login
+// @desc    Auth admin via passkey or credentials & get token
+// @route   POST /api/auth/login, POST /api/auth/unlock
 // @access  Public
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, passkey } = req.body;
+  const configuredPasskey = process.env.ADMIN_PASSKEY || '7447';
 
+  // 1. Passkey Authentication (Instant Unlock)
+  if (passkey !== undefined) {
+    if (String(passkey).trim() !== String(configuredPasskey).trim()) {
+      return res.status(401).json({ message: 'Invalid passkey' });
+    }
+
+    try {
+      let admin = await Admin.findOne();
+      if (!admin) {
+        admin = new Admin({
+          email: process.env.ADMIN_EMAIL || 'admin@portfolio.local',
+          password: await bcrypt.hash(process.env.ADMIN_PASSWORD || 'admin', 10),
+          username: 'admin'
+        });
+        await admin.save();
+      }
+
+      return res.json({
+        _id: admin._id,
+        username: admin.username,
+        email: admin.email,
+        token: generateToken(admin._id),
+      });
+    } catch (error) {
+      console.error('Passkey Auth Error:', error.message);
+      return res.status(500).json({ message: 'Server error during passkey authentication' });
+    }
+  }
+
+  // 2. Email & Password Authentication (Fallback)
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+    return res.status(400).json({ message: 'Passkey or email/password required' });
   }
 
   try {
-    // Find admin by email
     const admin = await Admin.findOne({ email });
 
     if (!admin) {
@@ -47,6 +77,8 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Server error during login' });
   }
 };
+
+exports.unlock = exports.login;
 
 // @desc    Verify admin token
 // @route   GET /api/auth/verify

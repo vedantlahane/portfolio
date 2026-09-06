@@ -8,6 +8,10 @@ export const AdminProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('portfolio_admin_token') || null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const openLoginModal = () => setIsLoginModalOpen(true);
+  const closeLoginModal = () => setIsLoginModalOpen(false);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -42,20 +46,29 @@ export const AdminProvider = ({ children }) => {
     verifyToken();
   }, [token]);
 
-  const login = async (email, password) => {
+  const login = async (passkeyOrEmail, password) => {
     try {
+      let body;
+      if (password !== undefined) {
+        body = { email: passkeyOrEmail, password };
+      } else if (typeof passkeyOrEmail === 'object' && passkeyOrEmail !== null) {
+        body = passkeyOrEmail;
+      } else {
+        body = { passkey: String(passkeyOrEmail) };
+      }
+
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify(body)
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || 'Authentication failed');
       }
 
       localStorage.setItem('portfolio_admin_token', data.token);
@@ -63,10 +76,12 @@ export const AdminProvider = ({ children }) => {
       setIsAdmin(true);
       return { success: true };
     } catch (err) {
-      console.error('Login error:', err.message);
+      console.error('Unlock error:', err.message);
       return { success: false, message: err.message };
     }
   };
+
+  const unlock = (passkey) => login(passkey);
 
   const logout = () => {
     localStorage.removeItem('portfolio_admin_token');
@@ -75,7 +90,17 @@ export const AdminProvider = ({ children }) => {
   };
 
   return (
-    <AdminContext.Provider value={{ token, isAdmin, loading, login, logout }}>
+    <AdminContext.Provider value={{
+      token,
+      isAdmin,
+      loading,
+      login,
+      unlock,
+      logout,
+      isLoginModalOpen,
+      openLoginModal,
+      closeLoginModal
+    }}>
       {children}
     </AdminContext.Provider>
   );

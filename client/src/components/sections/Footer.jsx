@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import LoginModal from '../UI/LoginModal';
+import { useAdmin } from '../../context/AdminContext';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const { openLoginModal } = useAdmin();
   
   const navLinks = [
     { label: 'ABOUT', href: '#about' },
@@ -59,7 +59,7 @@ const Footer = () => {
             <span>© VEDANT {currentYear}</span>
             <span className="text-gray-300">|</span>
             <button
-              onClick={() => setIsLoginOpen(true)}
+              onClick={openLoginModal}
               className="text-[10px] text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-wider font-medium cursor-pointer"
             >
               Owner
@@ -218,8 +218,6 @@ const Footer = () => {
       >
         ↑ Back to top
       </motion.button>
-
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </motion.footer>
   );
 };

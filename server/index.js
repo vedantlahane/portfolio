@@ -21,7 +21,7 @@ const app = express();
 
 // Environment Variables
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGO_DB || process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGO_DB || process.env.MONGODB_URI || process.env.MONGO_URL;
 
 /**
  * CORS Configuration

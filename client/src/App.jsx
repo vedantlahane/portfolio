@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./pages/Landing";
 import BlogListPage from "./pages/BlogListPage";
@@ -13,6 +13,7 @@ import PageTransition from "./components/Transitions/PageTransition";
 import { CommandPaletteProvider } from "./components/CommandPalette/CommandPaletteContext";
 import CommandPalette from "./components/CommandPalette/CommandPalette";
 import ScrollProgressIndicator from "./components/Navigation/ScrollProgressIndicator";
+import LoginModal from "./components/UI/LoginModal";
 
 // New Lab Pages
 import DesignLab from "./pages/Lab/DesignLab";
@@ -46,6 +47,19 @@ const AdminToolbar = () => {
 
 const MainApp = () => {
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
+  const { isLoginModalOpen, openLoginModal, closeLoginModal } = useAdmin();
+
+  // Global hotkey to open passkey prompt (Ctrl+Shift+A or Cmd+Shift+A)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        openLoginModal();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [openLoginModal]);
 
   return (
     <CommandPaletteProvider>
@@ -79,6 +93,7 @@ const MainApp = () => {
           </PageTransition>
 
           <AdminToolbar />
+          <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
         </ErrorBoundary>
       </SmoothScroll>
     </CommandPaletteProvider>

@@ -4,28 +4,37 @@ import { useAdmin } from '../../context/AdminContext';
 
 const LoginModal = ({ isOpen, onClose }) => {
   const { login } = useAdmin();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [passkey, setPasskey] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const inputRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setPasskey('');
+      setError('');
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError('Please fill in all fields');
+    if (!passkey.trim()) {
+      setError('Please enter passkey');
       return;
     }
 
     setError('');
     setLoading(true);
 
-    const result = await login(email, password);
+    const result = await login(passkey.trim());
     setLoading(false);
 
     if (result.success) {
+      setPasskey('');
       onClose();
     } else {
-      setError(result.message || 'Invalid email or password');
+      setError(result.message || 'Invalid passkey');
     }
   };
 
@@ -48,7 +57,7 @@ const LoginModal = ({ isOpen, onClose }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="bg-white border border-gray-200 w-full max-w-md p-6 sm:p-8 relative z-10 shadow-2xl flex flex-col font-sans"
+            className="bg-white border border-gray-200 w-full max-w-sm p-6 sm:p-8 relative z-10 shadow-2xl flex flex-col font-sans"
           >
             {/* Close Button */}
             <button
@@ -62,31 +71,23 @@ const LoginModal = ({ isOpen, onClose }) => {
             {/* Header */}
             <div className="mb-6">
               <span className="text-xs text-gray-400 font-mono tracking-widest uppercase">OWNER ACCESS</span>
-              <h3 className="text-2xl font-display font-light text-gray-900 mt-1">Authenticate</h3>
+              <h3 className="text-2xl font-display font-light text-gray-900 mt-1">Admin Passkey</h3>
+              <p className="text-xs text-gray-500 font-sans mt-1">Enter your passkey to unlock in-place editing.</p>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs text-gray-500 font-mono uppercase mb-1.5">Email Address</label>
+                <label className="block text-[10px] text-gray-400 font-mono uppercase tracking-wider mb-1.5">
+                  Passkey
+                </label>
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  className="w-full px-3 py-2 border border-gray-200 text-sm focus:border-gray-900 focus:outline-none transition-colors rounded-none"
-                  disabled={loading}
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-gray-500 font-mono uppercase mb-1.5">Password</label>
-                <input
+                  ref={inputRef}
                   type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full px-3 py-2 border border-gray-200 text-sm focus:border-gray-900 focus:outline-none transition-colors rounded-none"
+                  value={passkey}
+                  onChange={(e) => setPasskey(e.target.value)}
+                  placeholder="••••"
+                  className="w-full px-3 py-2.5 border border-gray-200 text-sm tracking-widest font-mono text-gray-900 focus:border-gray-900 focus:outline-none transition-colors rounded-none text-center text-lg"
                   disabled={loading}
                 />
               </div>
@@ -95,7 +96,7 @@ const LoginModal = ({ isOpen, onClose }) => {
                 <motion.div
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-xs text-red-600 font-mono"
+                  className="text-xs text-red-600 font-mono text-center"
                 >
                   ✕ {error}
                 </motion.div>
@@ -112,10 +113,10 @@ const LoginModal = ({ isOpen, onClose }) => {
                   {loading ? (
                     <>
                       <span className="animate-spin inline-block">⟳</span>
-                      VERIFYING...
+                      UNLOCKING...
                     </>
                   ) : (
-                    'LOG IN'
+                    'UNLOCK'
                   )}
                 </button>
               </div>
