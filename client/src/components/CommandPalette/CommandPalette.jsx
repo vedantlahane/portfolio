@@ -25,7 +25,7 @@ const STATIC_ITEMS = [
 
 export default function CommandPalette() {
     const { isOpen, close } = useCommandPalette();
-    const { isAdmin, openLoginModal, logout } = useAdmin();
+    const { isAdmin, openLoginModal, openJsonModal, logout } = useAdmin();
     const [query, setQuery] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
     const inputRef = useRef(null);
@@ -34,6 +34,15 @@ export default function CommandPalette() {
 
     const items = [
         ...STATIC_ITEMS,
+        ...(isAdmin ? [
+            {
+                id: 'admin-json',
+                type: 'admin',
+                title: 'Admin: Edit Portfolio JSON',
+                icon: Code2,
+                action: openJsonModal
+            }
+        ] : []),
         {
             id: 'admin-action',
             type: 'admin',

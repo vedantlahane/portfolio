@@ -14,6 +14,7 @@ import { CommandPaletteProvider } from "./components/CommandPalette/CommandPalet
 import CommandPalette from "./components/CommandPalette/CommandPalette";
 import ScrollProgressIndicator from "./components/Navigation/ScrollProgressIndicator";
 import LoginModal from "./components/UI/LoginModal";
+import JsonEditorModal from "./components/UI/JsonEditorModal";
 
 // New Lab Pages
 import DesignLab from "./pages/Lab/DesignLab";
@@ -26,14 +27,22 @@ import V2Portfolio from "./pages/V2Portfolio";
 import { AdminProvider, useAdmin } from "./context/AdminContext";
 
 const AdminToolbar = () => {
-  const { isAdmin, logout } = useAdmin();
+  const { isAdmin, logout, openJsonModal } = useAdmin();
   if (!isAdmin) return null;
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] bg-gray-950 border border-gray-800 px-4 py-2.5 text-white flex items-center gap-4 text-xs font-mono tracking-widest shadow-2xl">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] bg-gray-950 border border-gray-800 px-4 py-2.5 text-white flex items-center gap-3 sm:gap-4 text-xs font-mono tracking-widest shadow-2xl">
       <span className="flex items-center gap-2">
         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
         ADMIN MODE ACTIVE
       </span>
+      <span className="text-gray-700">|</span>
+      <button
+        onClick={openJsonModal}
+        className="hover:text-amber-300 font-bold transition-colors uppercase cursor-pointer flex items-center gap-1.5"
+        title="Directly manipulate all portfolio data in JSON format"
+      >
+        <span>{'{ }'}</span> EDIT JSON
+      </button>
       <span className="text-gray-700">|</span>
       <button
         onClick={logout}
@@ -47,19 +56,35 @@ const AdminToolbar = () => {
 
 const MainApp = () => {
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
-  const { isLoginModalOpen, openLoginModal, closeLoginModal } = useAdmin();
+  const {
+    isAdmin,
+    isLoginModalOpen,
+    openLoginModal,
+    closeLoginModal,
+    isJsonModalOpen,
+    openJsonModal,
+    closeJsonModal
+  } = useAdmin();
 
-  // Global hotkey to open passkey prompt (Ctrl+Shift+A or Cmd+Shift+A)
+  // Global hotkeys (Ctrl+Shift+A for passkey prompt, Ctrl+Shift+J for JSON editor)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
         e.preventDefault();
         openLoginModal();
       }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'J' || e.key === 'j')) {
+        e.preventDefault();
+        if (isAdmin) {
+          openJsonModal();
+        } else {
+          openLoginModal();
+        }
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [openLoginModal]);
+  }, [openLoginModal, openJsonModal, isAdmin]);
 
   return (
     <CommandPaletteProvider>
@@ -94,6 +119,7 @@ const MainApp = () => {
 
           <AdminToolbar />
           <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
+          <JsonEditorModal isOpen={isJsonModalOpen} onClose={closeJsonModal} />
         </ErrorBoundary>
       </SmoothScroll>
     </CommandPaletteProvider>

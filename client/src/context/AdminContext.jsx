@@ -9,9 +9,13 @@ export const AdminProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isJsonModalOpen, setIsJsonModalOpen] = useState(false);
 
   const openLoginModal = () => setIsLoginModalOpen(true);
   const closeLoginModal = () => setIsLoginModalOpen(false);
+
+  const openJsonModal = () => setIsJsonModalOpen(true);
+  const closeJsonModal = () => setIsJsonModalOpen(false);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -99,7 +103,10 @@ export const AdminProvider = ({ children }) => {
       logout,
       isLoginModalOpen,
       openLoginModal,
-      closeLoginModal
+      closeLoginModal,
+      isJsonModalOpen,
+      openJsonModal,
+      closeJsonModal
     }}>
       {children}
     </AdminContext.Provider>

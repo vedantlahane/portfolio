@@ -163,6 +163,16 @@ const Projects = () => {
 
   useEffect(() => {
     fetchProjects();
+
+    const handleUpdate = (e) => {
+      if (e.detail?.projects) {
+        setProjects(e.detail.projects);
+      } else {
+        fetchProjects();
+      }
+    };
+    window.addEventListener('portfolio-data-updated', handleUpdate);
+    return () => window.removeEventListener('portfolio-data-updated', handleUpdate);
   }, []);
 
   const handleSaveProject = async (projectData) => {

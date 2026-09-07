@@ -33,7 +33,8 @@ exports.updateProfile = async (req, res) => {
       // Update fields
       const fields = [
         'greeting', 'name', 'roles', 'heroDescription', 'cvLink', 'statusIndicators',
-        'experiences', 'featuredSkills', 'me2StatusLabels', 'aboutSubhead', 'aboutText', 'highlightKeywords'
+        'experiences', 'featuredSkills', 'me2StatusLabels', 'aboutSubhead', 'aboutText',
+        'highlightKeywords', 'email', 'phone'
       ];
       
       fields.forEach(field => {

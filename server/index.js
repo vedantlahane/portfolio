@@ -15,6 +15,7 @@ const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const skillRoutes = require('./routes/skillRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // Initialize express application
 const app = express();
@@ -278,6 +279,7 @@ app.use('/api/auth', authRoutes);      // Admin authentication
 app.use('/api/profile', profileRoutes);  // Profile details
 app.use('/api/projects', projectRoutes); // Projects
 app.use('/api/skills', skillRoutes);    // Skills
+app.use('/api/admin', adminRoutes);     // Bulk Admin JSON endpoints
 
 /**
  * Error Handling Middleware

@@ -31,6 +31,16 @@ const Landing = () => {
       }
     };
     fetchProfile();
+
+    const handleUpdate = (e) => {
+      if (e.detail?.profile) {
+        setProfile(e.detail.profile);
+      } else {
+        fetchProfile();
+      }
+    };
+    window.addEventListener('portfolio-data-updated', handleUpdate);
+    return () => window.removeEventListener('portfolio-data-updated', handleUpdate);
   }, []);
 
   const updateProfile = async (updatedData) => {

@@ -39,6 +39,16 @@ const Skills = () => {
 
   useEffect(() => {
     fetchSkills();
+
+    const handleUpdate = (e) => {
+      if (e.detail?.skills) {
+        setCategories(e.detail.skills);
+      } else {
+        fetchSkills();
+      }
+    };
+    window.addEventListener('portfolio-data-updated', handleUpdate);
+    return () => window.removeEventListener('portfolio-data-updated', handleUpdate);
   }, []);
 
   const handleRenameCategory = async (id, newTitle) => {
