@@ -30,7 +30,18 @@ const About = ({ profile, updateProfile }) => {
       }
     });
 
-    // Reveal text word-by-word on scroll
+    const isMobile = window.innerWidth < 1024;
+
+    if (isMobile) {
+      // On mobile devices, avoid scrub animations on individual word spans for smooth scrolling
+      gsap.set(".about-word", { opacity: 1, y: 0 });
+      if (subheadRef.current) {
+        gsap.set(subheadRef.current, { x: 0, opacity: 1 });
+      }
+      return;
+    }
+
+    // Reveal text word-by-word on scroll (desktop only)
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
@@ -52,20 +63,22 @@ const About = ({ profile, updateProfile }) => {
     );
 
     // Sliding Sub-header
-    gsap.fromTo(
-      subheadRef.current,
-      { x: -100, opacity: 0 },
-      {
-        x: 0,
-        opacity: 1,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          end: "top 40%",
-          scrub: true
+    if (subheadRef.current) {
+      gsap.fromTo(
+        subheadRef.current,
+        { x: -100, opacity: 0 },
+        {
+          x: 0,
+          opacity: 1,
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 80%",
+            end: "top 40%",
+            scrub: true
+          }
         }
-      }
-    );
+      );
+    }
 
   }, { scope: containerRef, dependencies: [rawText, subhead] });
 

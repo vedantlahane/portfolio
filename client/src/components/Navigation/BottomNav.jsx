@@ -22,40 +22,38 @@ export default function BottomNav() {
             return;
         }
 
-        let lastScrollY = window.scrollY;
-        let timeoutId = null;
+        let ticking = false;
 
         const handleScroll = () => {
-            if (timeoutId) return;
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const scrollY = window.scrollY;
+                    const windowHeight = window.innerHeight;
+                    const documentHeight = document.documentElement.scrollHeight;
 
-            timeoutId = setTimeout(() => {
-                const scrollY = window.scrollY;
-                const windowHeight = window.innerHeight;
-                const documentHeight = document.documentElement.scrollHeight;
-
-                // Hide if at very bottom
-                if (scrollY + windowHeight >= documentHeight - 50) {
-                    setIsVisible(false);
-                } else {
-                    setIsVisible(true);
-                }
-
-                // Check active section
-                let currentSection = navItems[0].id;
-                navItems.forEach(item => {
-                    const element = document.getElementById(item.id);
-                    if (element) {
-                        const rect = element.getBoundingClientRect();
-                        // If section is in the top half of viewport
-                        if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
-                            currentSection = item.id;
-                        }
+                    // Hide if at very bottom
+                    if (scrollY + windowHeight >= documentHeight - 50) {
+                        setIsVisible(false);
+                    } else {
+                        setIsVisible(true);
                     }
+
+                    // Check active section
+                    let currentSection = navItems[0].id;
+                    navItems.forEach(item => {
+                        const element = document.getElementById(item.id);
+                        if (element) {
+                            const rect = element.getBoundingClientRect();
+                            if (rect.top <= windowHeight / 2 && rect.bottom >= windowHeight / 2) {
+                                currentSection = item.id;
+                            }
+                        }
+                    });
+                    setActiveSection(prev => prev !== currentSection ? currentSection : prev);
+                    ticking = false;
                 });
-                setActiveSection(prev => prev !== currentSection ? currentSection : prev);
-                lastScrollY = scrollY;
-                timeoutId = null;
-            }, 50);
+                ticking = true;
+            }
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });

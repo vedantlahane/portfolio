@@ -14,36 +14,34 @@ const Header = () => {
 
   // Update active section based on scroll position
   useEffect(() => {
-    let timeoutId = null;
+    let ticking = false;
 
     const handleScroll = () => {
-      if (timeoutId) return;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const sections = navigationItems.map(item => item.href.substring(1));
+          const scrollPosition = window.scrollY + 100;
 
-      timeoutId = setTimeout(() => {
-        const sections = navigationItems.map(item => item.href.substring(1));
-        const scrollPosition = window.scrollY + 100;
-
-        let currentSection = '';
-        sections.forEach(section => {
-          const element = document.getElementById(section);
-          if (element) {
-            const { offsetTop, offsetHeight } = element;
-            if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
-              currentSection = `#${section}`;
+          let currentSection = '';
+          sections.forEach(section => {
+            const element = document.getElementById(section);
+            if (element) {
+              const { offsetTop, offsetHeight } = element;
+              if (scrollPosition >= offsetTop && scrollPosition < offsetTop + offsetHeight) {
+                currentSection = `#${section}`;
+              }
             }
-          }
-        });
+          });
 
-        setActiveSection(prev => prev !== currentSection ? currentSection : prev);
-        timeoutId = null;
-      }, 50);
+          setActiveSection(prev => prev !== currentSection ? currentSection : prev);
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (timeoutId) clearTimeout(timeoutId);
-    }
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Close mobile menu on resize

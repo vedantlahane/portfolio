@@ -11,8 +11,8 @@ const MouseFollowerAdvanced = ({
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Check if device is mobile
-    const isMobile = window.innerWidth < 768;
+    // Check if device is mobile or touch
+    const isMobile = window.innerWidth < 1024 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     if (isMobile && !showOnMobile) return;
 
     const handleMouseMove = (e) => {

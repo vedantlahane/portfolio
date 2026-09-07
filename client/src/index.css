@@ -34,6 +34,12 @@ body::before {
 	z-index: -1;
 }
 
+@media (max-width: 1024px), (pointer: coarse) {
+	body::before {
+		display: none;
+	}
+}
+
 #root {
 	min-height: 100vh;
 }

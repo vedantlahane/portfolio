@@ -56,13 +56,13 @@ const Me2 = ({ profile, updateProfile }) => {
   }, []);
 
   // Reduce layers for mobile performance
-  const layerCount = isMobile ? 5 : 10;
+  const layerCount = isMobile ? 2 : 10;
   const layers = Array.from({ length: layerCount }, (_, i) => ({
     scale: 1 - (i * 0.05),
     rotate: i % 2 === 0 ? i * 3 : -i * 3,
     opacity: 1 - (i * 0.08),
     duration: 25 + (i * 5),
-    blur: i * 0.15
+    blur: isMobile ? 0 : i * 0.15
   }));
 
   // Mouse parallax effect (desktop only)
@@ -361,8 +361,8 @@ const Me2 = ({ profile, updateProfile }) => {
         ))}
       </div>
 
-      {/* Particles - much fewer on mobile */}
-      {[...Array(isMobile ? 6 : 15)].map((_, i) => (
+      {/* Particles - desktop only for smooth mobile scrolling */}
+      {!isMobile && [...Array(12)].map((_, i) => (
         <motion.div
           key={`particle-${i}`}
           className="absolute w-1.5 h-1.5 md:w-2 md:h-2 rounded-full"
@@ -407,12 +407,12 @@ const Me2 = ({ profile, updateProfile }) => {
           }}
         >
           <motion.div
-            className="absolute inset-0 rounded-full blur-2xl md:blur-3xl"
+            className="absolute inset-0 rounded-full blur-md md:blur-3xl"
             style={{
               background:
                 "linear-gradient(90deg, rgba(191, 220, 215, 0.78) 0%, rgba(95, 143, 136, 0.45) 40%, rgba(255,255,255,0.2) 100%)",
             }}
-            animate={{
+            animate={isMobile ? { opacity: 0.3 } : {
               scale: [1, 1.5, 1],
               opacity: [0.4, 0.2, 0.4],
             }}
