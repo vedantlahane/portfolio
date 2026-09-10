@@ -20,12 +20,14 @@ const Contact2 = () => {
     >
       {/* Header */}
       <div className="flex justify-between items-start mb-12">
-        <div className="text-xs sm:text-sm text-gray-500 font-mono">07 &nbsp;&nbsp;CONNECT</div>
+        <div className="text-xs sm:text-sm text-gray-400 font-mono">
+          <span className="text-accent font-medium">07</span> &nbsp;&nbsp;CONNECT
+        </div>
         <div className="text-xs sm:text-sm text-gray-500 font-mono">/07</div>
       </div>
 
       {/* Main content */}
-  <div className="flex-1 flex flex-col justify-center">
+      <div className="flex-1 flex flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -62,7 +64,7 @@ const Contact2 = () => {
             href="https://drive.google.com/file/d/1FF5VZ9P8ddZVfaUemFyWcIDwSeRO21WO/view?usp=sharing"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block px-6 py-3 border border-gray-600 text-white text-xs sm:text-sm tracking-wider uppercase hover:bg-white hover:text-gray-900 hover:border-white transition-all duration-300"
+            className="inline-block px-6 py-3 border border-gray-600 text-white text-xs sm:text-sm tracking-wider uppercase hover:border-accent hover:text-accent hover:bg-accent/10 transition-all duration-300 cursor-pointer"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -72,23 +74,22 @@ const Contact2 = () => {
       </div>
 
       {/* Social links */}
-  <div className="mt-12">
+      <div className="mt-12">
         {/* Mobile 2x2 grid - theme matched */}
-<div className="sm:hidden grid grid-cols-2 gap-y-3 gap-x-6 justify-items-end">
-  {socialLinks.map((link, index) => (
-    <a
-      key={link.id}
-      href={link.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-sm text-gray-300 hover:text-white transition-colors relative group"
-    >
-      {link.name}
-      <span className="absolute bottom-0 right-0 w-0 h-px bg-white transition-all duration-300 group-hover:w-full" />
-    </a>
-  ))}
-</div>
-
+        <div className="sm:hidden grid grid-cols-2 gap-y-3 gap-x-6 justify-items-end">
+          {socialLinks.map((link) => (
+            <a
+              key={link.id}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-gray-300 hover:text-accent transition-colors relative group"
+            >
+              {link.name}
+              <span className="absolute bottom-0 right-0 w-0 h-px bg-accent transition-all duration-300 group-hover:w-full" />
+            </a>
+          ))}
+        </div>
 
         {/* Desktop inline */}
         <div className="hidden sm:flex gap-8">
@@ -102,9 +103,9 @@ const Contact2 = () => {
               onMouseEnter={() => setHoveredLink(link.id)}
               onMouseLeave={() => setHoveredLink(null)}
             >
-              {link.name}
+              <span className="group-hover:text-accent transition-colors">{link.name}</span>
               <motion.span
-                className="absolute -bottom-1 left-0 right-0 h-px bg-white origin-left"
+                className="absolute -bottom-1 left-0 right-0 h-px bg-accent origin-left"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: hoveredLink === link.id ? 1 : 0 }}
                 transition={{ duration: 0.2 }}

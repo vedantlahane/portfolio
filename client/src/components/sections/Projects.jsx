@@ -237,7 +237,7 @@ const Projects = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.4 }}
-      className="bg-gray-50 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 h-full relative flex flex-col"
+      className="bg-gray-50 dark:bg-neutral-900/40 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 h-full relative flex flex-col transition-colors duration-300"
     >
       {/* Header - responsive to prevent overlap */}
       <motion.div
@@ -246,7 +246,9 @@ const Projects = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        <p className="text-xs sm:text-sm text-gray-400 font-mono font-light">04 &nbsp;&nbsp;PROJECTS</p>
+        <p className="text-xs sm:text-sm text-gray-400 dark:text-neutral-500 font-mono font-light">
+          <span className="text-accent font-medium">04</span> &nbsp;&nbsp;PROJECTS
+        </p>
         <div className="flex items-center gap-4">
           {isAdmin && (
             <button
@@ -254,12 +256,12 @@ const Projects = () => {
                 setEditingProject(null);
                 setIsFormOpen(true);
               }}
-              className="text-xs font-mono font-medium text-gray-900 border border-gray-900 px-3 py-1 hover:bg-gray-900 hover:text-white transition-colors cursor-pointer"
+              className="text-xs font-mono font-medium text-gray-900 dark:text-white border border-gray-900 dark:border-neutral-600 px-3 py-1 hover:border-accent hover:bg-accent hover:text-white transition-colors cursor-pointer"
             >
               + ADD PROJECT
             </button>
           )}
-          <p className="text-xs sm:text-sm text-gray-400 font-mono font-light flex-shrink-0 whitespace-nowrap">
+          <p className="text-xs sm:text-sm text-gray-400 dark:text-neutral-500 font-mono font-light flex-shrink-0 whitespace-nowrap">
             {projects.length} TOTAL
           </p>
         </div>
@@ -290,7 +292,7 @@ const Projects = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}
                   transition={{ delay: 0.04 * index, duration: 0.28 }}
-                  className={`group ${index !== visibleProjects.length - 1 ? 'border-b border-gray-200' : ''}`}
+                  className={`group transition-colors ${index !== visibleProjects.length - 1 ? 'border-b border-gray-200 dark:border-neutral-800/80' : ''}`}
                   onMouseEnter={() => setHoveredProject(project._id || project.id)}
                   onMouseLeave={() => setHoveredProject(null)}
                 >
@@ -298,10 +300,10 @@ const Projects = () => {
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-6">
                     {/* Left: Year & Type */}
                     <div className="flex flex-col items-start sm:items-center gap-2 min-w-[80px] sm:min-w-[140px]">
-                      <span className="text-xs lg:text-sm text-gray-400 font-mono font-light tabular-nums">
+                      <span className="text-xs lg:text-sm text-gray-400 dark:text-neutral-500 font-mono font-light tabular-nums">
                         {project.year}
                       </span>
-                      <span className="text-[10px] lg:text-xs text-gray-500 font-sans uppercase tracking-wider">
+                      <span className="text-[10px] lg:text-xs text-gray-500 dark:text-neutral-400 font-sans uppercase tracking-wider">
                         {project.type}
                       </span>
                     </div>
@@ -310,8 +312,8 @@ const Projects = () => {
                     <div className="flex-1">
                       <div className="flex items-start sm:items-center gap-3">
                         <h4 className={`
-                          text-lg lg:text-xl font-display font-light text-gray-900
-                          transition-transform duration-200
+                          text-lg lg:text-xl font-display font-light text-gray-900 dark:text-white
+                          group-hover:text-accent dark:group-hover:text-accent transition-all duration-200
                           ${hoveredProject === (project._id || project.id) ? 'translate-x-1' : ''}
                         `}>
                           {project.title}
@@ -325,7 +327,7 @@ const Projects = () => {
                           {project.github && (
                             <button
                               onClick={(e) => handleLinkClick(e, project.github)}
-                              className="text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+                              className="text-gray-500 dark:text-neutral-400 hover:text-accent dark:hover:text-accent transition-colors cursor-pointer"
                               aria-label="View GitHub repository"
                             >
                               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -337,7 +339,7 @@ const Projects = () => {
                           {project.live && (
                             <button
                               onClick={(e) => handleLinkClick(e, project.live)}
-                              className="text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+                              className="text-gray-500 dark:text-neutral-400 hover:text-accent dark:hover:text-accent transition-colors cursor-pointer"
                               aria-label="Open live demo"
                               title="Live demo"
                             >
@@ -348,16 +350,16 @@ const Projects = () => {
                           )}
 
                           {isAdmin && (
-                            <div className="flex items-center gap-2 pl-4 border-l border-gray-200">
+                            <div className="flex items-center gap-2 pl-4 border-l border-gray-200 dark:border-neutral-800">
                               <button
                                 onClick={(e) => handleEditClick(e, project)}
-                                className="text-xs font-mono text-blue-600 hover:underline cursor-pointer"
+                                className="text-xs font-mono text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
                               >
                                 EDIT
                               </button>
                               <button
                                 onClick={(e) => handleDeleteProject(e, project._id)}
-                                className="text-xs font-mono text-red-600 hover:underline cursor-pointer"
+                                className="text-xs font-mono text-red-600 dark:text-red-400 hover:underline cursor-pointer"
                               >
                                 DELETE
                               </button>
@@ -366,7 +368,7 @@ const Projects = () => {
                         </div>
                       </div>
 
-                      <p className="text-sm lg:text-sm text-gray-600 font-sans mt-2">
+                      <p className="text-sm lg:text-sm text-gray-600 dark:text-neutral-300 font-sans mt-2 leading-relaxed">
                         {project.description}
                       </p>
                     </div>
@@ -375,11 +377,11 @@ const Projects = () => {
                     <div className="text-right sm:text-right mt-4 sm:mt-0 min-w-[120px] sm:min-w-[180px]">
                       <div className="flex items-center justify-end gap-2">
                         <span
-                          className={`inline-block w-2 h-2 rounded-full ${project.live ? 'bg-green-500' : 'bg-gray-400'}`}
+                          className={`inline-block w-2 h-2 rounded-full ${project.live ? 'bg-green-500' : 'bg-gray-400 dark:bg-neutral-600'}`}
                           title={project.live ? 'Live' : 'In development'}
                           aria-hidden
                         />
-                        <span className="text-[10px] lg:text-xs text-gray-500 font-mono block">
+                        <span className="text-[10px] lg:text-xs text-gray-500 dark:text-neutral-400 font-mono block">
                           {project.tech}
                         </span>
                       </div>

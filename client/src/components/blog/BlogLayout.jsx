@@ -3,21 +3,21 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const BlogLayout = ({ title, children }) => (
-  <div className="min-h-screen bg-slate-50 text-slate-900">
-    <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
+  <div className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-neutral-100 transition-colors duration-300">
+    <header className="border-b border-slate-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 backdrop-blur">
       <div className="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-6 sm:flex-row sm:items-center sm:justify-between">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
-          className="flex items-center gap-2 text-sm font-mono uppercase tracking-[0.2em] text-slate-500"
+          className="flex items-center gap-2 text-sm font-mono uppercase tracking-[0.2em] text-slate-500 dark:text-neutral-400"
         >
-          09&nbsp;&nbsp;{title}
+          <span className="text-accent font-medium">09</span>&nbsp;&nbsp;{title}
         </motion.div>
 
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-neutral-400 transition-colors hover:text-accent dark:hover:text-accent"
         >
           <span aria-hidden>←</span>
           Back to portfolio

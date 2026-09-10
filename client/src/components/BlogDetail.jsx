@@ -5,16 +5,16 @@ import { resolveApiUrl, getApiBaseUrl } from '../utils/api';
 
 const BlogDetailSkeleton = () => (
   <div className="animate-pulse">
-    <div className="h-4 bg-gray-100 w-32 mb-8 rounded-sm" />
-    <div className="h-12 bg-gray-100 w-3/4 max-w-2xl mb-4 rounded-sm" />
-    <div className="h-12 bg-gray-100 w-2/4 max-w-xl mb-12 rounded-sm" />
+    <div className="h-4 bg-gray-100 dark:bg-neutral-800 w-32 mb-8 rounded-sm" />
+    <div className="h-12 bg-gray-100 dark:bg-neutral-800 w-3/4 max-w-2xl mb-4 rounded-sm" />
+    <div className="h-12 bg-gray-100 dark:bg-neutral-800 w-2/4 max-w-xl mb-12 rounded-sm" />
 
     <div className="space-y-4 max-w-3xl">
-      <div className="h-4 bg-gray-100 w-full rounded-sm" />
-      <div className="h-4 bg-gray-100 w-full rounded-sm" />
-      <div className="h-4 bg-gray-100 w-5/6 rounded-sm" />
-      <div className="h-4 bg-gray-100 w-full rounded-sm mt-8" />
-      <div className="h-4 bg-gray-100 w-4/5 rounded-sm" />
+      <div className="h-4 bg-gray-100 dark:bg-neutral-800 w-full rounded-sm" />
+      <div className="h-4 bg-gray-100 dark:bg-neutral-800 w-full rounded-sm" />
+      <div className="h-4 bg-gray-100 dark:bg-neutral-800 w-5/6 rounded-sm" />
+      <div className="h-4 bg-gray-100 dark:bg-neutral-800 w-full rounded-sm mt-8" />
+      <div className="h-4 bg-gray-100 dark:bg-neutral-800 w-4/5 rounded-sm" />
     </div>
   </div>
 );
@@ -96,8 +96,8 @@ const BlogDetail = () => {
             transition={{ duration: 0.6 }}
             className="pb-20"
           >
-            <header className="mb-16 border-b border-gray-200 pb-12">
-              <div className="flex items-center gap-4 text-xs font-mono text-gray-400 uppercase tracking-wider mb-6">
+            <header className="mb-16 border-b border-gray-200 dark:border-neutral-800 pb-12">
+              <div className="flex items-center gap-4 text-xs font-mono text-gray-400 dark:text-neutral-500 uppercase tracking-wider mb-6">
                 <span>{blog.author || 'Author'}</span>
                 <span>•</span>
                 <time dateTime={blog.createdAt}>
@@ -109,23 +109,23 @@ const BlogDetail = () => {
                 </time>
               </div>
 
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-display font-light text-gray-900 leading-[1.1] tracking-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-7xl font-display font-light text-gray-900 dark:text-white leading-[1.1] tracking-tight">
                 {blog.title}
               </h1>
             </header>
 
-            <div className="prose prose-lg prose-slate hover:prose-a:text-gray-900 prose-a:text-gray-500 prose-a:transition-colors prose-headings:font-display prose-headings:font-light prose-h2:text-4xl prose-h3:text-2xl font-sans font-light leading-relaxed text-gray-800 break-words">
+            <div className="prose prose-lg prose-slate dark:prose-invert hover:prose-a:text-accent prose-a:text-accent/80 prose-a:transition-colors prose-headings:font-display prose-headings:font-light prose-h2:text-4xl prose-h3:text-2xl font-sans font-light leading-relaxed text-gray-800 dark:text-neutral-300 break-words">
               {Array.isArray(blog.content) ? blog.content.join('\n') : blog.content ? (
                 blog.content.split('\n').map((paragraph, idx) => (
                   <p key={idx}>{paragraph}</p>
                 ))
               ) : (
-                <p className="italic text-gray-400">Content pending.</p>
+                <p className="italic text-gray-400 dark:text-neutral-500">Content pending.</p>
               )}
             </div>
 
-            <div className="mt-20 pt-8 border-t border-gray-200">
-              <Link to="/blogs" className="inline-flex items-center gap-2 text-sm font-sans text-gray-400 hover:text-gray-900 transition-colors">
+            <div className="mt-20 pt-8 border-t border-gray-200 dark:border-neutral-800">
+              <Link to="/blogs" className="inline-flex items-center gap-2 text-sm font-sans text-gray-400 hover:text-accent dark:text-neutral-400 dark:hover:text-accent transition-colors">
                 ← Back to overview
               </Link>
             </div>

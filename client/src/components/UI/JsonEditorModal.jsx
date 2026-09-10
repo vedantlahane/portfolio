@@ -299,7 +299,7 @@ const JsonEditorModal = ({ isOpen, onClose }) => {
                   onClick={() => handleTabChange(t.id)}
                   className={`px-2.5 py-1 transition-colors cursor-pointer ${
                     activeTab === t.id
-                      ? 'bg-neutral-800 text-white font-semibold'
+                      ? 'bg-neutral-800 text-accent font-semibold'
                       : 'text-neutral-400 hover:text-neutral-200'
                   }`}
                 >
@@ -400,7 +400,7 @@ const JsonEditorModal = ({ isOpen, onClose }) => {
                 type="button"
                 onClick={handleSave}
                 disabled={saving || loading}
-                className={`px-5 py-2 bg-white text-black hover:bg-neutral-200 border border-white text-xs font-mono font-medium uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
+                className={`px-5 py-2 bg-accent text-neutral-950 hover:bg-accent/90 border border-accent text-xs font-mono font-medium uppercase tracking-wider transition-all cursor-pointer flex items-center gap-2 ${
                   saving ? 'opacity-60 cursor-not-allowed' : ''
                 }`}
               >

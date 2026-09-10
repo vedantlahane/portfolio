@@ -64,7 +64,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="bg-white font-sans text-gray-900">
+    <div className="bg-white dark:bg-[#090d16] font-sans text-gray-900 dark:text-neutral-100 transition-colors duration-300">
       <div className="hidden lg:block">
         <MouseFollowerAdvanced />
       </div>
@@ -75,8 +75,8 @@ const Landing = () => {
         <Header />
 
         <main>
-          <div id="hero" className="grid grid-cols-1 lg:grid-cols-5 border-t border-gray-200">
-            <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 min-h-[60vh]">
+          <div id="hero" className="grid grid-cols-1 lg:grid-cols-5 border-t border-gray-200 dark:border-neutral-800/80">
+            <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-neutral-800/80 min-h-[60vh]">
               <Me1 profile={profile} updateProfile={updateProfile} />
             </div>
 
@@ -86,25 +86,25 @@ const Landing = () => {
           </div>
 
           <section id="about" className="scroll-mt-20">
-            <div className="grid grid-cols-1 lg:grid-cols-8 border-t border-gray-200">
+            <div className="grid grid-cols-1 lg:grid-cols-8 border-t border-gray-200 dark:border-neutral-800/80">
               {/* About dictates row height on desktop */}
-              <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200">
+              <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-neutral-800/80">
                 <About profile={profile} updateProfile={updateProfile} />
               </div>
 
-              <div id="projects" className="col-span-1 lg:col-span-5 scroll-mt-20 bg-gray-50">
+              <div id="projects" className="col-span-1 lg:col-span-5 scroll-mt-20 bg-gray-50 dark:bg-neutral-900/40">
                 <Projects />
               </div>
             </div>
           </section>
 
-          <section id="skills" className="border-t border-gray-200 scroll-mt-20">
+          <section id="skills" className="border-t border-gray-200 dark:border-neutral-800/80 scroll-mt-20">
             <Skills />
           </section>
 
           <section id="contact" className="scroll-mt-20">
-            <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-gray-200 sm:auto-rows-fr">
-              <div className="border-b sm:border-b-0 sm:border-r border-gray-200 h-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 border-t border-gray-200 dark:border-neutral-800/80 sm:auto-rows-fr">
+              <div className="border-b sm:border-b-0 sm:border-r border-gray-200 dark:border-neutral-800/80 h-full">
                 <Contact1 profile={profile} updateProfile={updateProfile} />
               </div>
 
@@ -115,7 +115,7 @@ const Landing = () => {
           </section>
         </main>
 
-        <footer id="footer" className="border-t border-gray-200">
+        <footer id="footer" className="border-t border-gray-200 dark:border-neutral-800/80">
           <Footer />
         </footer>
       </div>

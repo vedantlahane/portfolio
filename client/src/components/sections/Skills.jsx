@@ -294,9 +294,9 @@ const Skills = () => {
           >
             <div className="flex w-full items-center justify-between py-4">
               <div
-                className="flex flex-1 items-center gap-4 text-left transition-colors text-gray-900"
+                className="flex flex-1 items-center gap-4 text-left transition-colors text-gray-900 dark:text-white"
               >
-                <span className="font-mono text-xs text-gray-400">
+                <span className="font-mono text-xs text-accent font-medium">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 {isAdmin ? (
@@ -304,18 +304,18 @@ const Skills = () => {
                     value={category.title}
                     onSave={(val) => handleRenameCategory(category._id, val)}
                     isAdmin={true}
-                    textClassName="text-base font-medium text-gray-900 cursor-pointer hover:underline"
+                    textClassName="text-base font-medium text-gray-900 dark:text-white cursor-pointer hover:underline"
                   />
                 ) : (
                   <button
                     type="button"
                     onClick={() => toggleSection(key)}
-                    className="text-base font-medium text-gray-900 cursor-pointer hover:text-gray-600 focus:outline-none"
+                    className="text-base font-medium text-gray-900 dark:text-white cursor-pointer hover:text-accent dark:hover:text-accent transition-colors focus:outline-none"
                   >
                     {category.title}
                   </button>
                 )}
-                <span className="text-xs text-gray-500">
+                <span className="text-xs text-gray-500 dark:text-neutral-400 font-mono">
                   ({category.skills.length})
                 </span>
               </div>
@@ -332,7 +332,7 @@ const Skills = () => {
                 <button
                   type="button"
                   onClick={() => toggleSection(key)}
-                  className="text-gray-400 focus:outline-none cursor-pointer p-1"
+                  className="text-gray-400 dark:text-neutral-500 focus:outline-none cursor-pointer p-1 hover:text-accent transition-colors"
                 >
                   {activeSection === key ? "↓" : "→"}
                 </button>
@@ -355,11 +355,11 @@ const Skills = () => {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.03 * skillIndex }}
-                        className="flex items-center justify-between py-2 border-b border-gray-100 pr-4"
+                        className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-neutral-800/80 pr-4"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="bg-gray-400 h-1.5 w-1.5 flex-shrink-0 rounded-full" />
-                          <span className="text-sm text-gray-700">{skill}</span>
+                          <div className="bg-accent/80 h-1.5 w-1.5 flex-shrink-0 rounded-full" />
+                          <span className="text-sm text-gray-700 dark:text-neutral-300 font-light">{skill}</span>
                         </div>
                         {isAdmin && (
                           <button
@@ -381,7 +381,7 @@ const Skills = () => {
                           onSave={(val) => handleAddSkill(category._id, val)}
                           isAdmin={true}
                           placeholder="Type name & hit Enter"
-                          textClassName="text-xs text-blue-600 hover:underline border-b border-dashed border-blue-400 cursor-pointer"
+                          textClassName="text-xs text-accent hover:underline border-b border-dashed border-accent cursor-pointer"
                         />
                       </div>
                     )}
@@ -391,7 +391,7 @@ const Skills = () => {
             </AnimatePresence>
 
             {index < categoryEntries.length - 1 && (
-              <div className="h-px w-full bg-gray-200" />
+              <div className="h-px w-full bg-gray-200 dark:bg-neutral-800" />
             )}
           </motion.div>
         ))}
@@ -503,10 +503,10 @@ const Skills = () => {
                         <React.Fragment key={`${iteration}-${skill}`}>
                           <motion.span
                             className={`mx-8 select-none text-2xl font-light transition-colors duration-300 md:mx-10 md:text-3xl lg:mx-12 lg:text-4xl xl:mx-16 xl:text-5xl 2xl:mx-20 2xl:text-6xl ${
-                              isActive ? "text-gray-900" : "text-gray-400"
+                              isActive ? "text-gray-900 dark:text-white" : "text-gray-400 dark:text-neutral-500"
                             }`}
                             whileHover={{
-                              color: "rgb(95, 143, 136)",
+                              color: "rgb(var(--accent-rgb))",
                               scale: 1.05,
                               y: -2,
                             }}
@@ -514,7 +514,7 @@ const Skills = () => {
                             {skill}
                           </motion.span>
                           {index < allSkills.length - 1 && (
-                            <span className="mx-4 select-none text-xl text-gray-300">
+                            <span className="mx-4 select-none text-xl text-gray-300 dark:text-neutral-700">
                               •
                             </span>
                           )}
@@ -528,14 +528,14 @@ const Skills = () => {
           </motion.div>
         </div>
 
-        <div className="mt-2 text-center font-mono text-xs text-gray-400 select-none">
+        <div className="mt-2 text-center font-mono text-xs text-gray-400 dark:text-neutral-500 select-none">
           {isExpanded
             ? (isAdmin ? "Click on details to edit" : "Move out or Click to contract")
             : "Click to expand"}
         </div>
 
         <div 
-          className="mt-1 text-center font-mono text-xs text-gray-400 select-none"
+          className="mt-1 text-center font-mono text-xs text-gray-400 dark:text-neutral-500 select-none"
           style={{ 
             opacity: isExpanded ? 0 : 1,
             transition: isExpanded ? 'opacity 0.3s ease-out' : 'opacity 0.8s ease-out 0.3s'
@@ -554,7 +554,7 @@ const Skills = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.6 }}
-      className="relative overflow-hidden border-y border-gray-200 bg-gradient-to-b from-gray-50 to-transparent px-6 py-10  sm:px-10 sm:py-14"
+      className="relative overflow-hidden border-y border-gray-200 dark:border-neutral-800 bg-gradient-to-b from-gray-50 dark:from-neutral-900/30 to-transparent px-6 py-10 sm:px-10 sm:py-14 transition-colors duration-300"
     >
       <div className="relative flex flex-col gap-8 sm:gap-10">
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
@@ -562,16 +562,16 @@ const Skills = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.7, duration: 0.5 }}
-            className="font-mono text-xs uppercase tracking-[0.4em] text-gray-500 flex items-center gap-4"
+            className="font-mono text-xs uppercase tracking-[0.4em] text-gray-500 dark:text-neutral-400 flex items-center gap-4"
           >
-            <span>05 &nbsp;&nbsp;SKILLS</span>
+            <span><span className="text-accent font-medium">05</span> &nbsp;&nbsp;SKILLS</span>
             {isAdmin && (
               <EditableText
                 value=""
                 onSave={handleCreateCategory}
                 isAdmin={true}
                 placeholder="+ ADD CATEGORY"
-                textClassName="text-[10px] text-gray-900 border border-gray-900 px-2 py-0.5 hover:bg-gray-900 hover:text-white transition-colors cursor-pointer"
+                textClassName="text-[10px] text-gray-900 dark:text-white border border-gray-900 dark:border-neutral-600 px-2 py-0.5 hover:border-accent hover:bg-accent hover:text-white transition-colors cursor-pointer"
               />
             )}
           </motion.div>

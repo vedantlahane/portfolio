@@ -102,7 +102,9 @@ const About = ({ profile, updateProfile }) => {
 
         {/* Section Label */}
         <div className="mb-4 sm:mb-6 lg:mb-8 relative z-10 lg:mt-2">
-          <p className="text-xs sm:text-sm text-gray-500 font-mono font-light">03 &nbsp;&nbsp;ABOUT</p>
+          <p className="text-xs sm:text-sm text-gray-400 font-mono font-light">
+            <span className="text-accent font-medium">03</span> &nbsp;&nbsp;ABOUT
+          </p>
         </div>
 
         <div className="flex-1 flex flex-col justify-center relative z-10 max-w-5xl">
@@ -147,7 +149,7 @@ const About = ({ profile, updateProfile }) => {
                       updateProfile({ highlightKeywords: list });
                     }}
                     isAdmin={true}
-                    textClassName="text-white border-b border-dashed border-gray-600"
+                    textClassName="text-accent border-b border-dashed border-accent/50"
                   />
                 </div>
               </div>
@@ -159,7 +161,7 @@ const About = ({ profile, updateProfile }) => {
                 return (
                   <span
                     key={index}
-                    className={`about-word inline-block mr-1.5 lg:mr-2 ${isHighlight ? 'text-white font-medium' : 'text-gray-300'}`}
+                    className={`about-word inline-block mr-1.5 lg:mr-2 transition-colors ${isHighlight ? 'text-accent font-medium' : 'text-gray-300'}`}
                   >
                     {word}
                   </span>

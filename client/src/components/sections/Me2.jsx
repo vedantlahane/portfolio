@@ -149,7 +149,9 @@ const Me2 = ({ profile, updateProfile }) => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
       >
-        <p className="text-xs sm:text-sm text-gray-400 font-mono font-light tracking-wider">02 &nbsp;&nbsp;ME2</p>
+        <p className="text-xs sm:text-sm text-gray-400 font-mono font-light tracking-wider">
+          <span className="text-accent font-medium">02</span> &nbsp;&nbsp;ME2
+        </p>
       </motion.div>
 
       {/* Page indicator */}

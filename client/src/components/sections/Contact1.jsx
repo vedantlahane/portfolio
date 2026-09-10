@@ -79,7 +79,7 @@ const Contact1 = ({ profile, updateProfile }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.7 }}
-      className="bg-gradient-to-b from-transparent to-gray-50 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12 h-full relative flex flex-col"
+      className="bg-gradient-to-b from-transparent to-gray-50 dark:to-neutral-900/40 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20 py-12 h-full relative flex flex-col transition-colors duration-300"
     >
       {/* Header */}
       <div className="flex justify-between items-start mb-8 sm:mb-12 lg:mb-20">
@@ -87,16 +87,16 @@ const Contact1 = ({ profile, updateProfile }) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="text-xs sm:text-sm text-gray-400 font-mono font-light"
+          className="text-xs sm:text-sm text-gray-400 dark:text-neutral-500 font-mono font-light"
         >
-          06 &nbsp;&nbsp;CONTACT
+          <span className="text-accent font-medium">06</span> &nbsp;&nbsp;CONTACT
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="text-xs sm:text-sm text-gray-400 font-mono font-light"
+          className="text-xs sm:text-sm text-gray-400 dark:text-neutral-500 font-mono font-light"
         >
           /06
         </motion.div>
@@ -105,13 +105,13 @@ const Contact1 = ({ profile, updateProfile }) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col justify-center max-w-2xl w-full">
         <motion.h2
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light leading-tight mb-8 sm:mb-12 lg:mb-20"
+          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-display font-light leading-tight mb-8 sm:mb-12 lg:mb-20 text-gray-900 dark:text-white transition-colors"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9 }}
         >
           <span className="block">LET'S</span>
-          <span className="block">CONNECT.</span>
+          <span className="block text-gray-400 dark:text-neutral-500">CONNECT.</span>
         </motion.h2>
 
         {/* Unified Contact Info Style */}
@@ -133,24 +133,24 @@ const Contact1 = ({ profile, updateProfile }) => {
                 onClick={() => handleCopy(item.value, item.id)}
               >
                 <div className="flex items-center gap-4 group-hover:translate-x-2 transition-all duration-300">
-                  <div className="text-gray-600 opacity-70 group-hover:opacity-100 transition-opacity">
+                  <div className="text-gray-500 dark:text-neutral-400 group-hover:text-accent dark:group-hover:text-accent transition-colors">
                     {item.icon}
                   </div>
-                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-light text-gray-900 break-all">
+                  <div className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-light text-gray-900 dark:text-white group-hover:text-accent dark:group-hover:text-accent transition-colors break-all">
                     {isAdmin ? (
                       <EditableText
                         value={item.value}
                         onSave={(val) => updateProfile && updateProfile({ [item.id]: val })}
                         isAdmin={true}
-                        textClassName="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-light text-gray-900"
+                        textClassName="text-lg sm:text-xl md:text-2xl lg:text-3xl font-sans font-light text-gray-900 dark:text-white"
                       />
                     ) : (
                       item.value
                     )}
                   </div>
                 </div>
-                <p className="text-xs text-gray-400 font-mono mt-1 ml-9">
-                  {isAdmin ? 'ADMIN: CLICK TO EDIT VALUE' : (copiedItem === item.id ? 'COPIED ✓' : 'CLICK TO COPY')}
+                <p className="text-xs text-gray-400 dark:text-neutral-500 font-mono mt-1 ml-9">
+                  {isAdmin ? 'ADMIN: CLICK TO EDIT VALUE' : (copiedItem === item.id ? <span className="text-accent">COPIED ✓</span> : 'CLICK TO COPY')}
                 </p>
               </div>
             </motion.div>

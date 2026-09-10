@@ -73,14 +73,14 @@ const Me1 = ({ profile, updateProfile }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="bg-white p-6 sm:p-8 md:p-12 lg:p-16 min-h-[65vh] h-full relative flex flex-col overflow-hidden"
+      className="bg-white dark:bg-transparent p-6 sm:p-8 md:p-12 lg:p-16 min-h-[65vh] h-full relative flex flex-col overflow-hidden transition-colors duration-300"
     >
       {/* Floating background elements - hide on mobile */}
-      <div className="hidden lg:block">
+      <div className="hidden lg:block pointer-events-none">
         {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-24 h-24 xl:w-32 xl:h-32 border border-gray-100 rounded-full"
+            className="absolute w-24 h-24 xl:w-32 xl:h-32 border border-gray-100 dark:border-neutral-800/60 rounded-full"
             style={{
               left: `${20 + i * 30}%`,
               top: `${10 + i * 20}%`,
@@ -106,13 +106,15 @@ const Me1 = ({ profile, updateProfile }) => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
       >
-        <p className="text-xs sm:text-sm text-gray-400 font-mono font-light">01 &nbsp;&nbsp;ME</p>
+        <p className="text-xs sm:text-sm text-gray-400 dark:text-neutral-500 font-mono font-light">
+          <span className="text-accent font-medium">01</span> &nbsp;&nbsp;ME
+        </p>
       </motion.div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col justify-center w-full">
         <motion.h1
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-light text-gray-900 mb-4 sm:mb-6 lg:mb-8"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-light text-gray-900 dark:text-white mb-4 sm:mb-6 lg:mb-8 transition-colors"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.8 }}
@@ -122,7 +124,7 @@ const Me1 = ({ profile, updateProfile }) => {
               value={profile?.greeting || 'Hello'}
               onSave={(val) => updateProfile({ greeting: val })}
               isAdmin={true}
-              textClassName="text-gray-900"
+              textClassName="text-gray-900 dark:text-white"
             />
           ) : (
             <ScrambleText text={profile?.greeting || 'Hello'} delay={400} />
@@ -130,14 +132,14 @@ const Me1 = ({ profile, updateProfile }) => {
           <motion.span
             animate={{ opacity: [0, 1, 0] }}
             transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-            className="text-gray-900"
+            className="text-accent"
           >
             _
           </motion.span>
         </motion.h1>
 
         <motion.h2
-          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light text-gray-900 mb-4 sm:mb-6 lg:mb-8"
+          className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-light text-gray-900 dark:text-white mb-4 sm:mb-6 lg:mb-8 transition-colors"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.8 }}
@@ -148,7 +150,7 @@ const Me1 = ({ profile, updateProfile }) => {
               value={profile?.name || 'Vedant Lahane'}
               onSave={(val) => updateProfile({ name: val })}
               isAdmin={true}
-              textClassName="text-gray-900 font-medium"
+              textClassName="text-gray-900 dark:text-white font-medium"
             />
           ) : (
             <ScrambleText text={profile?.name || 'Vedant Lahane'} delay={800} duration={1200} />
@@ -157,7 +159,7 @@ const Me1 = ({ profile, updateProfile }) => {
 
         {/* Animated role */}
         <motion.div
-          className="text-lg sm:text-xl md:text-2xl font-sans font-light text-gray-500 mb-8 sm:mb-10 lg:mb-12 flex items-center gap-2"
+          className="text-lg sm:text-xl md:text-2xl font-sans font-light text-gray-500 dark:text-neutral-400 mb-8 sm:mb-10 lg:mb-12 flex items-center gap-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.55, duration: 0.8 }}
@@ -171,7 +173,7 @@ const Me1 = ({ profile, updateProfile }) => {
                 updateProfile({ roles: newRoles });
               }}
               isAdmin={true}
-              textClassName="text-gray-900 font-medium"
+              textClassName="text-accent font-medium"
               placeholder="Roles separated by commas..."
             />
           ) : (
@@ -181,12 +183,12 @@ const Me1 = ({ profile, updateProfile }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="text-gray-900 font-medium absolute left-0"
+                className="text-accent font-medium absolute left-0"
               >
                 <ScrambleText text={words[activeWordIndex]} delay={0} duration={600} />
               </motion.span>
               {/* invisible placeholder to keep width */}
-              <span className="invisible text-gray-900 font-medium">engineering</span>
+              <span className="invisible text-accent font-medium">engineering</span>
             </div>
           )}
         </motion.div>
@@ -205,11 +207,11 @@ const Me1 = ({ profile, updateProfile }) => {
                 value={profile?.heroDescription || 'Describe yourself here...'}
                 onSave={(val) => updateProfile({ heroDescription: val })}
                 isAdmin={true}
-                textClassName="text-base sm:text-lg md:text-xl font-sans font-light text-gray-600 leading-relaxed"
+                textClassName="text-base sm:text-lg md:text-xl font-sans font-light text-gray-600 dark:text-neutral-300 leading-relaxed"
               />
             </div>
           ) : (
-            <p className="text-base sm:text-lg md:text-xl font-sans font-light text-gray-600 leading-relaxed max-w-full lg:max-w-xl text-left lg:text-right">
+            <p className="text-base sm:text-lg md:text-xl font-sans font-light text-gray-600 dark:text-neutral-300 leading-relaxed max-w-full lg:max-w-xl text-left lg:text-right">
               {profile?.heroDescription || 'Describe yourself here...'}
             </p>
           )}
@@ -226,31 +228,31 @@ const Me1 = ({ profile, updateProfile }) => {
             onClick={handleDownloadCV}
             disabled={downloadStatus === 'downloading'}
             className={`
-              px-6 sm:px-8 py-2.5 sm:py-3 border border-gray-900 
-              font-sans font-light text-xs sm:text-sm tracking-wider uppercase
-              transition-all duration-300 relative overflow-hidden group
+              px-6 sm:px-8 py-2.5 sm:py-3 border border-gray-900 dark:border-neutral-300 
+              font-sans font-light text-xs sm:text-sm tracking-wider uppercase text-gray-900 dark:text-white
+              transition-all duration-300 relative overflow-hidden group hover:border-accent dark:hover:border-accent
               ${downloadStatus === 'downloading'
                 ? 'opacity-50 cursor-not-allowed'
-                : 'hover:bg-gray-900 hover:text-white cursor-pointer'
+                : 'hover:text-white cursor-pointer'
               }
             `}
           >
             <span className="relative z-10">{getButtonContent()}</span>
             <motion.div
-              className="absolute inset-0 bg-gray-900"
+              className="absolute inset-0 bg-accent"
               initial={{ x: "-100%" }}
               whileHover={{ x: 0 }}
               transition={{ duration: 0.3 }}
             />
           </button>
           {isAdmin && (
-            <div className="text-xs text-gray-500 font-mono mt-1 w-full max-w-md">
+            <div className="text-xs text-gray-500 dark:text-neutral-400 font-mono mt-1 w-full max-w-md">
               Resume Link:{' '}
               <EditableText
                 value={profile?.cvLink || ''}
                 onSave={(val) => updateProfile({ cvLink: val })}
                 isAdmin={true}
-                textClassName="text-gray-900 font-mono"
+                textClassName="text-accent font-mono"
                 placeholder="Enter resume drive link..."
               />
             </div>
@@ -268,10 +270,10 @@ const Me1 = ({ profile, updateProfile }) => {
             {(profile?.statusIndicators || ['Available']).map((status, i) => (
               <span
                 key={status}
-                className="text-xs text-gray-400 flex items-center gap-1 font-sans"
+                className="text-xs text-gray-400 dark:text-neutral-500 flex items-center gap-1.5 font-sans"
               >
                 <motion.span
-                  className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-700 rounded-full"
+                  className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent/80 rounded-full"
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 2, repeat: Infinity, delay: i * 0.2 }}
                 />
@@ -280,7 +282,7 @@ const Me1 = ({ profile, updateProfile }) => {
             ))}
           </div>
           {isAdmin && (
-            <div className="text-[10px] text-gray-500 font-mono">
+            <div className="text-[10px] text-gray-500 dark:text-neutral-400 font-mono">
               Edit tags (comma separated):{' '}
               <EditableText
                 value={(profile?.statusIndicators || ['Available']).join(', ')}
@@ -289,7 +291,7 @@ const Me1 = ({ profile, updateProfile }) => {
                   updateProfile({ statusIndicators: newTags });
                 }}
                 isAdmin={true}
-                textClassName="text-gray-900"
+                textClassName="text-accent"
               />
             </div>
           )}
@@ -298,13 +300,13 @@ const Me1 = ({ profile, updateProfile }) => {
 
       {/* Decorative elements - hide on mobile */}
       <motion.div
-        className="hidden md:block absolute bottom-16 right-16"
+        className="hidden md:block absolute bottom-16 right-16 pointer-events-none"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.1 }}
+        animate={{ opacity: 0.15 }}
         transition={{ delay: 0.8 }}
       >
         <motion.div
-          className="w-12 h-12 lg:w-16 lg:h-16 border border-gray-300 transform rotate-45"
+          className="w-12 h-12 lg:w-16 lg:h-16 border border-gray-300 dark:border-neutral-700 transform rotate-45"
           animate={{ rotate: [45, 90, 45] }}
           transition={{ duration: 10, repeat: Infinity }}
         />

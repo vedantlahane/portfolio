@@ -70,7 +70,6 @@ export default function BottomNav() {
         return () => {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('resize', handleResize);
-            if (timeoutId) clearTimeout(timeoutId);
         };
     }, [location.pathname]);
 
@@ -91,7 +90,7 @@ export default function BottomNav() {
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 50, opacity: 0 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                    className="fixed bottom-0 left-0 right-0 h-12 bg-white border-t border-gray-200 z-50 flex sm:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]"
+                    className="fixed bottom-0 left-0 right-0 h-12 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border-t border-gray-200 dark:border-neutral-800 z-50 flex sm:hidden shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_12px_rgba(0,0,0,0.5)] transition-colors"
                 >
                     <div className="flex w-full justify-around items-center px-2 relative">
                         {navItems.map((item) => {
@@ -101,8 +100,9 @@ export default function BottomNav() {
                                 <button
                                     key={item.id}
                                     onClick={(e) => handleNavClick(e, item.href, item.id)}
-                                    className={`relative flex flex-col items-center justify-center w-full h-full text-[11px] font-sans transition-colors duration-200 ${isActive ? 'text-gray-900 font-medium' : 'text-gray-500'
-                                        }`}
+                                    className={`relative flex flex-col items-center justify-center w-full h-full text-[11px] font-sans transition-colors duration-200 ${
+                                        isActive ? 'text-gray-900 dark:text-accent font-medium' : 'text-gray-500 dark:text-neutral-400'
+                                    }`}
                                 >
                                     <span className="mb-0.5">{item.label}</span>
 
@@ -111,11 +111,11 @@ export default function BottomNav() {
                                         {isActive ? (
                                             <motion.div
                                                 layoutId="bottomNavDot"
-                                                className="w-1.5 h-1.5 bg-gray-900 rounded-full"
+                                                className="w-1.5 h-1.5 bg-gray-900 dark:bg-accent rounded-full"
                                                 transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                                             />
                                         ) : (
-                                            <div className="w-1 h-1 border border-gray-400 rounded-full opacity-50" />
+                                            <div className="w-1 h-1 border border-gray-400 dark:border-neutral-600 rounded-full opacity-50" />
                                         )}
                                     </div>
                                 </button>
