@@ -29,7 +29,7 @@ export default function Preloader({ onComplete }) {
     return (
         <AnimatePresence>
             <motion.div
-                className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white pointer-events-none"
+                className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-white dark:bg-black pointer-events-none transition-colors duration-300"
                 initial={{ originY: 0 }}
                 animate={stage === 'sliding' ? { scaleY: 0 } : { scaleY: 1 }}
                 transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
@@ -41,14 +41,14 @@ export default function Preloader({ onComplete }) {
                 >
                     {/* Rotating Diamond Logo */}
                     <motion.div
-                        className="w-12 h-12 border-2 border-gray-900 mb-8"
+                        className="w-12 h-12 border-2 border-gray-900 dark:border-white mb-8"
                         animate={{ rotate: [45, 135, 225, 315] }}
                         transition={{ duration: 2, ease: "linear", repeat: Infinity }}
                     />
 
                     {/* Pulsing Text */}
                     <motion.div
-                        className="font-mono text-[10px] tracking-[0.3em] text-gray-400 font-medium ml-1"
+                        className="font-mono text-[10px] tracking-[0.3em] text-gray-400 dark:text-neutral-400 font-medium ml-1"
                         animate={{ opacity: [0.3, 1, 0.3] }}
                         transition={{ duration: 1.5, ease: "easeInOut", repeat: Infinity }}
                     >

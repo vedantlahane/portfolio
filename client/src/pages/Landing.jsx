@@ -64,7 +64,7 @@ const Landing = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-[#090d16] font-sans text-gray-900 dark:text-neutral-100 transition-colors duration-300">
+    <div className="bg-white dark:bg-black font-sans text-gray-900 dark:text-neutral-100 transition-colors duration-300">
       <div className="hidden lg:block">
         <MouseFollowerAdvanced />
       </div>
@@ -92,7 +92,7 @@ const Landing = () => {
                 <About profile={profile} updateProfile={updateProfile} />
               </div>
 
-              <div id="projects" className="col-span-1 lg:col-span-5 scroll-mt-20 bg-gray-50 dark:bg-neutral-900/40">
+              <div id="projects" className="col-span-1 lg:col-span-5 scroll-mt-20 bg-gray-50 dark:bg-neutral-950">
                 <Projects />
               </div>
             </div>

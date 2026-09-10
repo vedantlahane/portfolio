@@ -237,7 +237,7 @@ const Projects = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6, delay: 0.4 }}
-      className="bg-gray-50 dark:bg-neutral-900/40 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 h-full relative flex flex-col transition-colors duration-300"
+      className="bg-gray-50 dark:bg-neutral-950 p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16 h-full relative flex flex-col transition-colors duration-300"
     >
       {/* Header - responsive to prevent overlap */}
       <motion.div

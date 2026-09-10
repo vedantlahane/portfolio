@@ -79,7 +79,7 @@ const Header = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="bg-white/90 dark:bg-[#090d16]/90 backdrop-blur-md border-b border-gray-200 dark:border-neutral-800/80 transition-colors duration-300"
+      className="bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-gray-200 dark:border-neutral-800/80 transition-colors duration-300"
     >
       <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-5 md:py-6">
         {/* Main Header Content */}

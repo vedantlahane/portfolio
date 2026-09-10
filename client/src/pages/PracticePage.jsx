@@ -40,14 +40,14 @@ const PracticePage = () => {
   };
 
   return (
-  <div className="bg-white dark:bg-[#090d16] font-sans text-gray-900 dark:text-neutral-100 min-h-screen transition-colors duration-300">
+  <div className="bg-white dark:bg-black font-sans text-gray-900 dark:text-neutral-100 min-h-screen transition-colors duration-300">
     <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20">
       <header className=''>
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800"
+          className="bg-white dark:bg-neutral-950 border-b border-gray-200 dark:border-neutral-800"
         >
           <div className="px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-20 py-4 sm:py-5 md:py-6">
             <div className="flex items-center justify-between">
