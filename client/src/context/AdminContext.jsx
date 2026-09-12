@@ -10,12 +10,16 @@ export const AdminProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isJsonModalOpen, setIsJsonModalOpen] = useState(false);
+  const [isFormProfileModalOpen, setIsFormProfileModalOpen] = useState(false);
 
   const openLoginModal = () => setIsLoginModalOpen(true);
   const closeLoginModal = () => setIsLoginModalOpen(false);
 
   const openJsonModal = () => setIsJsonModalOpen(true);
   const closeJsonModal = () => setIsJsonModalOpen(false);
+
+  const openFormProfileModal = () => setIsFormProfileModalOpen(true);
+  const closeFormProfileModal = () => setIsFormProfileModalOpen(false);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -106,7 +110,10 @@ export const AdminProvider = ({ children }) => {
       closeLoginModal,
       isJsonModalOpen,
       openJsonModal,
-      closeJsonModal
+      closeJsonModal,
+      isFormProfileModalOpen,
+      openFormProfileModal,
+      closeFormProfileModal
     }}>
       {children}
     </AdminContext.Provider>

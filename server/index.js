@@ -16,6 +16,7 @@ const profileRoutes = require('./routes/profileRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const skillRoutes = require('./routes/skillRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const formProfileRoutes = require('./routes/formProfileRoutes');
 
 // Initialize express application
 const app = express();
@@ -27,14 +28,30 @@ const MONGODB_URI = process.env.MONGO_DB || process.env.MONGODB_URI || process.e
 /**
  * CORS Configuration
  * Configures Cross-Origin Resource Sharing for the API
- * Specifies which domains can access the API
+ * Allows web client, local dev, and browser extension origins
  */
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "https://vedantlahane.vercel.app"
+];
+
 const corsOptions = {
-  origin: [
-    "http://localhost:5173",    // Local development
-    "http://127.0.0.1:5173",    // Alternative localhost
-    "https://vedantlahane.vercel.app"  // Production domain
-  ],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. extension background workers, curl)
+    if (!origin) return callback(null, true);
+    // Allow defined domain list
+    if (allowedOrigins.indexOf(origin) !== -1) return callback(null, true);
+    // Allow browser extensions (Chrome, Firefox, Edge)
+    if (origin.startsWith('chrome-extension://') || origin.startsWith('moz-extension://')) {
+      return callback(null, true);
+    }
+    // In development allow any origin
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
   credentials: true,
   optionsSuccessStatus: 200
@@ -280,6 +297,7 @@ app.use('/api/profile', profileRoutes);  // Profile details
 app.use('/api/projects', projectRoutes); // Projects
 app.use('/api/skills', skillRoutes);    // Skills
 app.use('/api/admin', adminRoutes);     // Bulk Admin JSON endpoints
+app.use('/api/form-profile', formProfileRoutes); // Private Form Filling Profile & Extension API
 
 /**
  * Error Handling Middleware

@@ -15,6 +15,7 @@ import CommandPalette from "./components/CommandPalette/CommandPalette";
 import ScrollProgressIndicator from "./components/Navigation/ScrollProgressIndicator";
 import LoginModal from "./components/UI/LoginModal";
 import JsonEditorModal from "./components/UI/JsonEditorModal";
+import FormProfileModal from "./components/Admin/FormProfileModal";
 
 // New Lab Pages
 import DesignLab from "./pages/Lab/DesignLab";
@@ -28,7 +29,7 @@ import { AdminProvider, useAdmin } from "./context/AdminContext";
 import { ThemeProvider } from "./context/ThemeContext";
 
 const AdminToolbar = () => {
-  const { isAdmin, logout, openJsonModal } = useAdmin();
+  const { isAdmin, logout, openJsonModal, openFormProfileModal } = useAdmin();
   if (!isAdmin) return null;
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] bg-gray-950 border border-gray-800 px-4 py-2.5 text-white flex items-center gap-3 sm:gap-4 text-xs font-mono tracking-widest shadow-2xl">
@@ -36,6 +37,14 @@ const AdminToolbar = () => {
         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
         ADMIN MODE ACTIVE
       </span>
+      <span className="text-gray-700">|</span>
+      <button
+        onClick={openFormProfileModal}
+        className="hover:text-accent font-bold transition-colors uppercase cursor-pointer flex items-center gap-1.5"
+        title="Manage private details for browser extension form filling (Ctrl+Shift+F)"
+      >
+        <span>📋</span> FORM PROFILE
+      </button>
       <span className="text-gray-700">|</span>
       <button
         onClick={openJsonModal}
@@ -64,10 +73,13 @@ const MainApp = () => {
     closeLoginModal,
     isJsonModalOpen,
     openJsonModal,
-    closeJsonModal
+    closeJsonModal,
+    isFormProfileModalOpen,
+    openFormProfileModal,
+    closeFormProfileModal
   } = useAdmin();
 
-  // Global hotkeys (Ctrl+Shift+A for passkey prompt, Ctrl+Shift+J for JSON editor)
+  // Global hotkeys (Ctrl+Shift+A for passkey prompt, Ctrl+Shift+J for JSON editor, Ctrl+Shift+F for Form Profile)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
@@ -82,10 +94,18 @@ const MainApp = () => {
           openLoginModal();
         }
       }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'F' || e.key === 'f')) {
+        e.preventDefault();
+        if (isAdmin) {
+          openFormProfileModal();
+        } else {
+          openLoginModal();
+        }
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [openLoginModal, openJsonModal, isAdmin]);
+  }, [openLoginModal, openJsonModal, openFormProfileModal, isAdmin]);
 
   return (
     <CommandPaletteProvider>
@@ -121,6 +141,7 @@ const MainApp = () => {
           <AdminToolbar />
           <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
           <JsonEditorModal isOpen={isJsonModalOpen} onClose={closeJsonModal} />
+          <FormProfileModal isOpen={isFormProfileModalOpen} onClose={closeFormProfileModal} />
         </ErrorBoundary>
       </SmoothScroll>
     </CommandPaletteProvider>

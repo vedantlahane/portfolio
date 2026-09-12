@@ -19,3 +19,6 @@ yarn-error.log*
 # Build output
 /client/dist/
 /server/dist/
+/extension/node_modules/
+/extension/.output/
+/extension/.wxt/
