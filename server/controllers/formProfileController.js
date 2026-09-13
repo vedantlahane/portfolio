@@ -50,9 +50,6 @@ const buildLookupDictionary = (publicProfile, formProfile, projects, skills) => 
   const fp = formProfile || {};
   const personal = fp.personal || {};
   const edu = (fp.education && fp.education[0]) || {};
-  const comp = fp.compensation || {};
-  const auth = fp.workAuthorization || {};
-  const statements = fp.statements || {};
 
   const nameParts = (personal.preferredName || p.name || 'Vedant Lahane').trim().split(' ');
   const firstName = personal.legalFirstName || nameParts[0] || 'Vedant';
@@ -84,20 +81,20 @@ const buildLookupDictionary = (publicProfile, formProfile, projects, skills) => 
     passportNumber: personal.passportNumber || '',
 
     // Social Links
-    linkedin: 'https://linkedin.com/in/vedant-lahane',
-    linkedinUrl: 'https://linkedin.com/in/vedant-lahane',
-    linkedinProfile: 'https://linkedin.com/in/vedant-lahane',
-    github: 'https://github.com/vedantlahane',
-    githubUrl: 'https://github.com/vedantlahane',
-    githubProfile: 'https://github.com/vedantlahane',
-    twitter: 'https://twitter.com/vedantlahane',
-    twitterUrl: 'https://twitter.com/vedantlahane',
+    linkedin: personal.linkedinUrl || 'https://linkedin.com/in/vedant-lahane',
+    linkedinUrl: personal.linkedinUrl || 'https://linkedin.com/in/vedant-lahane',
+    linkedinProfile: personal.linkedinUrl || 'https://linkedin.com/in/vedant-lahane',
+    github: personal.githubUrl || 'https://github.com/vedantlahane',
+    githubUrl: personal.githubUrl || 'https://github.com/vedantlahane',
+    githubProfile: personal.githubUrl || 'https://github.com/vedantlahane',
+    twitter: personal.twitterUrl || 'https://twitter.com/vedantlahane',
+    twitterUrl: personal.twitterUrl || 'https://twitter.com/vedantlahane',
     leetcode: 'https://leetcode.com/u/vedantlahane',
     leetcodeUrl: 'https://leetcode.com/u/vedantlahane',
-    portfolio: 'https://vedantlahane.vercel.app',
-    portfolioUrl: 'https://vedantlahane.vercel.app',
-    website: 'https://vedantlahane.vercel.app',
-    websiteUrl: 'https://vedantlahane.vercel.app',
+    portfolio: personal.portfolioUrl || 'https://vedantlahane.vercel.app',
+    portfolioUrl: personal.portfolioUrl || 'https://vedantlahane.vercel.app',
+    website: personal.portfolioUrl || 'https://vedantlahane.vercel.app',
+    websiteUrl: personal.portfolioUrl || 'https://vedantlahane.vercel.app',
     cvLink: p.cvLink || '',
 
     // Education
@@ -112,30 +109,13 @@ const buildLookupDictionary = (publicProfile, formProfile, projects, skills) => 
     startYear: edu.startYear || '2022',
     educationLocation: edu.location || 'Amravati, Maharashtra, India',
 
-    // Compensation & Availability
-    currentSalary: comp.currentSalary || '',
-    expectedSalary: comp.expectedSalary || '',
-    salaryCurrency: comp.currency || 'INR',
-    noticePeriod: comp.noticePeriodDays || '0 (Immediate)',
-    earliestStartDate: comp.earliestStartDate || 'Immediately',
-
-    // Work Authorization
-    authorizedInCountry: auth.authorizedInCountryOfRole !== false ? 'Yes' : 'No',
-    requiresSponsorshipNow: auth.requiresSponsorshipNow ? 'Yes' : 'No',
-    requiresSponsorshipFuture: auth.requiresSponsorshipFuture ? 'Yes' : 'No',
-    willingToRelocate: auth.willingToRelocate !== false ? 'Yes' : 'No',
-    workModePreference: auth.workModePreference || 'Flexible',
-
     // Skills & Highlights
-    skillsSummary: skills.flatMap(s => s.skills).join(', '),
+    skillsSummary: (skills || []).flatMap(s => s.skills).join(', '),
     featuredSkills: (p.featuredSkills || []).map(s => s.name).join(', '),
     roles: (p.roles || []).join(', '),
-
-    // Narrative Vault
-    professionalSummary: statements.professionalSummary || p.heroDescription || '',
-    whyOurCompany: statements.whyOurCompanyTemplate || '',
-    proudestProject: statements.proudestProjectDescription || '',
-    technicalAchievement: statements.greatestTechnicalAchievement || ''
+    
+    // Default Professional Summary (from Profile)
+    professionalSummary: p.heroDescription || ''
   };
 
   // Merge custom fields
