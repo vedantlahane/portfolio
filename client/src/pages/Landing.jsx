@@ -13,6 +13,7 @@ import BottomNav from '../components/Navigation/BottomNav';
 import SectionIndicator from '../components/Navigation/SectionIndicator';
 
 import { useAdmin, API_URL } from '../context/AdminContext';
+import { usePortfolio } from '../context/PortfolioContext';
 
 const Landing = () => {
   const [profile, setProfile] = useState(null);

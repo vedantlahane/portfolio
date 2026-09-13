@@ -27,6 +27,7 @@ import V2Portfolio from "./pages/V2Portfolio";
 // Admin Imports
 import { AdminProvider, useAdmin } from "./context/AdminContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import { PortfolioProvider } from "./context/PortfolioContext";
 
 const AdminToolbar = () => {
   const { isAdmin, logout, openJsonModal } = useAdmin();
@@ -146,9 +147,11 @@ const MainApp = () => {
 const App = () => {
   return (
     <ThemeProvider>
-      <AdminProvider>
-        <MainApp />
-      </AdminProvider>
+      <PortfolioProvider>
+        <AdminProvider>
+          <MainApp />
+        </AdminProvider>
+      </PortfolioProvider>
     </ThemeProvider>
   );
 };

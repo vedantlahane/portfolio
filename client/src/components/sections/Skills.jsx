@@ -7,8 +7,8 @@ const COLLAPSE_DELAY_MS = 1200;
 
 const Skills = () => {
   const { isAdmin, token } = useAdmin();
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { skills: categories, setSkills: setCategories, fetchAllData } = usePortfolio();
+  const [loading, setLoading] = useState(false);
 
   const [isMobile, setIsMobile] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
@@ -24,32 +24,8 @@ const Skills = () => {
   const [expandedPanelHeight, setExpandedPanelHeight] = useState(0);
 
   const fetchSkills = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/skills`);
-      if (res.ok) {
-        const data = await res.json();
-        setCategories(data);
-      }
-    } catch (err) {
-      console.error('Fetch skills failed:', err);
-    } finally {
-      setLoading(false);
-    }
+    await fetchAllData();
   };
-
-  useEffect(() => {
-    fetchSkills();
-
-    const handleUpdate = (e) => {
-      if (e.detail?.skills) {
-        setCategories(e.detail.skills);
-      } else {
-        fetchSkills();
-      }
-    };
-    window.addEventListener('portfolio-data-updated', handleUpdate);
-    return () => window.removeEventListener('portfolio-data-updated', handleUpdate);
-  }, []);
 
   const handleRenameCategory = async (id, newTitle) => {
     try {

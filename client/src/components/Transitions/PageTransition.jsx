@@ -14,16 +14,15 @@ export default function PageTransition({ children }) {
 
     return (
         <AnimatePresence mode="wait">
-            <motion.div key={location.pathname} className="relative w-full h-full">
+            <motion.div 
+                key={location.pathname} 
+                className="relative w-full h-full"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
+            >
                 {childrenWithLocation}
-                
-                <motion.div
-                    className="fixed inset-0 bg-gray-900 z-[80] pointer-events-none"
-                    initial={{ scaleY: 1, originY: 0 }}
-                    animate={{ scaleY: 0, originY: 0 }}
-                    exit={{ scaleY: 1, originY: 1 }}
-                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                />
             </motion.div>
         </AnimatePresence>
     );

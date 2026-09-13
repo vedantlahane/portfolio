@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAdmin, API_URL } from '../../context/AdminContext';
+import { usePortfolio } from '../../context/PortfolioContext';
 
 const ProjectForm = ({ project, onSave, onCancel }) => {
   const [formData, setFormData] = useState(project || {
