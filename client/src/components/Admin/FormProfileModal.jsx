@@ -1,35 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAdmin, API_URL } from '../../context/AdminContext';
-import { 
-  Key, 
-  Copy, 
-  Check, 
-  RefreshCw, 
-  Sparkles, 
-  Save, 
-  Plus, 
-  Trash2, 
-  Pin, 
-  Search, 
-  Cpu, 
-  Layers, 
-  User, 
-  Briefcase, 
-  BookOpen, 
-  Sliders,
-  ExternalLink,
-  ChevronDown,
-  ChevronUp
-} from 'lucide-react';
 
 const TABS = [
-  { id: 'facts', num: '01', label: 'Facts & Identity', icon: User },
-  { id: 'career', num: '02', label: 'Career & Visas', icon: Briefcase },
-  { id: 'knowledge', num: '03', label: 'Knowledge Vault', icon: BookOpen },
-  { id: 'custom', num: '04', label: 'Custom Attributes', icon: Layers },
-  { id: 'ai', num: '05', label: 'AI Engine', icon: Cpu },
-  { id: 'pairing', num: '06', label: 'Extension Pairing', icon: Key }
+  { id: 'facts', num: '01', label: 'Facts & Identity' },
+  { id: 'career', num: '02', label: 'Career & Visas' },
+  { id: 'knowledge', num: '03', label: 'Knowledge Vault' },
+  { id: 'custom', num: '04', label: 'Custom Attributes' },
+  { id: 'ai', num: '05', label: 'AI Engine' },
+  { id: 'pairing', num: '06', label: 'Extension Pairing' }
 ];
 
 const KNOWLEDGE_CATEGORIES = [
@@ -83,7 +62,11 @@ export default function FormProfileModal({ isOpen, onClose }) {
       nationality: 'Indian',
       citizenship: 'India',
       passportNumber: '',
-      alternatePhone: ''
+      alternatePhone: '',
+      linkedinUrl: 'https://linkedin.com/in/vedant-lahane',
+      githubUrl: 'https://github.com/vedantlahane',
+      portfolioUrl: 'https://vedantlahane.vercel.app',
+      twitterUrl: ''
     },
     education: [
       {
@@ -128,10 +111,11 @@ export default function FormProfileModal({ isOpen, onClose }) {
     extensionApiKey: ''
   });
 
-  // Knowledge Vault Filter & Search State
+  // Knowledge Vault State
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [expandedKnowledgeId, setExpandedKnowledgeId] = useState(null);
+  const [editingKnowledgeId, setEditingKnowledgeId] = useState(null);
   const [isAddingKnowledge, setIsAddingKnowledge] = useState(false);
   const [newKnowledge, setNewKnowledge] = useState({
     title: '',
@@ -142,6 +126,16 @@ export default function FormProfileModal({ isOpen, onClose }) {
   });
   const [isCategorizingAi, setIsCategorizingAi] = useState(false);
 
+  // Custom Fields State
+  const [newField, setNewField] = useState({
+    key: '',
+    label: '',
+    value: '',
+    category: 'General',
+    isSensitive: false
+  });
+  const [isAddingField, setIsAddingField] = useState(false);
+
   // AI Sandbox & Diagnostics State
   const [aiTestPrompt, setAiTestPrompt] = useState('Why should our engineering team hire you for a full stack role?');
   const [aiTestResult, setAiTestResult] = useState(null);
@@ -149,8 +143,9 @@ export default function FormProfileModal({ isOpen, onClose }) {
   const [pingResult, setPingResult] = useState(null);
   const [pinging, setPinging] = useState(false);
 
-  // Copy state
+  // Key Copy & Generation State
   const [copiedKey, setCopiedKey] = useState(false);
+  const [generatingKey, setGeneratingKey] = useState(false);
 
   // Fetch Form Profile from Backend
   const fetchFormProfile = async () => {
@@ -184,20 +179,19 @@ export default function FormProfileModal({ isOpen, onClose }) {
   };
 
   useEffect(() => {
-    if (isOpen && token) {
+    if (isOpen) {
       fetchFormProfile();
       setMessage({ text: '', type: '' });
-      setPingResult(null);
       setAiTestResult(null);
+      setPingResult(null);
     }
-  }, [isOpen, token]);
+  }, [isOpen]);
 
-  // Save all profile changes
+  // Save Entire Form Profile
   const handleSaveProfile = async () => {
     try {
       setSaving(true);
       setMessage({ text: '', type: '' });
-
       const res = await fetch(`${API_URL}/api/form-profile`, {
         method: 'PUT',
         headers: {
@@ -207,25 +201,26 @@ export default function FormProfileModal({ isOpen, onClose }) {
         body: JSON.stringify(formData)
       });
       const data = await res.json();
-
       if (data.success) {
-        setMessage({ text: 'Form Profile & Knowledge saved successfully.', type: 'success' });
+        setMessage({ text: 'Profile & Knowledge Vault successfully saved.', type: 'success' });
         setTimeout(() => setMessage({ text: '', type: '' }), 4000);
       } else {
-        setMessage({ text: data.message || 'Failed to save profile', type: 'error' });
+        setMessage({ text: data.message || 'Failed to save profile.', type: 'error' });
       }
     } catch (err) {
-      console.error('Save error:', err);
-      setMessage({ text: 'Network error while saving profile', type: 'error' });
+      setMessage({ text: 'Network error saving profile.', type: 'error' });
     } finally {
       setSaving(false);
     }
   };
 
-  // Generate / Regenerate Extension API Key
-  const handleGenerateApiKey = async () => {
+  // Generate / Regenerate API Key
+  const handleGenerateKey = async () => {
+    if (!window.confirm('Generating a new extension key will disconnect any previously paired extensions. Continue?')) {
+      return;
+    }
     try {
-      setSaving(true);
+      setGeneratingKey(true);
       const res = await fetch(`${API_URL}/api/form-profile/generate-key`, {
         method: 'POST',
         headers: {
@@ -234,30 +229,42 @@ export default function FormProfileModal({ isOpen, onClose }) {
       });
       const data = await res.json();
       if (data.success) {
-        setFormData(prev => ({ ...prev, extensionApiKey: data.apiKey }));
-        setMessage({ text: 'New Extension API Key generated.', type: 'success' });
+        setFormData(prev => ({ ...prev, extensionApiKey: data.data.apiKey }));
+        setMessage({ text: 'New extension pairing key generated.', type: 'success' });
+        setTimeout(() => setMessage({ text: '', type: '' }), 4000);
       }
     } catch (err) {
       setMessage({ text: 'Failed to generate key.', type: 'error' });
     } finally {
-      setSaving(false);
+      setGeneratingKey(false);
     }
   };
 
-  // Add a new knowledge vault item
+  // Copy API key to clipboard
+  const handleCopyKey = () => {
+    if (!formData.extensionApiKey) return;
+    navigator.clipboard.writeText(formData.extensionApiKey);
+    setCopiedKey(true);
+    setTimeout(() => setCopiedKey(false), 2000);
+  };
+
+  // Add Knowledge Entry
   const handleAddKnowledge = async (e) => {
     e.preventDefault();
     if (!newKnowledge.title.trim() || !newKnowledge.content.trim()) {
-      setMessage({ text: 'Title and content are required for knowledge notes.', type: 'error' });
+      setMessage({ text: 'Title and narrative content are required.', type: 'error' });
       return;
     }
-
     try {
-      setSaving(true);
-      const tagsArray = newKnowledge.tags
-        .split(',')
-        .map(t => t.trim())
-        .filter(Boolean);
+      const payload = {
+        title: newKnowledge.title.trim(),
+        category: newKnowledge.category,
+        tags: typeof newKnowledge.tags === 'string'
+          ? newKnowledge.tags.split(',').map(t => t.trim()).filter(Boolean)
+          : newKnowledge.tags,
+        content: newKnowledge.content.trim(),
+        pinned: Boolean(newKnowledge.pinned)
+      };
 
       const res = await fetch(`${API_URL}/api/form-profile/knowledge`, {
         method: 'POST',
@@ -265,38 +272,65 @@ export default function FormProfileModal({ isOpen, onClose }) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          title: newKnowledge.title,
-          category: newKnowledge.category,
-          tags: tagsArray,
-          content: newKnowledge.content,
-          pinned: newKnowledge.pinned
-        })
+        body: JSON.stringify(payload)
       });
       const data = await res.json();
-
       if (data.success) {
         setFormData(prev => ({ ...prev, knowledgeVault: data.knowledgeVault }));
-        setNewKnowledge({ title: '', category: 'Experience & Stories', tags: '', content: '', pinned: false });
+        setNewKnowledge({
+          title: '',
+          category: 'Experience & Stories',
+          tags: '',
+          content: '',
+          pinned: false
+        });
         setIsAddingKnowledge(false);
-        setMessage({ text: `Knowledge "${data.item.title}" saved.`, type: 'success' });
+        setMessage({ text: 'New knowledge item added to vault.', type: 'success' });
         setTimeout(() => setMessage({ text: '', type: '' }), 3000);
       }
     } catch (err) {
-      setMessage({ text: 'Failed to add knowledge note.', type: 'error' });
-    } finally {
-      setSaving(false);
+      setMessage({ text: 'Failed to add knowledge item.', type: 'error' });
     }
   };
 
-  // Delete knowledge item
-  const handleDeleteKnowledge = async (id, title) => {
-    if (!window.confirm(`Delete knowledge entry: "${title}"?`)) return;
+  // Update Knowledge Entry
+  const handleUpdateKnowledge = async (item) => {
+    try {
+      const res = await fetch(`${API_URL}/api/form-profile/knowledge/${item.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: item.title,
+          category: item.category,
+          tags: Array.isArray(item.tags) ? item.tags : String(item.tags).split(',').map(t => t.trim()).filter(Boolean),
+          content: item.content,
+          pinned: item.pinned
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setFormData(prev => ({ ...prev, knowledgeVault: data.knowledgeVault }));
+        setEditingKnowledgeId(null);
+        setMessage({ text: 'Knowledge entry updated.', type: 'success' });
+        setTimeout(() => setMessage({ text: '', type: '' }), 3000);
+      }
+    } catch (err) {
+      setMessage({ text: 'Failed to update knowledge item.', type: 'error' });
+    }
+  };
 
+  // Delete Knowledge Entry
+  const handleDeleteKnowledge = async (id) => {
+    if (!window.confirm('Delete this knowledge entry from your vault?')) return;
     try {
       const res = await fetch(`${API_URL}/api/form-profile/knowledge/${id}`, {
         method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
       const data = await res.json();
       if (data.success) {
@@ -309,7 +343,7 @@ export default function FormProfileModal({ isOpen, onClose }) {
     }
   };
 
-  // Toggle pin
+  // Toggle Pin on Knowledge Entry
   const handleTogglePin = async (item) => {
     try {
       const res = await fetch(`${API_URL}/api/form-profile/knowledge/${item.id}`, {
@@ -357,6 +391,7 @@ export default function FormProfileModal({ isOpen, onClose }) {
           tags: Array.isArray(data.tags) ? data.tags.join(', ') : prev.tags
         }));
         setMessage({ text: `AI suggested category: ${data.category}`, type: 'success' });
+        setTimeout(() => setMessage({ text: '', type: '' }), 3000);
       }
     } catch (err) {
       console.error(err);
@@ -432,111 +467,101 @@ export default function FormProfileModal({ isOpen, onClose }) {
     }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      items = items.filter(k => 
+      items = items.filter(k =>
         (k.title && k.title.toLowerCase().includes(q)) ||
         (k.content && k.content.toLowerCase().includes(q)) ||
         (Array.isArray(k.tags) && k.tags.some(t => t.toLowerCase().includes(q)))
       );
     }
-    // Sort pinned items first, then recent
+    // Pinned first, then by title
     return [...items].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
   }, [formData.knowledgeVault, selectedCategory, searchQuery]);
 
-  // Handle custom fields
+  // Add Custom Field
   const handleAddCustomField = () => {
+    if (!newField.key.trim() || !newField.value.trim()) {
+      setMessage({ text: 'Field identifier and value are required.', type: 'error' });
+      return;
+    }
+    const cleanKey = newField.key.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+    const existing = formData.customFields.find(f => f.key === cleanKey);
+    if (existing) {
+      setMessage({ text: `A field with key "${cleanKey}" already exists.`, type: 'error' });
+      return;
+    }
+
     setFormData(prev => ({
       ...prev,
       customFields: [
         ...prev.customFields,
         {
-          key: `custom_${Date.now().toString(36)}`,
-          label: 'New Field Label',
-          value: '',
-          category: 'General',
-          description: ''
+          key: cleanKey,
+          label: newField.label.trim() || newField.key.trim(),
+          value: newField.value.trim(),
+          category: newField.category || 'General',
+          isSensitive: Boolean(newField.isSensitive)
         }
       ]
     }));
-  };
 
-  const handleUpdateCustomField = (index, fieldKey, val) => {
-    setFormData(prev => {
-      const updated = [...prev.customFields];
-      updated[index] = { ...updated[index], [fieldKey]: val };
-      return { ...prev, customFields: updated };
+    setNewField({
+      key: '',
+      label: '',
+      value: '',
+      category: 'General',
+      isSensitive: false
     });
+    setIsAddingField(false);
+    setMessage({ text: `Added custom field "${cleanKey}". Remember to click SAVE PROFILE.`, type: 'success' });
+    setTimeout(() => setMessage({ text: '', type: '' }), 4000);
   };
 
-  const handleDeleteCustomField = (index) => {
+  // Remove Custom Field
+  const handleRemoveCustomField = (indexToRemove) => {
     setFormData(prev => ({
       ...prev,
-      customFields: prev.customFields.filter((_, i) => i !== index)
+      customFields: prev.customFields.filter((_, idx) => idx !== indexToRemove)
     }));
-  };
-
-  const copyApiKey = () => {
-    if (!formData.extensionApiKey) return;
-    navigator.clipboard.writeText(formData.extensionApiKey);
-    setCopiedKey(true);
-    setTimeout(() => setCopiedKey(false), 2000);
   };
 
   if (!isOpen) return null;
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[999] flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
-        {/* Obsidian Backdrop */}
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/60 dark:bg-black/85 backdrop-blur-sm">
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.8 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black backdrop-blur-md"
-        />
-
-        {/* Modal Window */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97, y: 15 }}
+          initial={{ opacity: 0, scale: 0.96, y: 14 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.97, y: 15 }}
-          transition={{ duration: 0.25, ease: 'easeOut' }}
-          className="relative z-10 w-full max-w-5xl h-[92vh] max-h-[900px] bg-neutral-950 border border-neutral-800 shadow-2xl flex flex-col font-sans text-neutral-200 overflow-hidden"
+          exit={{ opacity: 0, scale: 0.96, y: 14 }}
+          transition={{ duration: 0.22, ease: 'easeOut' }}
+          className="bg-white dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 text-gray-900 dark:text-neutral-100 w-full max-w-5xl h-[92vh] max-h-[920px] flex flex-col shadow-2xl overflow-hidden font-sans rounded-none"
         >
-          {/* Header Bar */}
-          <div className="flex flex-wrap items-center justify-between px-4 sm:px-6 py-3 border-b border-neutral-800 bg-black/90 backdrop-blur-md gap-2">
-            <div className="flex items-center gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2 className="text-xs sm:text-sm font-mono tracking-widest uppercase font-bold text-white flex items-center gap-2">
-                    <span>//</span> PERSONAL FORM PROFILE & KNOWLEDGE VAULT
-                  </h2>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 border border-neutral-800 text-neutral-400 bg-neutral-900">
-                    PRIVATE • SOURCE OF TRUTH
-                  </span>
-                </div>
-                <p className="text-[11px] text-neutral-400 font-mono hidden sm:block">
-                  Unified factual data, extensible narratives & dual LLM engine for cross-browser autofill
-                </p>
-              </div>
+          {/* Header Bar - Exactly matches Portfolio Header & JsonEditorModal */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-neutral-800 bg-gray-50/70 dark:bg-neutral-900/40 gap-3">
+            <div>
+              <p className="text-[10px] sm:text-xs text-gray-400 dark:text-neutral-500 font-mono font-light mb-0.5">
+                <span className="text-accent font-medium">00</span> &nbsp;&nbsp;AUTOFILL DATA REPOSITORY
+              </p>
+              <h2 className="text-xl sm:text-2xl font-display font-light text-gray-900 dark:text-white tracking-tight">
+                Personal Form Profile & Knowledge Vault
+              </h2>
             </div>
 
             {/* Quick Actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <button
                 onClick={handleSaveProfile}
                 disabled={saving || loading}
-                className="px-3.5 py-1.5 border border-neutral-700 bg-neutral-900 text-neutral-200 hover:border-accent hover:text-accent font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                className="text-xs font-mono font-medium text-white bg-gray-900 dark:bg-accent dark:text-black border border-gray-900 dark:border-accent px-4 py-2 hover:bg-neutral-800 dark:hover:bg-accent/90 transition-colors cursor-pointer rounded-none flex items-center gap-2 disabled:opacity-50"
               >
                 {saving ? (
                   <>
-                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    <span className="animate-spin inline-block">⟳</span>
                     <span>SAVING...</span>
                   </>
                 ) : (
                   <>
-                    <Save className="w-3.5 h-3.5" />
+                    <span>💾</span>
                     <span>SAVE PROFILE</span>
                   </>
                 )}
@@ -544,7 +569,7 @@ export default function FormProfileModal({ isOpen, onClose }) {
 
               <button
                 onClick={onClose}
-                className="p-1.5 text-neutral-400 hover:text-white font-mono text-sm leading-none border border-transparent hover:border-neutral-800 transition-colors cursor-pointer"
+                className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors p-2 text-lg font-mono leading-none cursor-pointer"
                 title="Close modal (Esc)"
               >
                 ✕
@@ -554,37 +579,48 @@ export default function FormProfileModal({ isOpen, onClose }) {
 
           {/* Feedback Banner */}
           {message.text && (
-            <div className={`px-4 py-2 text-xs font-mono border-b flex items-center justify-between ${
-              message.type === 'error' 
-                ? 'bg-rose-950/40 border-rose-800 text-rose-300' 
-                : 'bg-emerald-950/40 border-emerald-800 text-emerald-300'
-            }`}>
-              <span>{message.type === 'error' ? '✕' : '✓'} {message.text}</span>
-              <button onClick={() => setMessage({ text: '', type: '' })} className="cursor-pointer">✕</button>
+            <div
+              className={`px-4 sm:px-6 py-2.5 text-xs font-mono border-b flex items-center justify-between ${
+                message.type === 'error'
+                  ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300'
+                  : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-300'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                <span>{message.type === 'error' ? '✕' : '✓'}</span>
+                <span>{message.text}</span>
+              </span>
+              <button onClick={() => setMessage({ text: '', type: '' })} className="cursor-pointer font-mono">
+                ✕
+              </button>
             </div>
           )}
 
-          {/* Monospace High-Density Tab Bar */}
-          <div className="flex overflow-x-auto border-b border-neutral-800/80 bg-neutral-950 px-2 sm:px-6 py-1.5 gap-1 scrollbar-none">
+          {/* Editorial Tab Bar - Mirrors Portfolio Navigation */}
+          <div className="flex items-center overflow-x-auto border-b border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 px-4 sm:px-6 gap-2 sm:gap-6 scrollbar-none">
             {TABS.map((tab) => {
-              const Icon = tab.icon;
               const isActive = activeTab === tab.id;
+              let badgeCount = null;
+              if (tab.id === 'knowledge') badgeCount = formData.knowledgeVault?.length || 0;
+              if (tab.id === 'custom') badgeCount = formData.customFields?.length || 0;
+
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`px-3 py-1.5 text-xs font-mono tracking-wider uppercase transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap border ${
+                  className={`py-3 px-1 text-xs sm:text-sm font-sans font-light transition-all border-b-2 -mb-px flex items-center gap-2 cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'bg-neutral-900 border-neutral-700 text-accent font-semibold shadow-sm'
-                      : 'border-transparent text-neutral-400 hover:text-neutral-200 hover:border-neutral-800'
+                      ? 'border-accent text-gray-900 dark:text-white font-medium'
+                      : 'border-transparent text-gray-500 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
-                  <span className="text-[10px] opacity-60">{tab.num}</span>
-                  <Icon className="w-3.5 h-3.5" />
+                  <span className="text-[10px] font-mono font-light text-gray-400 dark:text-neutral-500">
+                    {tab.num}
+                  </span>
                   <span>{tab.label}</span>
-                  {tab.id === 'knowledge' && (
-                    <span className="text-[10px] px-1 bg-neutral-800 rounded text-neutral-400 ml-1">
-                      {formData.knowledgeVault?.length || 0}
+                  {badgeCount !== null && (
+                    <span className="text-[10px] font-mono px-1.5 py-0.2 border border-gray-200 dark:border-neutral-800 text-gray-500 dark:text-neutral-400 tabular-nums">
+                      {badgeCount}
                     </span>
                   )}
                 </button>
@@ -593,229 +629,385 @@ export default function FormProfileModal({ isOpen, onClose }) {
           </div>
 
           {/* Body Content Area */}
-          <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-black relative">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-white dark:bg-neutral-950">
             {loading ? (
-              <div className="h-full flex items-center justify-center font-mono text-xs text-neutral-400 gap-3">
-                <RefreshCw className="w-4 h-4 animate-spin text-accent" />
+              <div className="h-full flex items-center justify-center font-mono text-xs text-gray-400 dark:text-neutral-500 gap-3">
+                <span className="animate-spin inline-block text-accent">⟳</span>
                 LOADING PROFILE DATA FROM DATABASE...
               </div>
             ) : (
-              <>
+              <div className="max-w-4xl mx-auto space-y-10">
+                {/* ============================================================ */}
                 {/* TAB 01: FACTS & IDENTITY */}
+                {/* ============================================================ */}
                 {activeTab === 'facts' && (
-                  <div className="space-y-6 max-w-4xl">
+                  <div className="space-y-10">
+                    {/* Section 01.1: Personal Identity */}
                     <div>
-                      <h3 className="text-xs font-mono uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 01.1</span> PERSONAL IDENTIFIERS
-                      </h3>
-                      <p className="text-[11px] text-neutral-400 font-mono mb-4">
-                        Primary legal and preferred identity information used across official recruitment forms.
-                      </p>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">01.1</span> &nbsp;&nbsp;LEGAL IDENTITY & NAMES
+                        </p>
+                      </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Legal First Name
                           </label>
                           <input
                             type="text"
                             value={formData.personal.legalFirstName || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, legalFirstName: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, legalFirstName: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="Vedant"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Legal Last Name
                           </label>
                           <input
                             type="text"
                             value={formData.personal.legalLastName || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, legalLastName: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, legalLastName: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="Lahane"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Preferred Name
                           </label>
                           <input
                             type="text"
                             value={formData.personal.preferredName || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, preferredName: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, preferredName: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="Vedant"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Pronouns
                           </label>
                           <input
                             type="text"
                             value={formData.personal.pronouns || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, pronouns: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, pronouns: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="he/him"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Gender
                           </label>
-                          <input
-                            type="text"
+                          <select
                             value={formData.personal.gender || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, gender: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="Male / Decline to state"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                            Alternate Phone
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.personal.alternatePhone || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, alternatePhone: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="+91 ..."
-                          />
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, gender: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                          >
+                            <option value="">Decline to self-identify</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Non-binary">Non-binary</option>
+                          </select>
                         </div>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-neutral-800/80">
-                      <h3 className="text-xs font-mono uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 01.2</span> RESIDENTIAL ADDRESS & PASSPORT
-                      </h3>
-                      <p className="text-[11px] text-neutral-400 font-mono mb-4">
-                        Stored strictly in your private database. Never rendered publicly on your portfolio website.
-                      </p>
+                    {/* Section 01.2: Contact & Location */}
+                    <div>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">01.2</span> &nbsp;&nbsp;LOCATION & CONTACT
+                        </p>
+                      </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div className="sm:col-span-2">
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                            Street Address Line 1
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Street Address (Line 1)
                           </label>
                           <input
                             type="text"
                             value={formData.personal.addressLine1 || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, addressLine1: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="Apartment, suite, building, street"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, addressLine1: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="Apartment, suite, street"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                            Street Address Line 2 (Optional)
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.personal.addressLine2 || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, addressLine2: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="Landmark, floor, area"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             City
                           </label>
                           <input
                             type="text"
                             value={formData.personal.city || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, city: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, city: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="Amravati"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             State / Province
                           </label>
                           <input
                             type="text"
                             value={formData.personal.state || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, state: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, state: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="Maharashtra"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                            Postal / PIN Code
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.personal.postalCode || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, postalCode: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="444601"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Country
                           </label>
                           <input
                             type="text"
                             value={formData.personal.country || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, country: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, country: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="India"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Postal Code
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.personal.postalCode || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, postalCode: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="444604"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Alternate Phone
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.personal.alternatePhone || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, alternatePhone: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="+91 7447335096"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section 01.3: Nationality & Citizenship */}
+                    <div>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">01.3</span> &nbsp;&nbsp;NATIONALITY & CITIZENSHIP
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Nationality
                           </label>
                           <input
                             type="text"
                             value={formData.personal.nationality || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, nationality: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, nationality: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="Indian"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Country of Citizenship
                           </label>
                           <input
                             type="text"
                             value={formData.personal.citizenship || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, citizenship: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, citizenship: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
                             placeholder="India"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                            Passport / National ID (Private)
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Passport Number (Optional)
                           </label>
                           <input
                             type="text"
                             value={formData.personal.passportNumber || ''}
-                            onChange={e => setFormData({ ...formData, personal: { ...formData.personal, passportNumber: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="Optional passport or national ID"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, passportNumber: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="T1234567"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Section 01.4: Professional Links */}
+                    <div>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">01.4</span> &nbsp;&nbsp;PORTFOLIO & PROFILE LINKS
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            LinkedIn URL
+                          </label>
+                          <input
+                            type="url"
+                            value={formData.personal.linkedinUrl || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, linkedinUrl: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="https://linkedin.com/in/vedant-lahane"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            GitHub URL
+                          </label>
+                          <input
+                            type="url"
+                            value={formData.personal.githubUrl || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, githubUrl: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="https://github.com/vedantlahane"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Portfolio Website
+                          </label>
+                          <input
+                            type="url"
+                            value={formData.personal.portfolioUrl || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, portfolioUrl: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="https://vedantlahane.vercel.app"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Twitter / X URL (Optional)
+                          </label>
+                          <input
+                            type="url"
+                            value={formData.personal.twitterUrl || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                personal: { ...formData.personal, twitterUrl: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="https://twitter.com/..."
                           />
                         </div>
                       </div>
@@ -823,427 +1015,726 @@ export default function FormProfileModal({ isOpen, onClose }) {
                   </div>
                 )}
 
-                {/* TAB 02: CAREER & RECRUITMENT */}
+                {/* ============================================================ */}
+                {/* TAB 02: CAREER & VISAS */}
+                {/* ============================================================ */}
                 {activeTab === 'career' && (
-                  <div className="space-y-6 max-w-4xl">
+                  <div className="space-y-10">
+                    {/* Section 02.1: Work Authorization & Relocation */}
                     <div>
-                      <h3 className="text-xs font-mono uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 02.1</span> COMPENSATION & NOTICE PERIOD
-                      </h3>
-                      <p className="text-[11px] text-neutral-400 font-mono mb-4">
-                        Standard factual questions frequently asked on Workday, Lever, and Greenhouse portals.
-                      </p>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">02.1</span> &nbsp;&nbsp;WORK AUTHORIZATION & RELOCATION
+                        </p>
+                      </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                        <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                            Current CTC / Salary
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex items-center gap-3 p-3 border border-gray-200 dark:border-neutral-800 bg-gray-50/50 dark:bg-neutral-900/30">
+                          <input
+                            type="checkbox"
+                            id="authRole"
+                            checked={formData.workAuthorization.authorizedInCountryOfRole}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                workAuthorization: {
+                                  ...formData.workAuthorization,
+                                  authorizedInCountryOfRole: e.target.checked
+                                }
+                              })
+                            }
+                            className="w-4 h-4 accent-neutral-900 dark:accent-accent rounded-none cursor-pointer"
+                          />
+                          <label htmlFor="authRole" className="text-xs font-sans text-gray-700 dark:text-neutral-300 cursor-pointer">
+                            Legally authorized to work in India / Country of application
+                          </label>
+                        </div>
+
+                        <div className="flex items-center gap-3 p-3 border border-gray-200 dark:border-neutral-800 bg-gray-50/50 dark:bg-neutral-900/30">
+                          <input
+                            type="checkbox"
+                            id="sponsorshipNow"
+                            checked={formData.workAuthorization.requiresSponsorshipNow}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                workAuthorization: {
+                                  ...formData.workAuthorization,
+                                  requiresSponsorshipNow: e.target.checked
+                                }
+                              })
+                            }
+                            className="w-4 h-4 accent-neutral-900 dark:accent-accent rounded-none cursor-pointer"
+                          />
+                          <label htmlFor="sponsorshipNow" className="text-xs font-sans text-gray-700 dark:text-neutral-300 cursor-pointer">
+                            Requires visa sponsorship now
+                          </label>
+                        </div>
+
+                        <div className="flex items-center gap-3 p-3 border border-gray-200 dark:border-neutral-800 bg-gray-50/50 dark:bg-neutral-900/30">
+                          <input
+                            type="checkbox"
+                            id="sponsorshipFuture"
+                            checked={formData.workAuthorization.requiresSponsorshipFuture}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                workAuthorization: {
+                                  ...formData.workAuthorization,
+                                  requiresSponsorshipFuture: e.target.checked
+                                }
+                              })
+                            }
+                            className="w-4 h-4 accent-neutral-900 dark:accent-accent rounded-none cursor-pointer"
+                          />
+                          <label htmlFor="sponsorshipFuture" className="text-xs font-sans text-gray-700 dark:text-neutral-300 cursor-pointer">
+                            Requires visa sponsorship in the future
+                          </label>
+                        </div>
+
+                        <div className="flex items-center gap-3 p-3 border border-gray-200 dark:border-neutral-800 bg-gray-50/50 dark:bg-neutral-900/30">
+                          <input
+                            type="checkbox"
+                            id="relocate"
+                            checked={formData.workAuthorization.willingToRelocate}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                workAuthorization: {
+                                  ...formData.workAuthorization,
+                                  willingToRelocate: e.target.checked
+                                }
+                              })
+                            }
+                            className="w-4 h-4 accent-neutral-900 dark:accent-accent rounded-none cursor-pointer"
+                          />
+                          <label htmlFor="relocate" className="text-xs font-sans text-gray-700 dark:text-neutral-300 cursor-pointer">
+                            Willing to relocate for the role
+                          </label>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Work Mode Preference
                           </label>
                           <input
                             type="text"
-                            value={formData.compensation.currentSalary || ''}
-                            onChange={e => setFormData({ ...formData, compensation: { ...formData.compensation, currentSalary: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="e.g. 8 LPA or NA"
+                            value={formData.workAuthorization.workModePreference || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                workAuthorization: {
+                                  ...formData.workAuthorization,
+                                  workModePreference: e.target.value
+                                }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="Flexible (Remote / Hybrid / Onsite)"
                           />
                         </div>
+                      </div>
+                    </div>
 
-                        <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                            Expected CTC / Desired Salary
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.compensation.expectedSalary || ''}
-                            onChange={e => setFormData({ ...formData, compensation: { ...formData.compensation, expectedSalary: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="e.g. 14 LPA / Open to discussion"
-                          />
-                        </div>
+                    {/* Section 02.2: Compensation & Availability */}
+                    <div>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">02.2</span> &nbsp;&nbsp;AVAILABILITY & COMPENSATION
+                        </p>
+                      </div>
 
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                            Currency
-                          </label>
-                          <select
-                            value={formData.compensation.currency || 'INR'}
-                            onChange={e => setFormData({ ...formData, compensation: { ...formData.compensation, currency: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                          >
-                            <option value="INR">INR (₹)</option>
-                            <option value="USD">USD ($)</option>
-                            <option value="EUR">EUR (€)</option>
-                            <option value="GBP">GBP (£)</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Notice Period
                           </label>
                           <input
                             type="text"
                             value={formData.compensation.noticePeriodDays || ''}
-                            onChange={e => setFormData({ ...formData, compensation: { ...formData.compensation, noticePeriodDays: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="0 (Immediate) or 15 days"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                compensation: { ...formData.compensation, noticePeriodDays: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="0 (Immediate)"
                           />
                         </div>
 
                         <div>
-                          <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
                             Earliest Start Date
                           </label>
                           <input
                             type="text"
                             value={formData.compensation.earliestStartDate || ''}
-                            onChange={e => setFormData({ ...formData, compensation: { ...formData.compensation, earliestStartDate: e.target.value } })}
-                            className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                            placeholder="Immediately / Within 2 weeks"
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                compensation: { ...formData.compensation, earliestStartDate: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="Immediately"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Currency
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.compensation.currency || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                compensation: { ...formData.compensation, currency: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="INR"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Current Salary (LPA / Annual)
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.compensation.currentSalary || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                compensation: { ...formData.compensation, currentSalary: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="e.g. Student / Intern"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Expected Salary
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.compensation.expectedSalary || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                compensation: { ...formData.compensation, expectedSalary: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            placeholder="Open / Competitive"
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-neutral-800/80">
-                      <h3 className="text-xs font-mono uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 02.2</span> WORK AUTHORIZATION & VISAS
-                      </h3>
-                      <p className="text-[11px] text-neutral-400 font-mono mb-4">
-                        Pre-populated answers for employment eligibility and sponsorship questions.
-                      </p>
-
-                      <div className="space-y-3">
-                        <label className="flex items-center gap-3 p-3 bg-neutral-950 border border-neutral-800 cursor-pointer hover:border-neutral-700 transition-colors">
-                          <input
-                            type="checkbox"
-                            checked={formData.workAuthorization.authorizedInCountryOfRole}
-                            onChange={e => setFormData({ ...formData, workAuthorization: { ...formData.workAuthorization, authorizedInCountryOfRole: e.target.checked } })}
-                            className="accent-accent w-4 h-4"
-                          />
-                          <div>
-                            <span className="text-xs font-mono text-white font-medium block">
-                              Legally authorized to work in the country of the role
-                            </span>
-                            <span className="text-[11px] font-mono text-neutral-400">
-                              e.g. Authorized to work in India without restriction
-                            </span>
-                          </div>
-                        </label>
-
-                        <label className="flex items-center gap-3 p-3 bg-neutral-950 border border-neutral-800 cursor-pointer hover:border-neutral-700 transition-colors">
-                          <input
-                            type="checkbox"
-                            checked={formData.workAuthorization.requiresSponsorshipNow}
-                            onChange={e => setFormData({ ...formData, workAuthorization: { ...formData.workAuthorization, requiresSponsorshipNow: e.target.checked } })}
-                            className="accent-accent w-4 h-4"
-                          />
-                          <div>
-                            <span className="text-xs font-mono text-white font-medium block">
-                              Will you NOW require sponsorship for an employment visa?
-                            </span>
-                            <span className="text-[11px] font-mono text-neutral-400">
-                              (Usually "No" for domestic roles in India)
-                            </span>
-                          </div>
-                        </label>
-
-                        <label className="flex items-center gap-3 p-3 bg-neutral-950 border border-neutral-800 cursor-pointer hover:border-neutral-700 transition-colors">
-                          <input
-                            type="checkbox"
-                            checked={formData.workAuthorization.requiresSponsorshipFuture}
-                            onChange={e => setFormData({ ...formData, workAuthorization: { ...formData.workAuthorization, requiresSponsorshipFuture: e.target.checked } })}
-                            className="accent-accent w-4 h-4"
-                          />
-                          <div>
-                            <span className="text-xs font-mono text-white font-medium block">
-                              Will you in the FUTURE require sponsorship for an employment visa?
-                            </span>
-                            <span className="text-[11px] font-mono text-neutral-400">
-                              (Check if applying for roles requiring international relocation)
-                            </span>
-                          </div>
-                        </label>
-
-                        <label className="flex items-center gap-3 p-3 bg-neutral-950 border border-neutral-800 cursor-pointer hover:border-neutral-700 transition-colors">
-                          <input
-                            type="checkbox"
-                            checked={formData.workAuthorization.willingToRelocate}
-                            onChange={e => setFormData({ ...formData, workAuthorization: { ...formData.workAuthorization, willingToRelocate: e.target.checked } })}
-                            className="accent-accent w-4 h-4"
-                          />
-                          <div>
-                            <span className="text-xs font-mono text-white font-medium block">
-                              Willing to relocate for the role
-                            </span>
-                          </div>
-                        </label>
+                    {/* Section 02.3: Education Details */}
+                    <div>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">02.3</span> &nbsp;&nbsp;ACADEMIC INSTITUTION & DEGREE
+                        </p>
                       </div>
 
-                      <div className="mt-4">
-                        <label className="text-[11px] font-mono text-neutral-400 uppercase tracking-wider block mb-1">
-                          Work Mode Preference
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.workAuthorization.workModePreference || ''}
-                          onChange={e => setFormData({ ...formData, workAuthorization: { ...formData.workAuthorization, workModePreference: e.target.value } })}
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent focus:outline-none text-xs font-mono text-white px-3 py-2"
-                          placeholder="Flexible (Remote / Hybrid / Onsite)"
-                        />
+                      {formData.education.map((edu, idx) => (
+                        <div key={idx} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          <div className="sm:col-span-2">
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                              College / University
+                            </label>
+                            <input
+                              type="text"
+                              value={edu.institution || ''}
+                              onChange={(e) => {
+                                const updated = [...formData.education];
+                                updated[idx].institution = e.target.value;
+                                setFormData({ ...formData, education: updated });
+                              }}
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                              Degree
+                            </label>
+                            <input
+                              type="text"
+                              value={edu.degree || ''}
+                              onChange={(e) => {
+                                const updated = [...formData.education];
+                                updated[idx].degree = e.target.value;
+                                setFormData({ ...formData, education: updated });
+                              }}
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                              Major / Specialization
+                            </label>
+                            <input
+                              type="text"
+                              value={edu.major || ''}
+                              onChange={(e) => {
+                                const updated = [...formData.education];
+                                updated[idx].major = e.target.value;
+                                setFormData({ ...formData, education: updated });
+                              }}
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                              Graduation Year
+                            </label>
+                            <input
+                              type="text"
+                              value={edu.graduationYear || ''}
+                              onChange={(e) => {
+                                const updated = [...formData.education];
+                                updated[idx].graduationYear = e.target.value;
+                                setFormData({ ...formData, education: updated });
+                              }}
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                              GPA / Percentage
+                            </label>
+                            <input
+                              type="text"
+                              value={edu.gpa || ''}
+                              onChange={(e) => {
+                                const updated = [...formData.education];
+                                updated[idx].gpa = e.target.value;
+                                setFormData({ ...formData, education: updated });
+                              }}
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors"
+                              placeholder="e.g. 8.5 / 10"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Section 02.4: Core Written Statements */}
+                    <div>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">02.4</span> &nbsp;&nbsp;DEFAULT FORM STATEMENTS
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Professional Summary (Short Bio for applications)
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={formData.statements.professionalSummary || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                statements: { ...formData.statements, professionalSummary: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors leading-relaxed"
+                            placeholder="Full Stack developer & computer science student passionate about high-performance web systems and AI..."
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider mb-1">
+                            Why Work Here / Cover Letter Template
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={formData.statements.whyOurCompanyTemplate || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                statements: { ...formData.statements, whyOurCompanyTemplate: e.target.value }
+                              })
+                            }
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans transition-colors leading-relaxed"
+                            placeholder="I admire the engineering excellence and product culture..."
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* TAB 03: KNOWLEDGE VAULT (Extensible Personal Wiki & Stories) */}
+                {/* ============================================================ */}
+                {/* TAB 03: KNOWLEDGE VAULT */}
+                {/* ============================================================ */}
                 {activeTab === 'knowledge' && (
-                  <div className="space-y-6 max-w-5xl">
-                    <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="space-y-6">
+                    {/* Vault Header Bar */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-neutral-800">
                       <div>
-                        <h3 className="text-xs font-mono uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                          <span>// 03.1</span> PERSONAL KNOWLEDGE VAULT & STORY BANK
-                        </h3>
-                        <p className="text-[11px] text-neutral-400 font-mono">
-                          Store arbitrary long-form stories, architecture deep dives, STAR narratives, and technical explanations.
-                          The LLM grounds all essay drafts directly on these entries.
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">03</span> &nbsp;&nbsp;PERSONAL KNOWLEDGE VAULT
+                        </p>
+                        <p className="text-xs text-gray-600 dark:text-neutral-400 font-sans mt-1">
+                          Narrative repository for behavioral questions, project stories, architectural decisions, and career philosophy.
                         </p>
                       </div>
 
-                      <button
-                        onClick={() => setIsAddingKnowledge(!isAddingKnowledge)}
-                        className="px-3.5 py-1.5 border border-accent/40 bg-accent/10 text-accent hover:bg-accent hover:text-black font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1.5"
-                      >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>{isAddingKnowledge ? 'CANCEL ENTRY' : 'NEW KNOWLEDGE ENTRY'}</span>
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => {
+                            setIsAddingKnowledge(!isAddingKnowledge);
+                            setEditingKnowledgeId(null);
+                          }}
+                          className="text-xs font-mono font-medium text-gray-900 dark:text-white border border-gray-900 dark:border-neutral-600 px-3 py-1.5 hover:border-accent hover:bg-accent hover:text-white transition-colors cursor-pointer rounded-none"
+                        >
+                          {isAddingKnowledge ? '✕ CANCEL' : '+ ADD STORY / TOPIC'}
+                        </button>
+                      </div>
                     </div>
 
-                    {/* New Knowledge Form Drawer */}
-                    {isAddingKnowledge && (
-                      <motion.form
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        onSubmit={handleAddKnowledge}
-                        className="bg-neutral-950 border border-neutral-800 p-4 sm:p-5 space-y-4 font-mono text-xs"
-                      >
-                        <div className="flex items-center justify-between border-b border-neutral-800 pb-2">
-                          <span className="font-bold text-white uppercase text-xs flex items-center gap-2">
-                            <span>+</span> NEW KNOWLEDGE ENTRY
-                          </span>
-                          <button
-                            type="button"
-                            onClick={handleAiSuggestCategory}
-                            disabled={isCategorizingAi}
-                            className="text-[11px] px-2.5 py-1 border border-neutral-700 bg-neutral-900 text-accent hover:border-accent transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                            title="Auto-detect best category & tags based on your text"
-                          >
-                            <Sparkles className="w-3 h-3" />
-                            <span>{isCategorizingAi ? 'ANALYZING...' : 'AI SUGGEST CATEGORY & TAGS'}</span>
-                          </button>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-[11px] text-neutral-400 uppercase tracking-wider block mb-1">
-                              Entry Title *
-                            </label>
-                            <input
-                              type="text"
-                              value={newKnowledge.title}
-                              onChange={e => setNewKnowledge({ ...newKnowledge, title: e.target.value })}
-                              placeholder="e.g. Axon: RAG System Architecture & Vector Indexing"
-                              className="w-full bg-black border border-neutral-800 focus:border-accent text-white px-3 py-2 text-xs"
-                              required
-                            />
-                          </div>
-
-                          <div>
-                            <label className="text-[11px] text-neutral-400 uppercase tracking-wider block mb-1">
-                              Category
-                            </label>
-                            <select
-                              value={newKnowledge.category}
-                              onChange={e => setNewKnowledge({ ...newKnowledge, category: e.target.value })}
-                              className="w-full bg-black border border-neutral-800 focus:border-accent text-white px-3 py-2 text-xs"
-                            >
-                              {KNOWLEDGE_CATEGORIES.filter(c => c !== 'All').map(cat => (
-                                <option key={cat} value={cat}>{cat}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] text-neutral-400 uppercase tracking-wider block mb-1">
-                            Tags (comma separated)
-                          </label>
-                          <input
-                            type="text"
-                            value={newKnowledge.tags}
-                            onChange={e => setNewKnowledge({ ...newKnowledge, tags: e.target.value })}
-                            placeholder="e.g. AI/ML, Vector DB, LangChain, Architecture"
-                            className="w-full bg-black border border-neutral-800 focus:border-accent text-white px-3 py-2 text-xs"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="text-[11px] text-neutral-400 uppercase tracking-wider block mb-1">
-                            Detailed Narrative / Context / Code Decisions *
-                          </label>
-                          <textarea
-                            rows={5}
-                            value={newKnowledge.content}
-                            onChange={e => setNewKnowledge({ ...newKnowledge, content: e.target.value })}
-                            placeholder="Write long-form writing, technical challenges faced, metrics achieved, STAR explanations, trade-offs, and design rationale..."
-                            className="w-full bg-black border border-neutral-800 focus:border-accent text-white px-3 py-2 text-xs font-mono leading-relaxed"
-                            required
-                          />
-                        </div>
-
-                        <div className="flex items-center justify-between pt-2">
-                          <label className="flex items-center gap-2 text-neutral-400 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={newKnowledge.pinned}
-                              onChange={e => setNewKnowledge({ ...newKnowledge, pinned: e.target.checked })}
-                              className="accent-accent"
-                            />
-                            <span>Pin to top (prioritized for AI retrieval)</span>
-                          </label>
-
-                          <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              onClick={() => setIsAddingKnowledge(false)}
-                              className="px-3 py-1.5 border border-neutral-800 text-neutral-400 hover:text-white cursor-pointer"
-                            >
-                              CANCEL
-                            </button>
-                            <button
-                              type="submit"
-                              disabled={saving}
-                              className="px-4 py-1.5 border border-neutral-700 bg-neutral-900 text-accent hover:border-accent cursor-pointer font-bold flex items-center gap-1.5"
-                            >
-                              <Save className="w-3.5 h-3.5" />
-                              <span>SAVE ENTRY</span>
-                            </button>
-                          </div>
-                        </div>
-                      </motion.form>
-                    )}
-
-                    {/* Search & Category Filter Bar */}
-                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                      <div className="relative flex-1">
-                        <Search className="w-3.5 h-3.5 text-neutral-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          type="text"
-                          value={searchQuery}
-                          onChange={e => setSearchQuery(e.target.value)}
-                          placeholder="Search knowledge by keyword, technology, or tag..."
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent text-xs font-mono text-white pl-8 pr-3 py-2"
-                        />
-                      </div>
-
-                      <div className="flex items-center gap-1 overflow-x-auto scrollbar-none pb-1 sm:pb-0">
-                        {['All', 'Project Context', 'Technical Depth', 'DSA & Problem Solving'].map(cat => (
+                    {/* Filter & Search Bar */}
+                    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                      {/* Monospace Category Pills */}
+                      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                        {KNOWLEDGE_CATEGORIES.map((cat) => (
                           <button
                             key={cat}
                             onClick={() => setSelectedCategory(cat)}
-                            className={`px-2.5 py-1 text-[11px] font-mono border whitespace-nowrap cursor-pointer transition-colors ${
+                            className={`px-2.5 py-1 text-[11px] font-mono transition-colors cursor-pointer rounded-none whitespace-nowrap border ${
                               selectedCategory === cat
-                                ? 'bg-neutral-800 border-accent/60 text-accent font-medium'
-                                : 'bg-neutral-950 border-neutral-800 text-neutral-400 hover:text-neutral-200'
+                                ? 'border-accent text-accent bg-accent/5 dark:bg-accent/10 font-medium'
+                                : 'border-gray-200 dark:border-neutral-800 text-gray-500 dark:text-neutral-400 hover:border-gray-400 dark:hover:border-neutral-700'
                             }`}
                           >
                             {cat}
                           </button>
                         ))}
                       </div>
+
+                      {/* Search Box */}
+                      <div className="w-full md:w-64">
+                        <input
+                          type="text"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search stories, tags..."
+                          className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-xs font-mono text-gray-900 dark:text-white focus:border-accent focus:outline-none rounded-none"
+                        />
+                      </div>
                     </div>
 
-                    {/* Knowledge Cards List */}
-                    <div className="space-y-3">
+                    {/* Add New Knowledge Story Form */}
+                    {isAddingKnowledge && (
+                      <motion.form
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        onSubmit={handleAddKnowledge}
+                        className="p-5 border border-accent/40 bg-accent/5 dark:bg-accent/5 space-y-4 font-sans text-left"
+                      >
+                        <div className="flex items-center justify-between border-b border-gray-200 dark:border-neutral-800 pb-2">
+                          <h3 className="text-sm font-display font-light text-gray-900 dark:text-white">
+                            New Story or Technical Narrative
+                          </h3>
+                          <button
+                            type="button"
+                            onClick={handleAiSuggestCategory}
+                            disabled={isCategorizingAi}
+                            className="text-xs font-mono text-accent hover:underline cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
+                            title="Let Groq/Gemini analyze your narrative and suggest category & tags"
+                          >
+                            <span>✨</span> {isCategorizingAi ? 'Analyzing...' : 'AI Suggest Category & Tags'}
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                              Story Title / Topic Name
+                            </label>
+                            <input
+                              type="text"
+                              value={newKnowledge.title}
+                              onChange={(e) => setNewKnowledge({ ...newKnowledge, title: e.target.value })}
+                              required
+                              placeholder="e.g. Scaling SafarSathi PWA offline caching"
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                              Category
+                            </label>
+                            <select
+                              value={newKnowledge.category}
+                              onChange={(e) => setNewKnowledge({ ...newKnowledge, category: e.target.value })}
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white"
+                            >
+                              {KNOWLEDGE_CATEGORIES.filter(c => c !== 'All').map(c => (
+                                <option key={c} value={c}>{c}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="sm:col-span-2">
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                              Keywords / Tags (comma separated)
+                            </label>
+                            <input
+                              type="text"
+                              value={newKnowledge.tags}
+                              onChange={(e) => setNewKnowledge({ ...newKnowledge, tags: e.target.value })}
+                              placeholder="e.g. PWA, Service Worker, IndexedDB, React, Caching"
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                            Narrative Content (Full details, STAR method, technical challenges & metrics)
+                          </label>
+                          <textarea
+                            rows={6}
+                            value={newKnowledge.content}
+                            onChange={(e) => setNewKnowledge({ ...newKnowledge, content: e.target.value })}
+                            required
+                            placeholder="Describe the situation, technical decisions made, hurdles faced, and tangible outcomes achieved..."
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white font-sans leading-relaxed"
+                          />
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2">
+                          <label className="flex items-center gap-2 text-xs font-mono text-gray-600 dark:text-neutral-400 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={newKnowledge.pinned}
+                              onChange={(e) => setNewKnowledge({ ...newKnowledge, pinned: e.target.checked })}
+                              className="w-3.5 h-3.5 accent-neutral-900 dark:accent-accent rounded-none cursor-pointer"
+                            />
+                            Pin to top of knowledge vault
+                          </label>
+
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setIsAddingKnowledge(false)}
+                              className="px-3 py-1.5 border border-gray-200 dark:border-neutral-700 text-xs font-mono uppercase text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-800 cursor-pointer rounded-none"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="submit"
+                              className="px-4 py-1.5 bg-gray-900 dark:bg-accent text-white dark:text-black border border-gray-900 dark:border-accent text-xs font-mono uppercase hover:bg-neutral-800 cursor-pointer rounded-none"
+                            >
+                              Add to Vault
+                            </button>
+                          </div>
+                        </div>
+                      </motion.form>
+                    )}
+
+                    {/* Knowledge Items List - Architectural Row Layout matching Projects.jsx */}
+                    <div className="border-t border-gray-200 dark:border-neutral-800/80">
                       {filteredKnowledge.length === 0 ? (
-                        <div className="text-center py-12 border border-dashed border-neutral-800 text-neutral-500 font-mono text-xs">
-                          NO KNOWLEDGE ENTRIES FOUND. CLICK "NEW KNOWLEDGE ENTRY" TO STORE PERSONAL CONTEXT.
+                        <div className="py-12 text-center text-xs font-mono text-gray-400 dark:text-neutral-500">
+                          No knowledge entries found matching your filter.
                         </div>
                       ) : (
-                        filteredKnowledge.map((item) => {
+                        filteredKnowledge.map((item, index) => {
                           const isExpanded = expandedKnowledgeId === item.id;
+                          const isEditing = editingKnowledgeId === item.id;
+
                           return (
                             <div
-                              key={item.id}
-                              className={`border transition-colors ${
-                                item.pinned 
-                                  ? 'border-neutral-700 bg-neutral-950/80' 
-                                  : 'border-neutral-800/80 bg-neutral-950/40 hover:border-neutral-750'
-                              }`}
+                              key={item.id || index}
+                              className="border-b border-gray-200 dark:border-neutral-800/80 py-4 group transition-colors hover:bg-gray-50/40 dark:hover:bg-neutral-900/30 px-2 sm:px-3"
                             >
-                              <div className="p-3 sm:p-4 flex items-start justify-between gap-3">
-                                <div className="space-y-1.5 flex-1">
-                                  <div className="flex flex-wrap items-center gap-2">
-                                    <span className="text-[10px] font-mono px-1.5 py-0.5 border border-neutral-800 text-accent bg-black uppercase">
-                                      {item.category}
+                              {/* Row Summary */}
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                {/* Left Category & Index */}
+                                <div className="flex items-center gap-2 min-w-[150px]">
+                                  <span className="text-[11px] font-mono text-gray-400 dark:text-neutral-500 tabular-nums">
+                                    {String(index + 1).padStart(2, '0')}
+                                  </span>
+                                  {item.pinned && (
+                                    <span className="text-xs text-amber-500" title="Pinned">★</span>
+                                  )}
+                                  <span className="text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase tracking-wider">
+                                    {item.category}
+                                  </span>
+                                </div>
+
+                                {/* Center: Title & Excerpt */}
+                                <div className="flex-1">
+                                  <h4
+                                    onClick={() => setExpandedKnowledgeId(isExpanded ? null : item.id)}
+                                    className="text-base sm:text-lg font-display font-light text-gray-900 dark:text-white group-hover:text-accent transition-all duration-200 group-hover:translate-x-1 cursor-pointer flex items-center gap-2"
+                                  >
+                                    <span>{item.title}</span>
+                                    <span className="text-xs font-mono text-gray-400 dark:text-neutral-500">
+                                      {isExpanded ? '▾' : '▸'}
                                     </span>
-                                    {item.pinned && (
-                                      <span className="text-[10px] font-mono px-1.5 py-0.5 bg-amber-950/40 border border-amber-800 text-amber-300 flex items-center gap-1">
-                                        <Pin className="w-2.5 h-2.5" /> PINNED
-                                      </span>
-                                    )}
-                                    <h4 className="text-xs sm:text-sm font-mono font-bold text-white">
-                                      {item.title}
-                                    </h4>
-                                  </div>
+                                  </h4>
+
+                                  {!isExpanded && (
+                                    <p className="text-xs text-gray-600 dark:text-neutral-400 font-sans mt-1 line-clamp-1 leading-relaxed">
+                                      {item.content}
+                                    </p>
+                                  )}
 
                                   {/* Tags */}
                                   {Array.isArray(item.tags) && item.tags.length > 0 && (
-                                    <div className="flex flex-wrap items-center gap-1">
-                                      {item.tags.map((tag, i) => (
-                                        <span key={i} className="text-[10px] font-mono text-neutral-400 bg-neutral-900 px-1.5 py-0.5">
+                                    <div className="flex flex-wrap items-center gap-1.5 mt-1.5">
+                                      {item.tags.map((tag, tIdx) => (
+                                        <span
+                                          key={tIdx}
+                                          className="text-[10px] font-mono text-gray-400 dark:text-neutral-500 border border-gray-100 dark:border-neutral-800 px-1.5 py-0.5"
+                                        >
                                           #{tag}
                                         </span>
                                       ))}
                                     </div>
                                   )}
-
-                                  {/* Content Preview */}
-                                  <p className={`text-xs font-mono text-neutral-300 leading-relaxed ${
-                                    isExpanded ? 'whitespace-pre-wrap' : 'line-clamp-2'
-                                  }`}>
-                                    {item.content}
-                                  </p>
                                 </div>
 
-                                {/* Actions */}
-                                <div className="flex items-center gap-1 text-neutral-400 self-start">
+                                {/* Right: Inline Action Controls */}
+                                <div className="flex items-center gap-3 sm:gap-4 pl-0 sm:pl-4 border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-neutral-800 pt-2 sm:pt-0">
                                   <button
                                     onClick={() => handleTogglePin(item)}
-                                    className={`p-1.5 hover:text-white transition-colors cursor-pointer ${item.pinned ? 'text-amber-400' : ''}`}
-                                    title={item.pinned ? 'Unpin item' : 'Pin item to prioritize'}
+                                    className={`text-xs font-mono cursor-pointer transition-colors ${
+                                      item.pinned ? 'text-amber-500' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                                    }`}
+                                    title={item.pinned ? 'Unpin' : 'Pin to top'}
                                   >
-                                    <Pin className="w-3.5 h-3.5" />
+                                    {item.pinned ? '★ PINNED' : '☆ PIN'}
                                   </button>
 
                                   <button
-                                    onClick={() => setExpandedKnowledgeId(isExpanded ? null : item.id)}
-                                    className="p-1.5 hover:text-white transition-colors cursor-pointer"
-                                    title={isExpanded ? 'Collapse' : 'Expand full writing'}
+                                    onClick={() => {
+                                      setEditingKnowledgeId(isEditing ? null : item.id);
+                                      if (!isExpanded) setExpandedKnowledgeId(item.id);
+                                    }}
+                                    className="text-xs font-mono text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
                                   >
-                                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                                    {isEditing ? 'DONE' : 'EDIT'}
                                   </button>
 
                                   <button
-                                    onClick={() => handleDeleteKnowledge(item.id, item.title)}
-                                    className="p-1.5 hover:text-rose-400 transition-colors cursor-pointer"
-                                    title="Delete entry"
+                                    onClick={() => handleDeleteKnowledge(item.id)}
+                                    className="text-xs font-mono text-red-600 dark:text-red-400 hover:underline cursor-pointer"
                                   >
-                                    <Trash2 className="w-3.5 h-3.5" />
+                                    DELETE
                                   </button>
                                 </div>
                               </div>
+
+                              {/* Expanded Narrative View / In-line Editor */}
+                              <AnimatePresence>
+                                {isExpanded && (
+                                  <motion.div
+                                    initial={{ opacity: 0, height: 0 }}
+                                    animate={{ opacity: 1, height: 'auto' }}
+                                    exit={{ opacity: 0, height: 0 }}
+                                    className="mt-4 pt-4 border-t border-gray-100 dark:border-neutral-800/60"
+                                  >
+                                    {isEditing ? (
+                                      <div className="space-y-3">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                          <div>
+                                            <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">
+                                              Title
+                                            </label>
+                                            <input
+                                              type="text"
+                                              value={item.title}
+                                              onChange={(e) => {
+                                                const updated = formData.knowledgeVault.map(k =>
+                                                  k.id === item.id ? { ...k, title: e.target.value } : k
+                                                );
+                                                setFormData({ ...formData, knowledgeVault: updated });
+                                              }}
+                                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-2.5 py-1.5 text-xs font-sans text-gray-900 dark:text-white"
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">
+                                              Category
+                                            </label>
+                                            <select
+                                              value={item.category}
+                                              onChange={(e) => {
+                                                const updated = formData.knowledgeVault.map(k =>
+                                                  k.id === item.id ? { ...k, category: e.target.value } : k
+                                                );
+                                                setFormData({ ...formData, knowledgeVault: updated });
+                                              }}
+                                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-2.5 py-1.5 text-xs font-sans text-gray-900 dark:text-white"
+                                            >
+                                              {KNOWLEDGE_CATEGORIES.filter(c => c !== 'All').map(c => (
+                                                <option key={c} value={c}>{c}</option>
+                                              ))}
+                                            </select>
+                                          </div>
+                                        </div>
+
+                                        <div>
+                                          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">
+                                            Narrative Story Text
+                                          </label>
+                                          <textarea
+                                            rows={6}
+                                            value={item.content}
+                                            onChange={(e) => {
+                                              const updated = formData.knowledgeVault.map(k =>
+                                                k.id === item.id ? { ...k, content: e.target.value } : k
+                                              );
+                                              setFormData({ ...formData, knowledgeVault: updated });
+                                            }}
+                                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-xs font-sans text-gray-900 dark:text-white leading-relaxed"
+                                          />
+                                        </div>
+
+                                        <div className="flex justify-end gap-2">
+                                          <button
+                                            onClick={() => handleUpdateKnowledge(item)}
+                                            className="px-3 py-1 bg-gray-900 dark:bg-accent text-white dark:text-black font-mono text-xs uppercase"
+                                          >
+                                            Save Changes
+                                          </button>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div className="bg-gray-50/50 dark:bg-neutral-900/40 p-4 border border-gray-200 dark:border-neutral-800/80">
+                                        <p className="text-xs text-gray-700 dark:text-neutral-300 font-sans leading-relaxed whitespace-pre-wrap">
+                                          {item.content}
+                                        </p>
+                                        <div className="mt-3 pt-2 border-t border-gray-200 dark:border-neutral-800 text-[10px] font-mono text-gray-400 dark:text-neutral-500 flex items-center justify-between">
+                                          <span>Updated: {item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : 'Original'}</span>
+                                          <span>Vault ID: {item.id}</span>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
                             </div>
                           );
                         })
@@ -1252,84 +1743,175 @@ export default function FormProfileModal({ isOpen, onClose }) {
                   </div>
                 )}
 
+                {/* ============================================================ */}
                 {/* TAB 04: CUSTOM ATTRIBUTES */}
+                {/* ============================================================ */}
                 {activeTab === 'custom' && (
-                  <div className="space-y-6 max-w-4xl">
-                    <div className="flex items-center justify-between">
+                  <div className="space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200 dark:border-neutral-800">
                       <div>
-                        <h3 className="text-xs font-mono uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                          <span>// 04.1</span> DYNAMIC ATTRIBUTES & NICHE FIELDS
-                        </h3>
-                        <p className="text-[11px] text-neutral-400 font-mono">
-                          Store company-specific or arbitrary question answers (e.g. veteran status, referral source, security clearance).
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">04</span> &nbsp;&nbsp;CUSTOM ATTRIBUTES & FACTS
+                        </p>
+                        <p className="text-xs text-gray-600 dark:text-neutral-400 font-sans mt-1">
+                          Dynamic key-value facts that the browser extension automatically resolves when encountering specific recruitment inputs.
                         </p>
                       </div>
 
                       <button
-                        onClick={handleAddCustomField}
-                        className="px-3 py-1.5 border border-neutral-700 bg-neutral-900 text-neutral-300 hover:border-accent hover:text-accent font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1.5"
+                        onClick={() => setIsAddingField(!isAddingField)}
+                        className="text-xs font-mono font-medium text-gray-900 dark:text-white border border-gray-900 dark:border-neutral-600 px-3 py-1.5 hover:border-accent hover:bg-accent hover:text-white transition-colors cursor-pointer rounded-none self-start sm:self-auto"
                       >
-                        <Plus className="w-3.5 h-3.5" />
-                        <span>ADD CUSTOM FIELD</span>
+                        {isAddingField ? '✕ CANCEL' : '+ ADD ATTRIBUTE'}
                       </button>
                     </div>
 
-                    <div className="space-y-3">
+                    {/* Add Attribute In-place Form */}
+                    {isAddingField && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-5 border border-accent/40 bg-accent/5 dark:bg-accent/5 space-y-4 font-sans text-left"
+                      >
+                        <h3 className="text-sm font-display font-light text-gray-900 dark:text-white border-b border-gray-200 dark:border-neutral-800 pb-2">
+                          Add Custom Fact
+                        </h3>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                              Field Key (Slug identifier)
+                            </label>
+                            <input
+                              type="text"
+                              value={newField.key}
+                              onChange={(e) => setNewField({ ...newField, key: e.target.value })}
+                              placeholder="e.g. t_shirt_size, favorite_editor"
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-sm font-mono focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                              Display Label
+                            </label>
+                            <input
+                              type="text"
+                              value={newField.label}
+                              onChange={(e) => setNewField({ ...newField, label: e.target.value })}
+                              placeholder="e.g. T-Shirt Size"
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                              Value
+                            </label>
+                            <input
+                              type="text"
+                              value={newField.value}
+                              onChange={(e) => setNewField({ ...newField, value: e.target.value })}
+                              placeholder="e.g. L (Large) / VS Code / Neovim"
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                              Category
+                            </label>
+                            <select
+                              value={newField.category}
+                              onChange={(e) => setNewField({ ...newField, category: e.target.value })}
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-1.5 text-sm focus:border-gray-900 dark:focus:border-accent focus:outline-none rounded-none text-gray-900 dark:text-white"
+                            >
+                              <option value="General">General</option>
+                              <option value="Personal">Personal</option>
+                              <option value="Technical">Technical</option>
+                              <option value="Logistics">Logistics</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2">
+                          <label className="flex items-center gap-2 text-xs font-mono text-gray-600 dark:text-neutral-400 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={newField.isSensitive}
+                              onChange={(e) => setNewField({ ...newField, isSensitive: e.target.checked })}
+                              className="w-3.5 h-3.5 accent-neutral-900 dark:accent-accent rounded-none cursor-pointer"
+                            />
+                            Mark as sensitive fact
+                          </label>
+
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setIsAddingField(false)}
+                              className="px-3 py-1.5 border border-gray-200 dark:border-neutral-700 text-xs font-mono uppercase text-gray-700 dark:text-neutral-300 hover:bg-gray-100 dark:hover:bg-neutral-800 cursor-pointer rounded-none"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleAddCustomField}
+                              className="px-4 py-1.5 bg-gray-900 dark:bg-accent text-white dark:text-black border border-gray-900 dark:border-accent text-xs font-mono uppercase hover:bg-neutral-800 cursor-pointer rounded-none"
+                            >
+                              Add Attribute
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* Custom Attributes List */}
+                    <div className="border-t border-gray-200 dark:border-neutral-800/80">
                       {formData.customFields.length === 0 ? (
-                        <div className="text-center py-8 border border-dashed border-neutral-800 text-neutral-500 font-mono text-xs">
-                          NO CUSTOM ATTRIBUTES ADDED YET.
+                        <div className="py-12 text-center text-xs font-mono text-gray-400 dark:text-neutral-500">
+                          No custom attributes defined yet. Add attributes like preferred editor, t-shirt size, or custom identifiers.
                         </div>
                       ) : (
-                        formData.customFields.map((cf, idx) => (
-                          <div key={idx} className="p-3 bg-neutral-950 border border-neutral-800/80 space-y-2 font-mono">
-                            <div className="flex flex-wrap items-center justify-between gap-2">
-                              <span className="text-[10px] text-accent tracking-widest uppercase">
-                                FIELD {idx + 1}
+                        formData.customFields.map((field, idx) => (
+                          <div
+                            key={idx}
+                            className="border-b border-gray-200 dark:border-neutral-800/80 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-2 sm:px-3 hover:bg-gray-50/40 dark:hover:bg-neutral-900/30 transition-colors"
+                          >
+                            <div className="flex items-start sm:items-center gap-3 min-w-[200px]">
+                              <span className="text-[11px] font-mono text-gray-400 dark:text-neutral-500 tabular-nums">
+                                {String(idx + 1).padStart(2, '0')}
                               </span>
-                              <button
-                                onClick={() => handleDeleteCustomField(idx)}
-                                className="text-neutral-500 hover:text-rose-400 transition-colors cursor-pointer p-1"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
+                              <div>
+                                <span className="text-xs font-mono text-gray-900 dark:text-white font-medium block">
+                                  {field.label}
+                                </span>
+                                <span className="text-[10px] font-mono text-gray-400 dark:text-neutral-500 block">
+                                  key: {field.key}
+                                </span>
+                              </div>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                              <div>
-                                <label className="text-[10px] text-neutral-400 uppercase block mb-1">
-                                  System Key (Lookup)
-                                </label>
-                                <input
-                                  type="text"
-                                  value={cf.key}
-                                  onChange={e => handleUpdateCustomField(idx, 'key', e.target.value)}
-                                  className="w-full bg-black border border-neutral-800 px-2 py-1.5 text-white"
-                                />
-                              </div>
+                            <div className="flex-1">
+                              <span className="text-xs font-sans text-gray-700 dark:text-neutral-300">
+                                {field.value}
+                              </span>
+                            </div>
 
-                              <div>
-                                <label className="text-[10px] text-neutral-400 uppercase block mb-1">
-                                  Display Label
-                                </label>
-                                <input
-                                  type="text"
-                                  value={cf.label}
-                                  onChange={e => handleUpdateCustomField(idx, 'label', e.target.value)}
-                                  className="w-full bg-black border border-neutral-800 px-2 py-1.5 text-white"
-                                />
-                              </div>
-
-                              <div>
-                                <label className="text-[10px] text-neutral-400 uppercase block mb-1">
-                                  Value
-                                </label>
-                                <input
-                                  type="text"
-                                  value={cf.value}
-                                  onChange={e => handleUpdateCustomField(idx, 'value', e.target.value)}
-                                  className="w-full bg-black border border-neutral-800 px-2 py-1.5 text-white"
-                                />
-                              </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-[10px] font-mono border border-gray-200 dark:border-neutral-800 px-2 py-0.5 text-gray-500 dark:text-neutral-400">
+                                {field.category || 'General'}
+                              </span>
+                              {field.isSensitive && (
+                                <span className="text-[10px] font-mono text-rose-500" title="Sensitive">
+                                  [CONFIDENTIAL]
+                                </span>
+                              )}
+                              <button
+                                onClick={() => handleRemoveCustomField(idx)}
+                                className="text-xs font-mono text-red-600 dark:text-red-400 hover:underline cursor-pointer ml-2"
+                              >
+                                DELETE
+                              </button>
                             </div>
                           </div>
                         ))
@@ -1338,319 +1920,337 @@ export default function FormProfileModal({ isOpen, onClose }) {
                   </div>
                 )}
 
-                {/* TAB 05: AI ENGINE & SANDBOX */}
+                {/* ============================================================ */}
+                {/* TAB 05: AI ENGINE */}
+                {/* ============================================================ */}
                 {activeTab === 'ai' && (
-                  <div className="space-y-6 max-w-4xl font-mono">
+                  <div className="space-y-10">
+                    {/* Section 05.1: Model & Provider Configuration */}
                     <div>
-                      <h3 className="text-xs uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 05.1</span> DUAL AI PROVIDER CONFIGURATION
-                      </h3>
-                      <p className="text-[11px] text-neutral-400 mb-4">
-                        Seamlessly toggle between Groq (ultra-fast inference) and Gemini (deep context). Keys are kept strictly on the server.
-                      </p>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">05.1</span> &nbsp;&nbsp;LLM PROVIDER ARCHITECTURE
+                        </p>
 
-                      {/* Provider Switcher Cards */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button
+                          onClick={handlePingTest}
+                          disabled={pinging}
+                          className="text-xs font-mono border border-gray-900 dark:border-neutral-600 text-gray-900 dark:text-white px-3 py-1 hover:border-accent hover:bg-accent hover:text-white transition-colors cursor-pointer rounded-none disabled:opacity-50"
+                        >
+                          {pinging ? 'TESTING CONNECTION...' : '⚡ TEST AI CONNECTION'}
+                        </button>
+                      </div>
+
+                      {/* Ping diagnostic result badge */}
+                      {pingResult && (
+                        <div
+                          className={`mb-4 p-3 border text-xs font-mono flex items-center justify-between ${
+                            pingResult.success
+                              ? 'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300'
+                              : 'bg-rose-50 dark:bg-rose-950/30 border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-300'
+                          }`}
+                        >
+                          <span>
+                            {pingResult.success
+                              ? `● Connected to ${pingResult.provider.toUpperCase()} (${pingResult.model}) in ${pingResult.latencyMs}ms`
+                              : `✕ Connection error: ${pingResult.error || 'Failed'}`}
+                          </span>
+                          <button onClick={() => setPingResult(null)} className="cursor-pointer">✕</button>
+                        </div>
+                      )}
+
+                      {/* Provider Selection Cards */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                         {/* Groq Card */}
                         <div
-                          onClick={() => setFormData({
-                            ...formData,
-                            aiSettings: { ...formData.aiSettings, defaultProvider: 'groq' }
-                          })}
-                          className={`p-4 border cursor-pointer transition-all ${
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              aiSettings: { ...formData.aiSettings, defaultProvider: 'groq' }
+                            })
+                          }
+                          className={`p-4 border transition-all cursor-pointer ${
                             formData.aiSettings.defaultProvider === 'groq'
-                              ? 'border-accent bg-neutral-950 shadow-md ring-1 ring-accent/30'
-                              : 'border-neutral-800 bg-black hover:border-neutral-700'
+                              ? 'border-accent bg-accent/5 dark:bg-accent/10 shadow-sm'
+                              : 'border-gray-200 dark:border-neutral-800 hover:border-gray-400 dark:hover:border-neutral-700'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold text-white flex items-center gap-2">
-                              <span>⚡</span> GROQ (ACTIVE)
+                            <span className="text-xs font-mono font-medium text-gray-900 dark:text-white">
+                              GROQ LPUs
                             </span>
-                            <span className={`text-[10px] px-1.5 py-0.5 border ${
-                              formData.aiSettings.defaultProvider === 'groq'
-                                ? 'bg-accent/10 border-accent text-accent'
-                                : 'border-neutral-800 text-neutral-500'
-                            }`}>
-                              {formData.aiSettings.defaultProvider === 'groq' ? 'SELECTED' : 'SELECT'}
+                            <span className="text-[10px] font-mono px-2 py-0.5 bg-accent text-white dark:text-black">
+                              RECOMMENDED
                             </span>
                           </div>
-                          <p className="text-[11px] text-neutral-400 mb-3">
-                            Ultra-low latency inference powered by LPUs. Recommended for instant form drafts.
+                          <p className="text-xs text-gray-600 dark:text-neutral-400 font-sans leading-relaxed">
+                            Ultra-fast inference (500+ tokens/sec). Best for instant question answering and seamless form filling.
                           </p>
-
-                          <div>
-                            <label className="text-[10px] text-neutral-400 uppercase block mb-1">
-                              Groq Model
-                            </label>
-                            <select
-                              value={formData.aiSettings.groqModel || 'qwen/qwen3.8-27b'}
-                              onChange={e => setFormData({
-                                ...formData,
-                                aiSettings: { ...formData.aiSettings, groqModel: e.target.value }
-                              })}
-                              className="w-full bg-neutral-900 border border-neutral-800 text-white px-2.5 py-1.5 text-xs"
-                            >
-                              {GROQ_MODELS.map(m => (
-                                <option key={m.id} value={m.id}>{m.name}</option>
-                              ))}
-                            </select>
-                          </div>
                         </div>
 
                         {/* Gemini Card */}
                         <div
-                          onClick={() => setFormData({
-                            ...formData,
-                            aiSettings: { ...formData.aiSettings, defaultProvider: 'gemini' }
-                          })}
-                          className={`p-4 border cursor-pointer transition-all ${
+                          onClick={() =>
+                            setFormData({
+                              ...formData,
+                              aiSettings: { ...formData.aiSettings, defaultProvider: 'gemini' }
+                            })
+                          }
+                          className={`p-4 border transition-all cursor-pointer ${
                             formData.aiSettings.defaultProvider === 'gemini'
-                              ? 'border-accent bg-neutral-950 shadow-md ring-1 ring-accent/30'
-                              : 'border-neutral-800 bg-black hover:border-neutral-700'
+                              ? 'border-accent bg-accent/5 dark:bg-accent/10 shadow-sm'
+                              : 'border-gray-200 dark:border-neutral-800 hover:border-gray-400 dark:hover:border-neutral-700'
                           }`}
                         >
                           <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold text-white flex items-center gap-2">
-                              <span>✨</span> GOOGLE GEMINI
+                            <span className="text-xs font-mono font-medium text-gray-900 dark:text-white">
+                              GOOGLE GEMINI
                             </span>
-                            <span className={`text-[10px] px-1.5 py-0.5 border ${
-                              formData.aiSettings.defaultProvider === 'gemini'
-                                ? 'bg-accent/10 border-accent text-accent'
-                                : 'border-neutral-800 text-neutral-500'
-                            }`}>
-                              {formData.aiSettings.defaultProvider === 'gemini' ? 'SELECTED' : 'SELECT'}
+                            <span className="text-[10px] font-mono px-2 py-0.5 border border-gray-200 dark:border-neutral-800 text-gray-500">
+                              LARGE CONTEXT
                             </span>
                           </div>
-                          <p className="text-[11px] text-neutral-400 mb-3">
-                            Multimodal and large-window reasoning. Requires active billing/generative API access on Google project.
+                          <p className="text-xs text-gray-600 dark:text-neutral-400 font-sans leading-relaxed">
+                            Deep multimodal comprehension with massive context windows for full-document analysis.
                           </p>
+                        </div>
+                      </div>
 
-                          <div>
-                            <label className="text-[10px] text-neutral-400 uppercase block mb-1">
-                              Gemini Model
-                            </label>
+                      {/* Model Selector based on provider */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                            Active Model Selection
+                          </label>
+                          {formData.aiSettings.defaultProvider === 'groq' ? (
                             <select
-                              value={formData.aiSettings.geminiModel || 'gemini-3.6-flash'}
-                              onChange={e => setFormData({
-                                ...formData,
-                                aiSettings: { ...formData.aiSettings, geminiModel: e.target.value }
-                              })}
-                              className="w-full bg-neutral-900 border border-neutral-800 text-white px-2.5 py-1.5 text-xs"
+                              value={formData.aiSettings.groqModel || 'qwen/qwen3.8-27b'}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  aiSettings: { ...formData.aiSettings, groqModel: e.target.value }
+                                })
+                              }
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-xs font-mono text-gray-900 dark:text-white focus:border-accent focus:outline-none rounded-none"
                             >
-                              {GEMINI_MODELS.map(m => (
-                                <option key={m.id} value={m.id}>{m.name}</option>
+                              {GROQ_MODELS.map((m) => (
+                                <option key={m.id} value={m.id}>
+                                  {m.name}
+                                </option>
                               ))}
                             </select>
-                          </div>
+                          ) : (
+                            <select
+                              value={formData.aiSettings.geminiModel || 'gemini-3.6-flash'}
+                              onChange={(e) =>
+                                setFormData({
+                                  ...formData,
+                                  aiSettings: { ...formData.aiSettings, geminiModel: e.target.value }
+                                })
+                              }
+                              className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-xs font-mono text-gray-900 dark:text-white focus:border-accent focus:outline-none rounded-none"
+                            >
+                              {GEMINI_MODELS.map((m) => (
+                                <option key={m.id} value={m.id}>
+                                  {m.name}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                        </div>
+
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                            System Persona Tone
+                          </label>
+                          <input
+                            type="text"
+                            value={formData.aiSettings.systemPrompt || ''}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                aiSettings: { ...formData.aiSettings, systemPrompt: e.target.value }
+                              })
+                            }
+                            placeholder="e.g. Grounded, humble, precise engineer writing in first-person (I/me)"
+                            className="w-full border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-accent focus:outline-none rounded-none"
+                          />
                         </div>
                       </div>
+                    </div>
 
-                      {/* Connection Diagnostic Button */}
-                      <div className="mt-4 flex flex-wrap items-center justify-between p-3 bg-neutral-950 border border-neutral-800/80 gap-2">
-                        <div className="text-xs">
-                          <span className="text-neutral-400">Current active provider: </span>
-                          <span className="text-accent font-bold uppercase">{formData.aiSettings.defaultProvider}</span>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={handlePingTest}
-                          disabled={pinging}
-                          className="px-3 py-1.5 border border-neutral-700 bg-neutral-900 text-neutral-200 hover:border-accent hover:text-accent text-xs uppercase transition-colors cursor-pointer flex items-center gap-1.5 disabled:opacity-50"
-                        >
-                          <RefreshCw className={`w-3.5 h-3.5 ${pinging ? 'animate-spin text-accent' : ''}`} />
-                          <span>{pinging ? 'TESTING CONNECTIVITY...' : 'TEST PROVIDER CONNECTION'}</span>
-                        </button>
+                    {/* Section 05.2: Live AI Sandbox */}
+                    <div>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">05.2</span> &nbsp;&nbsp;INTERACTIVE QUESTION SANDBOX
+                        </p>
                       </div>
 
-                      {/* Ping Diagnostic Result */}
-                      {pingResult && (
-                        <div className={`mt-2 p-3 text-xs border ${
-                          pingResult.success 
-                            ? 'bg-emerald-950/30 border-emerald-800 text-emerald-300' 
-                            : 'bg-rose-950/30 border-rose-800 text-rose-300'
-                        }`}>
-                          <div className="flex items-center justify-between mb-1 font-bold">
-                            <span>{pingResult.success ? '✓ CONNECTION VERIFIED' : '✕ CONNECTION FAILED'}</span>
-                            <span>{pingResult.latencyMs}ms</span>
-                          </div>
-                          <p className="text-[11px] opacity-80">
-                            {pingResult.success ? `Model: ${pingResult.model} • Reply: ${pingResult.response}` : pingResult.error}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Custom Instructions */}
-                    <div className="pt-4 border-t border-neutral-800/80">
-                      <h3 className="text-xs uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 05.2</span> CUSTOM AI PERSONA & INSTRUCTIONS
-                      </h3>
-                      <p className="text-[11px] text-neutral-400 mb-3">
-                        Guide how the AI formats and frames your answers across job applications.
-                      </p>
-
-                      <textarea
-                        rows={3}
-                        value={formData.aiSettings.systemPrompt || ''}
-                        onChange={e => setFormData({
-                          ...formData,
-                          aiSettings: { ...formData.aiSettings, systemPrompt: e.target.value }
-                        })}
-                        placeholder="e.g. Always emphasize my systems engineering background, offline-first architectures in SafarSathi, and problem-solving discipline from 350+ DSA algorithmic problems."
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent text-xs text-white px-3 py-2 leading-relaxed"
-                      />
-                    </div>
-
-                    {/* Interactive Prompt Sandbox Playground */}
-                    <div className="pt-4 border-t border-neutral-800/80">
-                      <h3 className="text-xs uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 05.3</span> INTERACTIVE DRAFT SANDBOX
-                      </h3>
-                      <p className="text-[11px] text-neutral-400 mb-3">
-                        Test how the AI synthesizes your Knowledge Vault and projects for arbitrary application questions.
-                      </p>
-
-                      <div className="space-y-3">
-                        <input
-                          type="text"
-                          value={aiTestPrompt}
-                          onChange={e => setAiTestPrompt(e.target.value)}
-                          placeholder="Type an application question..."
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:border-accent text-xs text-white px-3 py-2"
-                        />
-
-                        <button
-                          type="button"
-                          onClick={handleTestAiSandbox}
-                          disabled={aiTesting}
-                          className="px-4 py-2 border border-neutral-700 bg-neutral-900 text-accent hover:border-accent text-xs uppercase tracking-wider font-bold transition-colors cursor-pointer flex items-center gap-2 disabled:opacity-50"
-                        >
-                          <Sparkles className={`w-3.5 h-3.5 ${aiTesting ? 'animate-spin' : ''}`} />
-                          <span>{aiTesting ? 'GENERATING GROUNDED DRAFT...' : 'GENERATE GROUNDED DRAFT'}</span>
-                        </button>
-
-                        {/* Sandbox Output */}
-                        {aiTestResult && (
-                          <div className="mt-3 p-4 bg-neutral-950 border border-neutral-800 text-xs space-y-3">
-                            <div className="flex items-center justify-between border-b border-neutral-800 pb-2 text-[11px] text-neutral-400">
-                              <span>Generated via {aiTestResult.provider} ({aiTestResult.model})</span>
-                              {aiTestResult.usedKnowledge?.length > 0 && (
-                                <span className="text-accent">
-                                  Grounding: {aiTestResult.usedKnowledge.join(', ')}
-                                </span>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">
+                            Test Question / Recruitment Prompt
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              type="text"
+                              value={aiTestPrompt}
+                              onChange={(e) => setAiTestPrompt(e.target.value)}
+                              placeholder="e.g. Describe a time you resolved a complex production bug or architecture trade-off."
+                              className="flex-1 border border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 px-3 py-2 text-sm text-gray-900 dark:text-white focus:border-accent focus:outline-none rounded-none"
+                            />
+                            <button
+                              type="button"
+                              onClick={handleTestAiSandbox}
+                              disabled={aiTesting || !aiTestPrompt.trim()}
+                              className="px-4 py-2 bg-gray-900 dark:bg-accent text-white dark:text-black border border-gray-900 dark:border-accent font-mono text-xs uppercase hover:bg-neutral-800 cursor-pointer rounded-none disabled:opacity-50 flex items-center gap-1.5"
+                            >
+                              {aiTesting ? (
+                                <>
+                                  <span className="animate-spin inline-block">⟳</span>
+                                  <span>GENERATING...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <span>⚡</span>
+                                  <span>RUN AI</span>
+                                </>
                               )}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Sandbox Generation Results */}
+                        {aiTestResult && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="p-4 border border-accent bg-gray-50/50 dark:bg-neutral-900/50 space-y-3 font-sans text-left"
+                          >
+                            <div className="flex items-center justify-between border-b border-gray-200 dark:border-neutral-800 pb-2 text-[10px] font-mono text-gray-500 dark:text-neutral-400">
+                              <span>MODEL: {aiTestResult.model}</span>
+                              <span>LATENCY: {aiTestResult.latencyMs}ms</span>
                             </div>
-                            <p className="text-neutral-200 leading-relaxed whitespace-pre-wrap">
+
+                            <p className="text-sm text-gray-900 dark:text-neutral-100 leading-relaxed whitespace-pre-wrap font-sans">
                               {aiTestResult.answer}
                             </p>
-                          </div>
+
+                            {Array.isArray(aiTestResult.retrievedKnowledge) && aiTestResult.retrievedKnowledge.length > 0 && (
+                              <div className="pt-2 border-t border-gray-200 dark:border-neutral-800">
+                                <p className="text-[10px] font-mono text-accent uppercase mb-1">
+                                  Grounding Citations Retrieved from Vault:
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {aiTestResult.retrievedKnowledge.map((k, kIdx) => (
+                                    <span
+                                      key={kIdx}
+                                      className="text-[10px] font-mono px-2 py-0.5 bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 text-gray-700 dark:text-neutral-300"
+                                    >
+                                      {k.title}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </motion.div>
                         )}
                       </div>
                     </div>
                   </div>
                 )}
 
+                {/* ============================================================ */}
                 {/* TAB 06: EXTENSION PAIRING */}
+                {/* ============================================================ */}
                 {activeTab === 'pairing' && (
-                  <div className="space-y-6 max-w-4xl font-mono text-xs">
+                  <div className="space-y-10">
                     <div>
-                      <h3 className="uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 06.1</span> EXTENSION PAIRING & SECURITY
-                      </h3>
-                      <p className="text-[11px] text-neutral-400 mb-4">
-                        Your browser extension communicates directly with your portfolio backend using this private key.
-                      </p>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">06.1</span> &nbsp;&nbsp;EXTENSION PAIRING SECRET KEY
+                        </p>
+                      </div>
 
-                      <div className="p-4 bg-neutral-950 border border-neutral-800 space-y-4">
-                        <div>
-                          <label className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1.5">
-                            Private Extension Pairing Key
-                          </label>
+                      <div className="p-5 border border-gray-200 dark:border-neutral-800 bg-gray-50/50 dark:bg-neutral-900/30 space-y-4">
+                        <p className="text-xs text-gray-600 dark:text-neutral-400 font-sans leading-relaxed">
+                          Your browser extension uses this secret token to authenticate and securely fetch your personal facts, stories, and AI generations without exposing login credentials.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                          <div className="flex-1 p-3 bg-white dark:bg-neutral-950 border border-gray-200 dark:border-neutral-800 font-mono text-xs sm:text-sm text-gray-900 dark:text-white tracking-widest break-all select-all">
+                            {formData.extensionApiKey || 'No active key generated yet.'}
+                          </div>
+
                           <div className="flex items-center gap-2">
-                            <input
-                              type="password"
-                              readOnly
-                              value={formData.extensionApiKey || 'pf_ext_not_generated'}
-                              className="flex-1 bg-black border border-neutral-800 px-3 py-2 text-white font-mono text-xs tracking-wider"
-                            />
                             <button
-                              type="button"
-                              onClick={copyApiKey}
-                              className="px-3 py-2 border border-neutral-700 bg-neutral-900 text-neutral-200 hover:border-accent hover:text-accent transition-colors cursor-pointer flex items-center gap-1.5"
+                              onClick={handleCopyKey}
+                              disabled={!formData.extensionApiKey}
+                              className="px-4 py-3 bg-gray-900 dark:bg-accent text-white dark:text-black border border-gray-900 dark:border-accent font-mono text-xs uppercase hover:bg-neutral-800 cursor-pointer rounded-none disabled:opacity-50 whitespace-nowrap"
                             >
-                              {copiedKey ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                              <span>{copiedKey ? 'COPIED' : 'COPY'}</span>
+                              {copiedKey ? '✓ COPIED' : 'COPY KEY'}
                             </button>
+
                             <button
-                              type="button"
-                              onClick={handleGenerateApiKey}
-                              disabled={saving}
-                              className="px-3 py-2 border border-neutral-700 bg-neutral-900 text-neutral-200 hover:border-accent hover:text-accent transition-colors cursor-pointer flex items-center gap-1.5"
-                              title="Generate new key (will require re-pairing in extension)"
+                              onClick={handleGenerateKey}
+                              disabled={generatingKey}
+                              className="px-3 py-3 border border-gray-300 dark:border-neutral-700 text-gray-700 dark:text-neutral-300 font-mono text-xs uppercase hover:border-gray-900 dark:hover:border-neutral-400 cursor-pointer rounded-none disabled:opacity-50 whitespace-nowrap"
+                              title="Generate a brand new key and invalidate old ones"
                             >
-                              <RefreshCw className="w-3.5 h-3.5" />
-                              <span>REGENERATE</span>
+                              {generatingKey ? 'GENERATING...' : 'REGENERATE'}
                             </button>
                           </div>
-                        </div>
-
-                        <div>
-                          <label className="text-[10px] text-neutral-400 uppercase tracking-wider block mb-1.5">
-                            Backend API Endpoint
-                          </label>
-                          <input
-                            type="text"
-                            readOnly
-                            value={API_URL || 'http://localhost:5000'}
-                            className="w-full bg-black border border-neutral-800 px-3 py-2 text-neutral-400 font-mono text-xs"
-                          />
                         </div>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-neutral-800/80">
-                      <h3 className="uppercase tracking-widest text-accent mb-1 flex items-center gap-2">
-                        <span>// 06.2</span> LOADING INTO YOUR BROWSER
-                      </h3>
+                    <div>
+                      <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-neutral-800 mb-5">
+                        <p className="text-xs font-mono font-light text-gray-400 dark:text-neutral-500">
+                          <span className="text-accent font-medium">06.2</span> &nbsp;&nbsp;PAIRING SETUP INSTRUCTIONS
+                        </p>
+                      </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3">
-                        <div className="p-3.5 bg-neutral-950 border border-neutral-800 space-y-2">
-                          <span className="font-bold text-white block">Firefox on Ubuntu / Windows</span>
-                          <ol className="list-decimal list-inside text-neutral-400 space-y-1 text-[11px] leading-relaxed">
-                            <li>Open <code className="text-accent">about:debugging#/runtime/this-firefox</code></li>
-                            <li>Click <strong>"Load Temporary Add-on..."</strong></li>
-                            <li>Select <code className="text-white">extension/.output/firefox-mv2/manifest.json</code></li>
-                          </ol>
-                        </div>
-
-                        <div className="p-3.5 bg-neutral-950 border border-neutral-800 space-y-2">
-                          <span className="font-bold text-white block">Chrome / Brave / Edge</span>
-                          <ol className="list-decimal list-inside text-neutral-400 space-y-1 text-[11px] leading-relaxed">
-                            <li>Open <code className="text-accent">chrome://extensions</code></li>
-                            <li>Enable <strong>"Developer mode"</strong> (top-right)</li>
-                            <li>Click <strong>"Load unpacked"</strong></li>
-                            <li>Select folder <code className="text-white">extension/.output/chrome-mv3</code></li>
-                          </ol>
-                        </div>
+                      <div className="space-y-4">
+                        {[
+                          {
+                            step: '01',
+                            title: 'Open Extension Settings',
+                            desc: 'Click the Form Filler extension icon in your browser toolbar (Chrome, Brave, Edge, or Firefox) and click the ⚙ Settings gear icon.'
+                          },
+                          {
+                            step: '02',
+                            title: 'Paste Portfolio Host & Key',
+                            desc: `Ensure the Portfolio URL is set to "${window.location.origin}" and paste the secret pairing key above into the API Key field.`
+                          },
+                          {
+                            step: '03',
+                            title: 'Test & Activate Autofill',
+                            desc: 'Click "Test Connection". Once connected, the extension will automatically match fields on career portals and offer 1-click filling.'
+                          }
+                        ].map((s) => (
+                          <div
+                            key={s.step}
+                            className="flex items-start gap-4 p-4 border border-gray-200 dark:border-neutral-800/80 bg-white dark:bg-neutral-900/20"
+                          >
+                            <span className="text-sm font-mono text-accent font-medium">{s.step}</span>
+                            <div>
+                              <h4 className="text-sm font-display font-light text-gray-900 dark:text-white">
+                                {s.title}
+                              </h4>
+                              <p className="text-xs text-gray-600 dark:text-neutral-400 font-sans mt-1 leading-relaxed">
+                                {s.desc}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
                 )}
-              </>
+              </div>
             )}
-          </div>
-
-          {/* Footer Status Bar */}
-          <div className="px-4 sm:px-6 py-2.5 border-t border-neutral-800/80 bg-neutral-950 flex items-center justify-between text-[11px] font-mono text-neutral-400">
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              PORTFOLIO DATA SYNCED
-            </span>
-            <span>
-              {formData.knowledgeVault?.length || 0} Knowledge Notes • {formData.customFields?.length || 0} Custom Fields
-            </span>
           </div>
         </motion.div>
       </div>
