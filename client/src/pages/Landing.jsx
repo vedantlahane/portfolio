@@ -16,33 +16,8 @@ import { useAdmin, API_URL } from '../context/AdminContext';
 import { usePortfolio } from '../context/PortfolioContext';
 
 const Landing = () => {
-  const [profile, setProfile] = useState(null);
+  const { profile, setProfile } = usePortfolio();
   const { token } = useAdmin();
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/profile`);
-        if (res.ok) {
-          const data = await res.json();
-          setProfile(data);
-        }
-      } catch (err) {
-        console.error('Fetch profile error:', err);
-      }
-    };
-    fetchProfile();
-
-    const handleUpdate = (e) => {
-      if (e.detail?.profile) {
-        setProfile(e.detail.profile);
-      } else {
-        fetchProfile();
-      }
-    };
-    window.addEventListener('portfolio-data-updated', handleUpdate);
-    return () => window.removeEventListener('portfolio-data-updated', handleUpdate);
-  }, []);
 
   const updateProfile = async (updatedData) => {
     if (!token) return;
