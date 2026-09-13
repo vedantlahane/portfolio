@@ -12,7 +12,7 @@
     "build:chrome": "wxt build -b chrome",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
-    "test:matcher": "tsx test-semantic-matcher.ts"
+    "test:matcher": "npx tsx test-semantic-matcher.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

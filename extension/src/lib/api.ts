@@ -51,6 +51,8 @@ export const fetchPortfolioData = async (
       formProfile: json.data.formProfile,
       projects: json.data.projects,
       skills: json.data.skills,
+      knowledgeVault: json.data.formProfile?.knowledgeVault || [],
+      aiSettings: json.data.formProfile?.aiSettings,
       extensionApiKey: json.data.extensionApiKey
     };
 
@@ -106,10 +108,45 @@ export const quickAddProfileField = async (
   }
 };
 
+export const quickAddKnowledge = async (
+  title: string,
+  content: string,
+  category = 'Experience & Stories',
+  tags: string[] = []
+): Promise<boolean> => {
+  const config = await getConfig();
+  const baseUrl = normalizeApiUrl(config.apiUrl);
+  const apiKey = config.apiKey;
+
+  if (!apiKey) return false;
+
+  try {
+    const res = await fetch(`${baseUrl}/api/form-profile/knowledge`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Extension-Key': apiKey
+      },
+      body: JSON.stringify({ title, content, category, tags })
+    });
+
+    if (res.ok) {
+      await fetchPortfolioData();
+      return true;
+    }
+    return false;
+  } catch (e) {
+    console.error('Quick add knowledge failed:', e);
+    return false;
+  }
+};
+
 export const requestAiAnswer = async (
   question: string, 
-  context = ''
-): Promise<{ success: boolean; answer: string }> => {
+  context = '',
+  provider?: string,
+  model?: string
+): Promise<{ success: boolean; answer: string; usedKnowledge?: string[]; provider?: string }> => {
   const config = await getConfig();
   const baseUrl = normalizeApiUrl(config.apiUrl);
   const apiKey = config.apiKey;
@@ -121,12 +158,17 @@ export const requestAiAnswer = async (
         'Content-Type': 'application/json',
         'X-Extension-Key': apiKey
       },
-      body: JSON.stringify({ question, context })
+      body: JSON.stringify({ question, context, provider, model })
     });
 
     const data = await res.json();
     if (res.ok && data.answer) {
-      return { success: true, answer: data.answer };
+      return { 
+        success: true, 
+        answer: data.answer,
+        usedKnowledge: data.usedKnowledge,
+        provider: data.provider
+      };
     }
     throw new Error(data.message || 'AI generation failed');
   } catch (error: any) {

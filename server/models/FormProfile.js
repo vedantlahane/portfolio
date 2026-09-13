@@ -20,11 +20,36 @@ const workExperienceEntrySchema = new mongoose.Schema({
   description: { type: String, default: '' }
 });
 
+const knowledgeVaultEntrySchema = new mongoose.Schema({
+  id: { type: String, required: true },
+  title: { type: String, required: true },
+  category: { 
+    type: String, 
+    enum: [
+      'Experience & Stories',
+      'Technical Depth',
+      'Career Goals',
+      'Work Style & Values',
+      'Project Context',
+      'DSA & Problem Solving',
+      'Custom Attributes',
+      'General'
+    ],
+    default: 'Experience & Stories'
+  },
+  tags: { type: [String], default: [] },
+  content: { type: String, required: true },
+  pinned: { type: Boolean, default: false },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
 const customFieldSchema = new mongoose.Schema({
   key: { type: String, required: true },
   label: { type: String, required: true },
   value: { type: String, default: '' },
-  category: { type: String, default: 'General' }
+  category: { type: String, default: 'General' },
+  description: { type: String, default: '' }
 });
 
 const formProfileSchema = new mongoose.Schema({
@@ -122,6 +147,84 @@ const formProfileSchema = new mongoose.Schema({
       { key: 'disability_status', label: 'Disability Status', value: 'No', category: 'Legal' },
       { key: 'referral_source', label: 'How did you hear about us?', value: 'Company Website / LinkedIn', category: 'Application' }
     ]
+  },
+
+  // Extensible Personal Knowledge Vault (Unconstrained stories, narratives, context)
+  knowledgeVault: {
+    type: [knowledgeVaultEntrySchema],
+    default: [
+      {
+        id: 'kv_safarsathi',
+        title: 'SafarSathi PWA: Offline-First Architecture & Emergency Dispatch',
+        category: 'Project Context',
+        tags: ['PWA', 'Offline-First', 'IndexedDB', 'Geolocation', 'React'],
+        content: 'Architected SafarSathi, an offline-first tourist safety Progressive Web App designed to protect travelers in low-connectivity areas. Implemented client-side geographic caching using IndexedDB and Service Workers, allowing instant panic alerts and localized resource lookups even without active cellular coverage. Integrated background synchronization to queue and auto-dispatch location telemetry once network connectivity restores.',
+        pinned: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'kv_axon',
+        title: 'Axon: RAG Document Intelligence with LangChain & Vector Embeddings',
+        category: 'Technical Depth',
+        tags: ['AI/ML', 'RAG', 'Vector DB', 'LangChain', 'Python', 'FastAPI'],
+        content: 'Engineered Axon, an enterprise Retrieval-Augmented Generation platform enabling natural language queries over proprietary PDF and doc repositories. Implemented chunking strategies with recursive character text splitters, semantic vector indexing with cosine similarity search, and prompt grounding to eliminate hallucination. Achieved sub-second response times with verifiable source citations.',
+        pinned: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'kv_dsa',
+        title: 'Algorithmic Discipline: 350+ DSA Problems Solved & Optimization',
+        category: 'DSA & Problem Solving',
+        tags: ['DSA', 'LeetCode', 'Algorithms', 'Data Structures', 'Java', 'C++'],
+        content: 'Consistently solved over 350 algorithmic problems on LeetCode and competitive programming platforms, focusing on Graph theory, Dynamic Programming, Tree traversals, and Two-Pointer sliding windows. This foundation enables me to write high-performance, memory-conscious code, optimize database queries, and quickly diagnose asymptotic bottlenecks in production systems.',
+        pinned: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'kv_career',
+        title: 'Career Goals: Scalable Systems & High-Impact Product Engineering',
+        category: 'Career Goals',
+        tags: ['Career', 'Full Stack', 'Cloud Architecture', 'Mentorship'],
+        content: 'My objective is to join a forward-thinking engineering team where I can design high-throughput web architectures, build resilient distributed services, and integrate modern AI capabilities. I thrive in environments with rigorous code reviews, continuous deployment, and high ownership from concept to production.',
+        pinned: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        id: 'kv_collaboration',
+        title: 'Working Style: Bias for Action, Clear Communication & Empathy',
+        category: 'Work Style & Values',
+        tags: ['Collaboration', 'Agile', 'Ownership', 'Product Mindset'],
+        content: 'I approach software engineering with a strong bias for action and empathetic communication. When facing ambiguous technical requirements, I build minimal working prototypes, benchmark edge cases, and align with teammates early. I take end-to-end responsibility for features, ensuring thorough testing, clear documentation, and seamless UI/UX.',
+        pinned: false,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ]
+  },
+
+  // LLM Configuration & Custom Instructions
+  aiSettings: {
+    defaultProvider: { 
+      type: String, 
+      enum: ['groq', 'gemini'], 
+      default: 'groq' 
+    },
+    groqModel: { 
+      type: String, 
+      default: 'qwen/qwen3.8-27b' 
+    },
+    geminiModel: { 
+      type: String, 
+      default: 'gemini-3.6-flash' 
+    },
+    systemPrompt: { 
+      type: String, 
+      default: 'You are an intelligent recruitment assistant representing Vedant Lahane. Draft honest, concise, persuasive, and technically grounded answers using Vedant\'s real projects, achievements, and knowledge base.' 
+    }
   },
 
   // Dedicated Persistent API Key for Extension Pairing

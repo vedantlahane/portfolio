@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getConfig, saveConfig, getCachedProfile } from '../../src/lib/storage';
-import { fetchPortfolioData, quickAddProfileField, requestAiAnswer } from '../../src/lib/api';
+import { fetchPortfolioData, quickAddProfileField, quickAddKnowledge, requestAiAnswer } from '../../src/lib/api';
 import { DetectedField, ScanResult, ConnectionConfig, FormProfilePayload } from '../../src/lib/types';
 
 export default function App() {
@@ -201,6 +201,28 @@ export default function App() {
       handleFieldChange(field.id, { isMissing: false, category: 'factual', confidence: 0.95 });
     } else {
       showNotification('Failed to save to portfolio', 'error');
+    }
+  };
+
+  // Save missing field as a Knowledge Vault story
+  const handleSaveMissingToKnowledge = async (field: DetectedField) => {
+    if (!field.matchedValue.trim()) {
+      showNotification('Enter content first', 'error');
+      return;
+    }
+
+    const success = await quickAddKnowledge(
+      field.label,
+      field.matchedValue,
+      'Experience & Stories',
+      [field.label.split(' ')[0]]
+    );
+
+    if (success) {
+      showNotification(`Saved "${field.label}" to Knowledge Vault!`, 'success');
+      handleFieldChange(field.id, { isMissing: false, category: 'factual', confidence: 0.95 });
+    } else {
+      showNotification('Failed to save to Knowledge Vault', 'error');
     }
   };
 
@@ -604,15 +626,24 @@ export default function App() {
                           type="text"
                           value={field.matchedValue}
                           onChange={e => handleFieldChange(field.id, { matchedValue: e.target.value, approved: true })}
-                          placeholder="Type value here..."
+                          placeholder="Type value or context here..."
                           className="flex-1 bg-black border border-neutral-800 px-2.5 py-1.5 text-xs text-neutral-100 rounded-none focus:border-accent focus:outline-none"
                         />
                         <button
                           type="button"
                           onClick={() => handleSaveMissingToProfile(field)}
-                          className="px-3 py-1.5 bg-accent text-neutral-950 hover:bg-accent/90 text-[10px] font-mono font-semibold rounded-none cursor-pointer whitespace-nowrap"
+                          className="px-2.5 py-1.5 bg-neutral-800 border border-neutral-700 text-neutral-200 hover:border-accent hover:text-accent text-[10px] font-mono font-semibold rounded-none cursor-pointer whitespace-nowrap"
+                          title="Save as a quick key-value fact"
                         >
-                          💾 Save to Profile
+                          💾 Save Fact
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveMissingToKnowledge(field)}
+                          className="px-2.5 py-1.5 bg-accent text-neutral-950 hover:bg-accent/90 text-[10px] font-mono font-semibold rounded-none cursor-pointer whitespace-nowrap"
+                          title="Save as an extensible story in Knowledge Vault"
+                        >
+                          📖 Knowledge
                         </button>
                       </div>
                     </div>

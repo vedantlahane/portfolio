@@ -54,11 +54,29 @@ export interface ScanResult {
   fields: DetectedField[];
 }
 
+export interface KnowledgeVaultItem {
+  id: string;
+  title: string;
+  category: string;
+  tags: string[];
+  content: string;
+  pinned?: boolean;
+}
+
+export interface AiSettings {
+  defaultProvider: 'groq' | 'gemini';
+  groqModel?: string;
+  geminiModel?: string;
+  systemPrompt?: string;
+}
+
 export interface FormProfilePayload {
   dictionary: Record<string, string>;
   publicProfile?: any;
   formProfile?: any;
   projects?: any[];
   skills?: any[];
+  knowledgeVault?: KnowledgeVaultItem[];
+  aiSettings?: AiSettings;
   extensionApiKey?: string;
 }

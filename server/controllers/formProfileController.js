@@ -4,6 +4,7 @@ const Project = require('../models/Project');
 const SkillCategory = require('../models/SkillCategory');
 const Admin = require('../models/Admin');
 const jwt = require('jsonwebtoken');
+const aiService = require('../services/aiService');
 
 // Helper to authenticate via JWT header or Extension API Key
 const resolveAuth = async (req) => {
@@ -146,6 +147,17 @@ const buildLookupDictionary = (publicProfile, formProfile, projects, skills) => 
     });
   }
 
+  // Index Knowledge Vault entries
+  if (Array.isArray(fp.knowledgeVault)) {
+    fp.knowledgeVault.forEach(item => {
+      if (item.title && item.content) {
+        const slug = item.title.toLowerCase().replace(/[^a-z0-9_]/g, '_').substring(0, 30);
+        dict[`knowledge_${slug}`] = item.content;
+        dict[item.id] = item.content;
+      }
+    });
+  }
+
   return dict;
 };
 
@@ -211,6 +223,8 @@ exports.updateFormProfile = async (req, res) => {
     if (updates.workAuthorization) formProfile.workAuthorization = { ...formProfile.workAuthorization, ...updates.workAuthorization };
     if (updates.statements) formProfile.statements = { ...formProfile.statements, ...updates.statements };
     if (updates.customFields) formProfile.customFields = updates.customFields;
+    if (updates.knowledgeVault) formProfile.knowledgeVault = updates.knowledgeVault;
+    if (updates.aiSettings) formProfile.aiSettings = { ...formProfile.aiSettings, ...updates.aiSettings };
 
     formProfile.updatedAt = Date.now();
     await formProfile.save();
@@ -300,13 +314,128 @@ exports.generateExtensionKey = async (req, res) => {
   }
 };
 
+// @desc    Add a new Knowledge Vault item
+// @route   POST /api/form-profile/knowledge
+// @access  Private (JWT or Extension API Key)
+exports.addKnowledgeItem = async (req, res) => {
+  try {
+    const admin = req.admin;
+    const { title, category, tags, content, pinned } = req.body;
+
+    if (!title || !content) {
+      return res.status(400).json({ success: false, message: 'Title and content are required' });
+    }
+
+    let formProfile = await FormProfile.findOne({ adminId: admin._id });
+    if (!formProfile) {
+      formProfile = new FormProfile({ adminId: admin._id });
+    }
+
+    const newItem = {
+      id: 'kv_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+      title: title.trim(),
+      category: category || 'Experience & Stories',
+      tags: Array.isArray(tags) ? tags : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : []),
+      content: content.trim(),
+      pinned: !!pinned,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    formProfile.knowledgeVault.unshift(newItem);
+    formProfile.updatedAt = Date.now();
+    await formProfile.save();
+
+    res.json({
+      success: true,
+      message: `Knowledge entry "${newItem.title}" added`,
+      item: newItem,
+      knowledgeVault: formProfile.knowledgeVault
+    });
+  } catch (error) {
+    console.error('Add Knowledge Item Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Update an existing Knowledge Vault item
+// @route   PUT /api/form-profile/knowledge/:id
+// @access  Private (JWT or Extension API Key)
+exports.updateKnowledgeItem = async (req, res) => {
+  try {
+    const admin = req.admin;
+    const { id } = req.params;
+    const { title, category, tags, content, pinned } = req.body;
+
+    let formProfile = await FormProfile.findOne({ adminId: admin._id });
+    if (!formProfile) {
+      return res.status(404).json({ success: false, message: 'Form profile not found' });
+    }
+
+    const itemIndex = formProfile.knowledgeVault.findIndex(k => k.id === id);
+    if (itemIndex === -1) {
+      return res.status(404).json({ success: false, message: 'Knowledge item not found' });
+    }
+
+    if (title !== undefined) formProfile.knowledgeVault[itemIndex].title = title.trim();
+    if (category !== undefined) formProfile.knowledgeVault[itemIndex].category = category;
+    if (tags !== undefined) {
+      formProfile.knowledgeVault[itemIndex].tags = Array.isArray(tags) ? tags : tags.split(',').map(t => t.trim()).filter(Boolean);
+    }
+    if (content !== undefined) formProfile.knowledgeVault[itemIndex].content = content.trim();
+    if (pinned !== undefined) formProfile.knowledgeVault[itemIndex].pinned = !!pinned;
+    formProfile.knowledgeVault[itemIndex].updatedAt = new Date();
+
+    formProfile.updatedAt = Date.now();
+    await formProfile.save();
+
+    res.json({
+      success: true,
+      message: 'Knowledge entry updated',
+      item: formProfile.knowledgeVault[itemIndex],
+      knowledgeVault: formProfile.knowledgeVault
+    });
+  } catch (error) {
+    console.error('Update Knowledge Item Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Delete a Knowledge Vault item
+// @route   DELETE /api/form-profile/knowledge/:id
+// @access  Private (JWT or Extension API Key)
+exports.deleteKnowledgeItem = async (req, res) => {
+  try {
+    const admin = req.admin;
+    const { id } = req.params;
+
+    let formProfile = await FormProfile.findOne({ adminId: admin._id });
+    if (!formProfile) {
+      return res.status(404).json({ success: false, message: 'Form profile not found' });
+    }
+
+    formProfile.knowledgeVault = formProfile.knowledgeVault.filter(k => k.id !== id);
+    formProfile.updatedAt = Date.now();
+    await formProfile.save();
+
+    res.json({
+      success: true,
+      message: 'Knowledge entry deleted',
+      knowledgeVault: formProfile.knowledgeVault
+    });
+  } catch (error) {
+    console.error('Delete Knowledge Item Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // @desc    Synthesize grounded AI answer for open-ended application questions
 // @route   POST /api/form-profile/ai-generate
 // @access  Private (JWT or Extension API Key)
 exports.aiGenerateAnswer = async (req, res) => {
   try {
     const admin = req.admin;
-    const { question, context = '', maxLength = 250 } = req.body;
+    const { question, context = '', provider, model } = req.body;
 
     if (!question) {
       return res.status(400).json({ success: false, message: 'Question prompt is required' });
@@ -321,44 +450,137 @@ exports.aiGenerateAnswer = async (req, res) => {
     ]);
 
     const fp = formProfile || {};
-    const statements = fp.statements || {};
-    const p = publicProfile || {};
+    const aiSettings = fp.aiSettings || {};
+    const activeProvider = provider || aiSettings.defaultProvider || 'groq';
+    const activeModel = model || (activeProvider === 'groq' ? aiSettings.groqModel : aiSettings.geminiModel);
 
-    const qLower = question.toLowerCase();
+    // Call dual AI service with knowledge retrieval
+    try {
+      const aiResult = await aiService.generateAnswer({
+        question,
+        context,
+        knowledgeVault: fp.knowledgeVault || [],
+        projects,
+        skills,
+        profileFacts: {
+          fullName: publicProfile?.name || 'Vedant Lahane',
+          educationInstitution: fp.education?.[0]?.institution,
+          degree: fp.education?.[0]?.degree
+        },
+        provider: activeProvider,
+        model: activeModel,
+        customInstructions: aiSettings.systemPrompt
+      });
 
-    // Check if matching baseline statements exist
-    let draftedAnswer = '';
+      return res.json({
+        success: true,
+        answer: aiResult.answer,
+        provider: aiResult.provider,
+        model: aiResult.model,
+        usedKnowledge: aiResult.usedKnowledge,
+        groundedIn: {
+          candidateName: publicProfile?.name || 'Vedant Lahane',
+          primaryTech: ['React', 'TypeScript', 'Node.js', 'Java', 'MongoDB'],
+          flagshipProjects: ['SafarSathi (Safety PWA)', 'Axon (RAG Intelligence)', 'ShoeMarkNet (E-commerce RBAC)']
+        }
+      });
+    } catch (llmError) {
+      console.warn('LLM call failed, falling back to heuristic narrative synthesis:', llmError.message);
 
-    if (qLower.includes('tell us about yourself') || qLower.includes('tell me about yourself') || qLower.includes('bio') || qLower.includes('introduction')) {
-      draftedAnswer = statements.professionalSummary || 
-        `I am ${p.name || 'Vedant Lahane'}, a Computer Science student and software developer passionate about building scalable, AI-powered web applications. With core expertise in React, TypeScript, Node.js, and Java, I have developed projects like SafarSathi (an offline-first safety PWA) and Axon (a RAG document intelligence platform), while solving 350+ DSA algorithmic challenges. I take pride in combining technical rigor with user-centric product engineering.`;
-    } else if (qLower.includes('why') && (qLower.includes('join') || qLower.includes('company') || qLower.includes('us') || qLower.includes('interested') || qLower.includes('work here'))) {
-      draftedAnswer = statements.whyOurCompanyTemplate ||
-        `I am excited by the opportunity to contribute to your team because of your focus on engineering craftsmanship and impactful software. My experience architecting end-to-end full stack applications, optimizing system performance, and solving complex algorithmic problems equips me to ramp up swiftly and make meaningful contributions to your core engineering objectives.`;
-    } else if (qLower.includes('proud') || qLower.includes('project') || qLower.includes('achievement') || qLower.includes('challenge')) {
-      draftedAnswer = statements.proudestProjectDescription || statements.greatestTechnicalAchievement ||
-        `One project I am proud of is Axon, a RAG document intelligence platform I engineered using Node.js, LangChain, vector embeddings, and LLMs. It solves the challenge of extracting accurate insights from dense unstructured technical documents with sub-second retrieval times and strict source citations. Building it taught me deep lessons in vector search indexing, chunking strategies, and backend resilience.`;
-    } else if (qLower.includes('react') || qLower.includes('frontend')) {
-      draftedAnswer = `I have extensive hands-on experience developing modular frontend systems in React with TypeScript, Vite, and Tailwind CSS. I prioritize responsive layouts, clean state management, accessible UI components, and fluid animations using Framer Motion and GSAP, ensuring both aesthetic refinement and high runtime performance.`;
-    } else if (qLower.includes('backend') || qLower.includes('node') || qLower.includes('api')) {
-      draftedAnswer = `My backend experience centers on building scalable RESTful APIs with Node.js, Express, and MongoDB/MySQL. I implement secure JWT authentication, RBAC authorization, transactional data handling, and rate-limited endpoints with thorough error boundaries to guarantee service reliability.`;
-    } else {
-      // Default contextual synthesis
-      draftedAnswer = `As a software engineer proficient in ${skills.flatMap(s => s.skills).slice(0, 8).join(', ')}, I bring a strong analytical mindset honed through 350+ algorithmic problem solutions and practical production deployments (including SafarSathi and Axon). I am dedicated to delivering maintainable, high-performance code and collaborating closely with cross-functional teams to solve challenging technical problems.`;
-    }
+      // Graceful heuristic fallback
+      const statements = fp.statements || {};
+      const p = publicProfile || {};
+      const qLower = question.toLowerCase();
+      let draftedAnswer = '';
 
-    res.json({
-      success: true,
-      answer: draftedAnswer,
-      groundedIn: {
-        candidateName: p.name || 'Vedant Lahane',
-        primaryTech: ['React', 'TypeScript', 'Node.js', 'Java', 'MongoDB'],
-        flagshipProjects: ['SafarSathi (Safety PWA)', 'Axon (RAG Intelligence)', 'ShoeMarkNet (E-commerce RBAC)']
+      if (qLower.includes('tell us about yourself') || qLower.includes('tell me about yourself') || qLower.includes('bio') || qLower.includes('introduction')) {
+        draftedAnswer = statements.professionalSummary || 
+          `I am ${p.name || 'Vedant Lahane'}, a Computer Science student and software developer passionate about building scalable, AI-powered web applications. With core expertise in React, TypeScript, Node.js, and Java, I have developed projects like SafarSathi (an offline-first safety PWA) and Axon (a RAG document intelligence platform), while solving 350+ DSA algorithmic challenges.`;
+      } else if (qLower.includes('why') && (qLower.includes('join') || qLower.includes('company') || qLower.includes('us') || qLower.includes('interested') || qLower.includes('work here'))) {
+        draftedAnswer = statements.whyOurCompanyTemplate ||
+          `I am excited by the opportunity to contribute to your team because of your focus on engineering craftsmanship and impactful software. My experience architecting end-to-end full stack applications, optimizing system performance, and solving complex algorithmic problems equips me to ramp up swiftly and make meaningful contributions.`;
+      } else if (qLower.includes('proud') || qLower.includes('project') || qLower.includes('achievement') || qLower.includes('challenge')) {
+        draftedAnswer = statements.proudestProjectDescription || statements.greatestTechnicalAchievement ||
+          `One project I am proud of is Axon, a RAG document intelligence platform I engineered using Node.js, LangChain, vector embeddings, and LLMs. It solves the challenge of extracting accurate insights from dense unstructured technical documents with sub-second retrieval times and strict source citations.`;
+      } else {
+        draftedAnswer = `As a software engineer proficient in ${skills.flatMap(s => s.skills).slice(0, 8).join(', ')}, I bring a strong analytical mindset honed through 350+ algorithmic problem solutions and practical production deployments (including SafarSathi and Axon). I am dedicated to delivering maintainable, high-performance code.`;
       }
-    });
 
+      return res.json({
+        success: true,
+        answer: draftedAnswer,
+        provider: 'heuristic_fallback',
+        warning: `Live LLM call unavailable (${llmError.message}). Synthesized from profile statements.`,
+        groundedIn: {
+          candidateName: p.name || 'Vedant Lahane',
+          primaryTech: ['React', 'TypeScript', 'Node.js', 'Java', 'MongoDB'],
+          flagshipProjects: ['SafarSathi (Safety PWA)', 'Axon (RAG Intelligence)']
+        }
+      });
+    }
   } catch (error) {
     console.error('AI Generate Answer Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Live LLM connectivity test
+// @route   POST /api/form-profile/ai-test
+// @access  Private (JWT or Extension API Key)
+exports.testAiConnection = async (req, res) => {
+  try {
+    const { provider = 'groq', model } = req.body;
+    const result = await aiService.testConnection(provider, model);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// @desc    Suggest category and tags for newly discovered knowledge
+// @route   POST /api/form-profile/ai-categorize
+// @access  Private (JWT or Extension API Key)
+exports.suggestKnowledgeCategorization = async (req, res) => {
+  try {
+    const { title, content, provider, model } = req.body;
+    const result = await aiService.suggestKnowledgeClassification({ title, content, provider, model });
+    res.json({ success: true, ...result });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Semantic field resolution for difficult form questions
+// @route   POST /api/form-profile/ai-resolve-field
+// @access  Private (JWT or Extension API Key)
+exports.aiResolveField = async (req, res) => {
+  try {
+    const admin = req.admin;
+    const { fieldLabel, placeholder, inputType, options, provider, model } = req.body;
+
+    const [publicProfile, formProfile, projects, skills] = await Promise.all([
+      Profile.findOne(),
+      FormProfile.findOne({ adminId: admin._id }),
+      Project.find(),
+      SkillCategory.find()
+    ]);
+
+    const fp = formProfile || {};
+    const dictionary = buildLookupDictionary(publicProfile, fp, projects, skills);
+
+    const result = await aiService.matchFieldSemantically({
+      fieldLabel,
+      placeholder,
+      inputType,
+      options,
+      dictionary,
+      knowledgeVault: fp.knowledgeVault || [],
+      provider,
+      model
+    });
+
+    res.json({ success: true, result });
+  } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
