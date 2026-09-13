@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdmin, API_URL } from "../../context/AdminContext";
+import { usePortfolio } from "../../context/PortfolioContext";
 import EditableText from "../UI/EditableText";
 
 const COLLAPSE_DELAY_MS = 1200;
