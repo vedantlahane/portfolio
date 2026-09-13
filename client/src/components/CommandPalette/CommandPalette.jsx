@@ -11,6 +11,7 @@ import { useAdmin } from '../../context/AdminContext';
 
 const STATIC_ITEMS = [
     { id: 'home', type: 'page', title: 'Home', icon: Home, action: '/' },
+    { id: 'vault', type: 'page', title: 'Personal Vault', icon: Lock, action: '/vault' },
     { id: 'blog', type: 'page', title: 'Blog', icon: FileText, action: '/blogs' },
     { id: 'practice', type: 'page', title: 'Practice', icon: Code2, action: '/practice' },
 
@@ -35,6 +36,13 @@ export default function CommandPalette() {
     const items = [
         ...STATIC_ITEMS,
         ...(isAdmin ? [
+            {
+                id: 'admin-vault',
+                type: 'admin',
+                title: 'Admin: Personal Vault',
+                icon: Lock,
+                action: () => navigate('/vault')
+            },
             {
                 id: 'admin-json',
                 type: 'admin',

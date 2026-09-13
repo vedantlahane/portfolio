@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, Link, useNavigate } from "react-router-dom";
 import Landing from "./pages/Landing";
 import BlogListPage from "./pages/BlogListPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import PracticePage from "./pages/PracticePage";
+import PersonalVaultPage from "./pages/PersonalVaultPage";
 import SmoothScroll from "./components/SmoothScroll";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -15,7 +16,6 @@ import CommandPalette from "./components/CommandPalette/CommandPalette";
 import ScrollProgressIndicator from "./components/Navigation/ScrollProgressIndicator";
 import LoginModal from "./components/UI/LoginModal";
 import JsonEditorModal from "./components/UI/JsonEditorModal";
-import FormProfileModal from "./components/Admin/FormProfileModal";
 
 // New Lab Pages
 import DesignLab from "./pages/Lab/DesignLab";
@@ -29,7 +29,7 @@ import { AdminProvider, useAdmin } from "./context/AdminContext";
 import { ThemeProvider } from "./context/ThemeContext";
 
 const AdminToolbar = () => {
-  const { isAdmin, logout, openJsonModal, openFormProfileModal } = useAdmin();
+  const { isAdmin, logout, openJsonModal } = useAdmin();
   if (!isAdmin) return null;
   return (
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-[999] bg-gray-950 border border-gray-800 px-4 py-2.5 text-white flex items-center gap-3 sm:gap-4 text-xs font-mono tracking-widest shadow-2xl">
@@ -38,20 +38,20 @@ const AdminToolbar = () => {
         ADMIN MODE ACTIVE
       </span>
       <span className="text-gray-700">|</span>
-      <button
-        onClick={openFormProfileModal}
-        className="hover:text-accent font-bold transition-colors uppercase cursor-pointer flex items-center gap-1.5"
-        title="Manage private details for browser extension form filling (Ctrl+Shift+F)"
+      <Link
+        to="/vault"
+        className="hover:text-accent font-bold transition-colors uppercase cursor-pointer"
+        title="Manage Personal Vault & AI Autofill (Ctrl+Shift+F)"
       >
-        <span>📋</span> FORM PROFILE
-      </button>
+        PERSONAL VAULT
+      </Link>
       <span className="text-gray-700">|</span>
       <button
         onClick={openJsonModal}
-        className="hover:text-amber-300 font-bold transition-colors uppercase cursor-pointer flex items-center gap-1.5"
+        className="hover:text-amber-300 font-bold transition-colors uppercase cursor-pointer"
         title="Directly manipulate all portfolio data in JSON format"
       >
-        <span>{'{ }'}</span> EDIT JSON
+        EDIT JSON
       </button>
       <span className="text-gray-700">|</span>
       <button
@@ -66,6 +66,7 @@ const AdminToolbar = () => {
 
 const MainApp = () => {
   const [isPreloaderDone, setIsPreloaderDone] = useState(false);
+  const navigate = useNavigate();
   const {
     isAdmin,
     isLoginModalOpen,
@@ -73,13 +74,10 @@ const MainApp = () => {
     closeLoginModal,
     isJsonModalOpen,
     openJsonModal,
-    closeJsonModal,
-    isFormProfileModalOpen,
-    openFormProfileModal,
-    closeFormProfileModal
+    closeJsonModal
   } = useAdmin();
 
-  // Global hotkeys (Ctrl+Shift+A for passkey prompt, Ctrl+Shift+J for JSON editor, Ctrl+Shift+F for Form Profile)
+  // Global hotkeys (Ctrl+Shift+A for passkey prompt, Ctrl+Shift+J for JSON editor, Ctrl+Shift+F for Personal Vault)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
@@ -96,16 +94,12 @@ const MainApp = () => {
       }
       if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'F' || e.key === 'f')) {
         e.preventDefault();
-        if (isAdmin) {
-          openFormProfileModal();
-        } else {
-          openLoginModal();
-        }
+        navigate('/vault');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [openLoginModal, openJsonModal, openFormProfileModal, isAdmin]);
+  }, [openLoginModal, openJsonModal, navigate, isAdmin]);
 
   return (
     <CommandPaletteProvider>
@@ -126,6 +120,8 @@ const MainApp = () => {
               <Route path="/blogs" element={<BlogListPage />} />
               <Route path="/blogs/:id" element={<BlogDetailPage />} />
               <Route path="/practice" element={<PracticePage />} />
+              <Route path="/vault" element={<PersonalVaultPage />} />
+              <Route path="/personal-vault" element={<PersonalVaultPage />} />
 
               {/* Lab & Legacy Routes */}
               <Route path="/lab" element={<DesignLab />} />
@@ -141,7 +137,6 @@ const MainApp = () => {
           <AdminToolbar />
           <LoginModal isOpen={isLoginModalOpen} onClose={closeLoginModal} />
           <JsonEditorModal isOpen={isJsonModalOpen} onClose={closeJsonModal} />
-          <FormProfileModal isOpen={isFormProfileModalOpen} onClose={closeFormProfileModal} />
         </ErrorBoundary>
       </SmoothScroll>
     </CommandPaletteProvider>
