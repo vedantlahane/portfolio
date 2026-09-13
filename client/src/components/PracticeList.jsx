@@ -427,30 +427,30 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-8 border-t border-gray-200">
+    <div className="grid grid-cols-1 lg:grid-cols-8 border-t border-gray-200 dark:border-neutral-800">
       {/* Left Sidebar - Topics */}
-      <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 bg-white lg:h-screen lg:sticky lg:top-0 lg:overflow-y-auto">
+      <div className="col-span-1 lg:col-span-3 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-neutral-800 bg-white dark:bg-black lg:h-screen lg:sticky lg:top-0 lg:overflow-y-auto">
         <div className="p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16">
           {/* NEW: Moving Header Container on top of Left Sidebar */}
           <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="mb-6 lg:mb-8 sticky top-0 bg-white z-10"
+            className="mb-6 lg:mb-8 sticky top-0 bg-white dark:bg-black z-10"
           >
             {/* Header */}
             <div className="mb-8">
               {/* Top row with Title and Compact/Lock controls */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <p className="text-xs sm:text-sm text-gray-400 font-mono font-light mb-0.5">
+                  <p className="text-xs sm:text-sm text-gray-400 dark:text-neutral-500 font-mono font-light mb-0.5">
                     TOPICS
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setCompactHeader(!compactHeader)}
-                    className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-700 dark:text-neutral-300 hover:bg-gray-200"
                     aria-pressed={compactHeader}
                   >
                     {compactHeader ? 'Expand' : 'Compact'}
@@ -474,8 +474,8 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
               {/* Overall Progress */}
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600 font-sans">Overall Progress</span>
-                  <span className="text-xs text-gray-500 font-mono">
+                  <span className="text-sm text-gray-600 dark:text-neutral-400 font-sans">Overall Progress</span>
+                  <span className="text-xs text-gray-500 dark:text-neutral-400 font-mono">
                     {overallStats.done}/{overallStats.total}
                   </span>
                 </div>
@@ -499,7 +499,7 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                     onFocus={() => { if (!authorized) onRequestAuth(); }}
                     disabled={!authorized}
-                    className={`w-full text-xs px-3 py-2 border border-gray-200 rounded bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 ${!authorized ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    className={`w-full text-xs px-3 py-2 border border-gray-200 dark:border-neutral-800 rounded bg-white dark:bg-black text-gray-700 dark:text-neutral-300 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 ${!authorized ? 'opacity-60 cursor-not-allowed' : ''}`}
                   />
                 </div>
               )}
@@ -512,7 +512,7 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
                     onClick={() => { if (authorized) setStatusFilter(f); else onRequestAuth(); }}
                     className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${statusFilter === f
                       ? 'bg-gray-900 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-100 text-gray-700 dark:text-neutral-300 hover:bg-gray-200'
                       }`}
                   >
                     {f}
@@ -525,7 +525,7 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
                 <button
                   onClick={() => { if (authorized) setShowCompleted(!showCompleted); else onRequestAuth(); }}
                   className={`text-xs px-3 py-1.5 rounded transition-all duration-200 font-sans ${showCompleted
-                    ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    ? 'bg-gray-100 text-gray-700 dark:text-neutral-300 hover:bg-gray-200'
                     : 'bg-gray-900 text-white'
                     }`}
                 >
@@ -536,7 +536,7 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
               {/* Reset Button */}
               <button
                 onClick={() => { if (authorized) handleReset(); else onRequestAuth(); }}
-                className="text-xs px-3 py-1.5 rounded bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors font-sans w-full"
+                className="text-xs px-3 py-1.5 rounded bg-gray-100 text-gray-700 dark:text-neutral-300 hover:bg-gray-200 transition-colors font-sans w-full"
               >
                 Reset Progress
               </button>
@@ -557,21 +557,21 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
                   <button
                     ref={(el) => (topicButtonRefs.current[index] = el)}
                     onClick={() => handleTopicClick(index)}
-                    className="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-gray-600 hover:text-gray-900"
+                    className="w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-gray-600 dark:text-neutral-400 hover:text-gray-900 dark:hover:text-white dark:text-white"
                   >
                     <div className="flex items-center gap-2 mb-2">
                       {/* Arrow indicator - pushes content to right when active */}
                       {isActive && (
-                        <span className="text-sm font-mono text-gray-900">
+                        <span className="text-sm font-mono text-gray-900 dark:text-white">
                           →
                         </span>
                       )}
-                      <span className="text-xs font-mono text-gray-400">
+                      <span className="text-xs font-mono text-gray-400 dark:text-neutral-500">
                         {String(index + 1).padStart(2, '0')}
                       </span>
-                      <span className={`text-sm font-sans flex-1 transition-colors duration-200 ${isActive ? 'text-gray-900 font-medium' : ''
+                      <span className={`text-sm font-sans flex-1 transition-colors duration-200 ${isActive ? 'text-gray-900 dark:text-white font-medium' : ''
                         }`}>{sec.title}</span>
-                      <span className="text-xs font-mono text-gray-500">
+                      <span className="text-xs font-mono text-gray-500 dark:text-neutral-400">
                         {topicStats[index].done}/{topicStats[index].total}
                       </span>
                     </div>
@@ -606,12 +606,12 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
       {/* Right Side - Practice Items */}
       <div
         ref={rightSideRef}
-        className="col-span-1 lg:col-span-5 bg-gray-50 lg:h-screen lg:overflow-y-auto relative"
+        className="col-span-1 lg:col-span-5 bg-gray-50 dark:bg-neutral-900/30 lg:h-screen lg:overflow-y-auto relative"
       >
         <div className="p-6 sm:p-8 md:p-10 lg:p-12 xl:p-16">
           {allSections.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-sm text-gray-500 font-sans">No items match the current filter</p>
+              <p className="text-sm text-gray-500 dark:text-neutral-400 font-sans">No items match the current filter</p>
             </div>
           ) : (
             allSections.map((sec, displayIndex) => (
@@ -623,14 +623,14 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
                 {/* Section Header */}
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono text-gray-400">
+                    <span className="text-xs font-mono text-gray-400 dark:text-neutral-500">
                       {String(sec.originalIndex + 1).padStart(2, '0')}
                     </span>
-                    <h2 className="text-base font-medium text-gray-900 font-sans uppercase tracking-wide">
+                    <h2 className="text-base font-medium text-gray-900 dark:text-white font-sans uppercase tracking-wide">
                       {sec.title}
                     </h2>
                   </div>
-                  <span className="text-xs text-gray-500 font-mono">
+                  <span className="text-xs text-gray-500 dark:text-neutral-400 font-mono">
                     {sec.items.length} ITEMS
                   </span>
                 </div>
@@ -645,14 +645,14 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.02 * index }}
-                        className="group border-b border-gray-200 last:border-b-0 py-4 flex items-start justify-between gap-4"
+                        className="group border-b border-gray-200 dark:border-neutral-800 last:border-b-0 py-4 flex items-start justify-between gap-4"
                       >
                         <div className="flex-1 min-w-0">
                           <a
                             href={item.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-sm text-gray-700 hover:text-gray-900 font-sans transition-all duration-200 inline-block group-hover:translate-x-1"
+                            className="text-sm text-gray-700 dark:text-neutral-300 hover:text-gray-900 dark:hover:text-white dark:text-white font-sans transition-all duration-200 inline-block group-hover:translate-x-1"
                           >
                             {item.title}
                           </a>
@@ -663,7 +663,7 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
                             value={status}
                             onChange={(e) => { if (authorized) handleStatusChange(item.id, e.target.value); }}
                             disabled={!authorized}
-                            className={`text-xs border border-gray-200 rounded px-2 py-1 bg-white text-gray-700 hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 ${!authorized ? 'opacity-60 cursor-not-allowed' : ''}`}
+                            className={`text-xs border border-gray-200 dark:border-neutral-800 rounded px-2 py-1 bg-white dark:bg-black text-gray-700 dark:text-neutral-300 hover:border-gray-300 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 ${!authorized ? 'opacity-60 cursor-not-allowed' : ''}`}
                           >
                             <option value={STATUS.TODO}>{STATUS.TODO}</option>
                             <option value={STATUS.IN_PROGRESS}>{STATUS.IN_PROGRESS}</option>
@@ -673,8 +673,8 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
                             className={`inline-flex items-center gap-1.5 text-xs px-2 py-1 rounded ${status === STATUS.DONE
                               ? 'bg-green-50 text-green-700'
                               : status === STATUS.IN_PROGRESS
-                                ? 'bg-gray-100 text-gray-700'
-                                : 'bg-gray-50 text-gray-600'
+                                ? 'bg-gray-100 text-gray-700 dark:text-neutral-300'
+                                : 'bg-gray-50 dark:bg-neutral-900/30 text-gray-600 dark:text-neutral-400'
                               }`}
                           >
                             <span className={`inline-block w-1.5 h-1.5 rounded-full ${status === STATUS.DONE ? 'bg-green-500' : 'bg-gray-400'
@@ -692,8 +692,8 @@ const PracticeList = ({ authorized = true, onRequestAuth = () => { } }) => {
         </div>
         {!authorized && (
           <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-auto">
-            <div className="bg-white/70 backdrop-blur-sm rounded p-6 text-center">
-              <p className="text-sm text-gray-700">This section is locked. Enter passkey to unlock practices.</p>
+            <div className="bg-white/70 dark:bg-black/70 backdrop-blur-sm rounded p-6 text-center">
+              <p className="text-sm text-gray-700 dark:text-neutral-300">This section is locked. Enter passkey to unlock practices.</p>
             </div>
           </div>
         )}

@@ -424,7 +424,7 @@ export default function PersonalVaultPage() {
           </div>
 
           {/* Right Content Area (5 Cols) */}
-          <div className="col-span-1 lg:col-span-5 bg-white dark:bg-black lg:h-screen lg:overflow-y-auto relative">
+          <div className="col-span-1 lg:col-span-5 bg-white dark:bg-black relative">
             <div className="p-6 sm:p-8 md:p-12 lg:p-16 xl:p-20">
               
               {loading ? (

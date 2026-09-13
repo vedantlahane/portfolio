@@ -21,79 +21,79 @@ const ProjectForm = ({ project, onSave, onCancel }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-gray-200 p-6 space-y-4 mb-8 font-sans text-left">
-      <h3 className="text-lg font-display font-light text-gray-900 border-b border-gray-100 pb-2">
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-black border border-gray-200 dark:border-neutral-800 dark:border-neutral-800 p-6 space-y-4 mb-8 font-sans text-left">
+      <h3 className="text-lg font-display font-light text-gray-900 dark:text-white border-b border-gray-100 dark:border-neutral-800 pb-2">
         {project ? 'Edit Project' : 'Add New Project'}
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Title</label>
+          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">Title</label>
           <input
             name="title"
             value={formData.title}
             onChange={handleChange}
             required
-            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+            className="w-full border border-gray-200 dark:border-neutral-800 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900 dark:text-white"
           />
         </div>
         <div>
-          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Year</label>
+          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">Year</label>
           <input
             name="year"
             value={formData.year}
             onChange={handleChange}
             required
-            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+            className="w-full border border-gray-200 dark:border-neutral-800 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900 dark:text-white"
           />
         </div>
         <div>
-          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Tech Stack</label>
+          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">Tech Stack</label>
           <input
             name="tech"
             value={formData.tech}
             onChange={handleChange}
             placeholder="e.g. React • Node.js • MongoDB"
             required
-            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+            className="w-full border border-gray-200 dark:border-neutral-800 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900 dark:text-white"
           />
         </div>
         <div>
-          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Project Type</label>
+          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">Project Type</label>
           <input
             name="type"
             value={formData.type}
             onChange={handleChange}
             placeholder="e.g. E‑Commerce, AI / LLM"
             required
-            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+            className="w-full border border-gray-200 dark:border-neutral-800 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900 dark:text-white"
           />
         </div>
         <div>
-          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">GitHub URL</label>
+          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">GitHub URL</label>
           <input
             name="github"
             value={formData.github}
             onChange={handleChange}
-            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+            className="w-full border border-gray-200 dark:border-neutral-800 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900 dark:text-white"
           />
         </div>
         <div>
-          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Live Demo URL</label>
+          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">Live Demo URL</label>
           <input
             name="live"
             value={formData.live || ''}
             onChange={handleChange}
-            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+            className="w-full border border-gray-200 dark:border-neutral-800 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900 dark:text-white"
           />
         </div>
         <div>
-          <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Display Order</label>
+          <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">Display Order</label>
           <input
             type="number"
             name="order"
             value={formData.order}
             onChange={handleChange}
-            className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+            className="w-full border border-gray-200 dark:border-neutral-800 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900 dark:text-white"
           />
         </div>
         <div className="flex items-center pt-5">
@@ -103,34 +103,34 @@ const ProjectForm = ({ project, onSave, onCancel }) => {
               name="featured"
               checked={formData.featured}
               onChange={handleChange}
-              className="border border-gray-200 text-gray-900 focus:ring-0 focus:outline-none"
+              className="border border-gray-200 dark:border-neutral-800 text-gray-900 dark:text-white focus:ring-0 focus:outline-none"
             />
             Featured Project
           </label>
         </div>
       </div>
       <div>
-        <label className="block text-[10px] text-gray-500 font-mono uppercase mb-1">Description</label>
+        <label className="block text-[10px] text-gray-500 dark:text-neutral-400 font-mono uppercase mb-1">Description</label>
         <textarea
           name="description"
           value={formData.description}
           onChange={handleChange}
           required
           rows={3}
-          className="w-full border border-gray-200 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900"
+          className="w-full border border-gray-200 dark:border-neutral-800 px-3 py-1.5 text-sm focus:border-gray-900 focus:outline-none rounded-none text-gray-900 dark:text-white"
         />
       </div>
       <div className="flex justify-end gap-3 pt-2">
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 border border-gray-200 text-xs tracking-wider uppercase font-light hover:bg-gray-50 cursor-pointer text-gray-900"
+          className="px-4 py-2 border border-gray-200 dark:border-neutral-800 text-xs tracking-wider uppercase font-light hover:bg-gray-50 cursor-pointer text-gray-900 dark:text-white"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="px-4 py-2 bg-gray-900 text-white border border-gray-900 text-xs tracking-wider uppercase font-light hover:bg-white hover:text-gray-900 transition-colors cursor-pointer"
+          className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-black border border-gray-900 text-xs tracking-wider uppercase font-light hover:bg-white dark:hover:bg-neutral-800 hover:text-gray-900 dark:hover:text-white dark:text-white transition-colors cursor-pointer"
         >
           Save Project
         </button>
@@ -397,7 +397,7 @@ const Projects = () => {
             <motion.div className="mt-6 sm:mt-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
               <button
                 onClick={() => setShowAll(!showAll)}
-                className="text-sm text-gray-900 font-sans font-light hover:underline transition-all flex items-center gap-2 cursor-pointer"
+                className="text-sm text-gray-900 dark:text-white font-sans font-light hover:underline transition-all flex items-center gap-2 cursor-pointer"
               >
                 {showAll ? (
                   <>
@@ -421,24 +421,24 @@ const Projects = () => {
 
         {/* Legend */}
         <motion.div
-          className="mt-8 pt-6 border-t border-gray-200 text-xs text-gray-500 flex flex-wrap items-center gap-6"
+          className="mt-8 pt-6 border-t border-gray-200 text-xs text-gray-500 dark:text-neutral-400 flex flex-wrap items-center gap-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
         >
           <div className="flex items-center gap-2">
             <span className="text-xs text-yellow-500">★</span>
-            <span className="text-gray-500">Featured</span>
+            <span className="text-gray-500 dark:text-neutral-400">Featured</span>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 bg-green-500 rounded-full" />
-            <span className="text-gray-500">Live</span>
+            <span className="text-gray-500 dark:text-neutral-400">Live</span>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="inline-block w-2 h-2 bg-gray-400 rounded-full" />
-            <span className="text-gray-500">In Development</span>
+            <span className="text-gray-500 dark:text-neutral-400">In Development</span>
           </div>
         </motion.div>
       </div>

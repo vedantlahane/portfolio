@@ -156,7 +156,7 @@ export default function CommandPalette() {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white w-full max-w-lg rounded-xl shadow-2xl border border-gray-200 overflow-hidden pointer-events-auto flex flex-col max-h-[60vh]"
+                            className="bg-white dark:bg-black w-full max-w-lg rounded-xl shadow-2xl border border-gray-200 dark:border-neutral-800 overflow-hidden pointer-events-auto flex flex-col max-h-[60vh]"
                         >
                             {/* Search Input */}
                             <div className="border-b border-gray-100 flex-shrink-0">
@@ -167,7 +167,7 @@ export default function CommandPalette() {
                                     placeholder="Navigate to..."
                                     value={query}
                                     onChange={e => setQuery(e.target.value)}
-                                    className="w-full px-6 py-4 text-base bg-transparent border-none outline-none text-gray-900 placeholder:text-gray-400"
+                                    className="w-full px-6 py-4 text-base bg-transparent border-none outline-none text-gray-900 dark:text-white placeholder:text-gray-400 dark:text-neutral-500"
                                 />
                             </div>
 
@@ -178,7 +178,7 @@ export default function CommandPalette() {
                                 ) : (
                                     groups.map((group) => (
                                         <div key={group.label} className="mb-2">
-                                            <div className="px-6 py-2 text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                            <div className="px-6 py-2 text-xs font-medium text-gray-400 dark:text-neutral-500 uppercase tracking-wider">
                                                 {group.label}
                                             </div>
                                             <ul>
@@ -192,13 +192,13 @@ export default function CommandPalette() {
                                                             <button
                                                                 onClick={() => executeAction(item)}
                                                                 onMouseEnter={() => setActiveIndex(idx)}
-                                                                className={`w-full flex items-center gap-3 px-6 py-3 text-left transition-colors ${isActive ? 'bg-gray-100/80 text-gray-900' : 'text-gray-600 hover:bg-gray-50'
+                                                                className={`w-full flex items-center gap-3 px-6 py-3 text-left transition-colors ${isActive ? 'bg-gray-100/80 dark:bg-neutral-900/80 text-gray-900 dark:text-white' : 'text-gray-600 dark:text-neutral-300 hover:bg-gray-50 dark:hover:bg-neutral-800/50'
                                                                     }`}
                                                             >
                                                                 {item.type === 'section' ? (
-                                                                    <span className="text-gray-400">→</span>
+                                                                    <span className="text-gray-400 dark:text-neutral-500">→</span>
                                                                 ) : (
-                                                                    <Icon size={16} className={`${isActive ? 'text-gray-900' : 'text-gray-400'}`} />
+                                                                    <Icon size={16} className={`${isActive ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-neutral-500'}`} />
                                                                 )}
                                                                 <span className={item.type === 'section' ? 'text-sm' : 'text-base'}>
                                                                     {item.title}
@@ -214,7 +214,7 @@ export default function CommandPalette() {
                             </div>
 
                             {/* Footer */}
-                            <div className="border-t border-gray-100 px-6 py-3 flex justify-between items-center text-xs text-gray-400 flex-shrink-0 bg-gray-50/50">
+                            <div className="border-t border-gray-100 px-6 py-3 flex justify-between items-center text-xs text-gray-400 dark:text-neutral-500 flex-shrink-0 bg-gray-50/50">
                                 <span>Navigate ↑↓</span>
                                 <span>ESC to close</span>
                             </div>
