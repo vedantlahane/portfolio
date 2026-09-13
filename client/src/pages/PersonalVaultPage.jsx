@@ -3,10 +3,18 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAdmin, API_URL } from '../context/AdminContext';
 import ThemeToggle from '../components/UI/ThemeToggle';
+import ReactMarkdown from 'react-markdown';
 
 // ============================================================================
 // Uniform Vector Icons (1.5px stroke, zero emojis)
 // ============================================================================
+
+const EditIcon = ({ className = 'w-4 h-4' }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+  </svg>
+);
+
 const RefreshIcon = ({ className = 'w-4 h-4' }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -46,6 +54,70 @@ const TrashIcon = ({ className = 'w-4 h-4' }) => (
 // ============================================================================
 // Constants
 // ============================================================================
+
+const KnowledgeEntry = ({ item, onDelete, onEdit }) => {
+  const [expanded, setExpanded] = useState(false);
+  
+  return (
+    <div className="group border-t border-gray-200 dark:border-neutral-800/80 py-8 flex flex-col items-start gap-4 transition-colors hover:bg-gray-50/20 dark:hover:bg-neutral-900/10">
+      <div 
+        className="flex w-full justify-between items-start gap-4 cursor-pointer"
+        onClick={() => setExpanded(!expanded)}
+      >
+        <h3 className="text-2xl sm:text-3xl font-display font-light text-gray-900 dark:text-white group-hover:text-accent transition-colors">
+          {item.title}
+        </h3>
+        <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button onClick={(e) => { e.stopPropagation(); onEdit(item); }} className="text-gray-400 hover:text-accent transition-colors cursor-pointer" title="Edit">
+            <EditIcon className="w-4 h-4" />
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); onDelete(item.id); }} className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer" title="Delete">
+            <TrashIcon className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+      
+      <AnimatePresence>
+        {expanded && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden w-full"
+          >
+            <div className="pt-6 pb-4 max-w-3xl prose prose-gray dark:prose-invert prose-p:text-lg prose-p:font-sans prose-p:font-light prose-p:leading-relaxed prose-headings:font-display prose-headings:font-light prose-a:text-accent">
+              <ReactMarkdown 
+                components={{
+                  h1: ({node, ...props}) => <h1 className="text-3xl font-display mt-8 mb-4 text-gray-900 dark:text-white" {...props} />,
+                  h2: ({node, ...props}) => <h2 className="text-2xl font-display mt-6 mb-3 text-gray-900 dark:text-white" {...props} />,
+                  h3: ({node, ...props}) => <h3 className="text-xl font-display mt-4 mb-2 text-gray-900 dark:text-white" {...props} />,
+                  p: ({node, ...props}) => <p className="text-lg font-sans font-light leading-relaxed mb-4 text-gray-700 dark:text-neutral-300" {...props} />,
+                  ul: ({node, ...props}) => <ul className="list-disc list-inside mb-4 space-y-2 text-gray-700 dark:text-neutral-300" {...props} />,
+                  ol: ({node, ...props}) => <ol className="list-decimal list-inside mb-4 space-y-2 text-gray-700 dark:text-neutral-300" {...props} />,
+                  li: ({node, ...props}) => <li className="text-lg font-sans font-light" {...props} />,
+                  a: ({node, ...props}) => <a className="text-accent underline" {...props} />,
+                  strong: ({node, ...props}) => <strong className="font-medium text-gray-900 dark:text-white" {...props} />,
+                  blockquote: ({node, ...props}) => <blockquote className="border-l-2 border-accent pl-4 italic my-4 text-gray-600 dark:text-neutral-400" {...props} />,
+                  code: ({node, inline, ...props}) => inline ? <code className="bg-gray-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded font-mono text-sm text-accent" {...props} /> : <pre className="bg-gray-900 dark:bg-black text-white p-4 rounded overflow-x-auto my-4 font-mono text-sm"><code {...props} /></pre>
+                }}
+              >
+                {item.content}
+              </ReactMarkdown>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex flex-wrap gap-4 mt-2 text-[10px] font-mono text-gray-400 uppercase tracking-widest">
+        <span className="text-accent">{item.category}</span>
+        {item.tags && Array.isArray(item.tags) && item.tags.map(t => (
+          <span key={t}>#{t}</span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const SECTIONS = [
   { id: 'knowledge', num: '01', title: 'Knowledge', sub: 'Stories & deep dives' },
   { id: 'custom', num: '02', title: 'Attributes', sub: 'Extensible Key-Values' },
@@ -96,6 +168,7 @@ export default function PersonalVaultPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [newKnowledge, setNewKnowledge] = useState({ title: '', category: 'Experience & Stories', tags: '', content: '', pinned: false });
   const [isAddingKnowledge, setIsAddingKnowledge] = useState(false);
+    const [editingKnowledgeId, setEditingKnowledgeId] = useState(null);
 
   // Custom Fields
   const [newField, setNewField] = useState({ key: '', label: '', value: '', category: 'General', isSensitive: false });
@@ -201,7 +274,19 @@ export default function PersonalVaultPage() {
     return [...items].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
   }, [formData.knowledgeVault, selectedCategory, searchQuery]);
 
-  const handleAddKnowledge = async (e) => {
+  const handleEditKnowledge = (item) => {
+      setNewKnowledge({
+        title: item.title,
+        category: item.category,
+        tags: Array.isArray(item.tags) ? item.tags.join(', ') : item.tags,
+        content: item.content,
+        pinned: item.pinned
+      });
+      setEditingKnowledgeId(item.id);
+      setIsAddingKnowledge(true);
+    };
+
+    const handleAddKnowledge = async (e) => {
     e.preventDefault();
     if (!newKnowledge.title.trim() || !newKnowledge.content.trim()) {
       setMessage({ text: 'Story title and narrative content are required.', type: 'error' });
@@ -218,11 +303,13 @@ export default function PersonalVaultPage() {
         pinned: Boolean(newKnowledge.pinned)
       };
 
-      const res = await fetch(`${API_URL}/api/form-profile/knowledge`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify(payload)
-      });
+      const url = editingKnowledgeId ? `${API_URL}/api/form-profile/knowledge/${editingKnowledgeId}` : `${API_URL}/api/form-profile/knowledge`;
+        const method = editingKnowledgeId ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
       const data = await res.json();
       if (data.success) {
         setFormData(prev => ({ ...prev, knowledgeVault: data.knowledgeVault }));
@@ -456,8 +543,8 @@ export default function PersonalVaultPage() {
                       {isAddingKnowledge && (
                         <div className="mb-16 p-8 border border-gray-200 dark:border-neutral-800">
                           <div className="flex justify-between items-center mb-8">
-                            <h3 className="text-xl font-display font-light">New Knowledge Entry</h3>
-                            <button onClick={() => setIsAddingKnowledge(false)} className="text-xs font-mono text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer">CANCEL</button>
+                            <h3 className="text-xl font-display font-light">{editingKnowledgeId ? 'Edit Knowledge Entry' : 'New Knowledge Entry'}</h3>
+                            <button onClick={() => { setIsAddingKnowledge(false); setEditingKnowledgeId(null); setNewKnowledge({ title: '', category: 'Experience & Stories', tags: '', content: '', pinned: false }); }} className="text-xs font-mono text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer">CANCEL</button>
                           </div>
                           
                           <form onSubmit={handleAddKnowledge} className="space-y-8">
@@ -479,7 +566,7 @@ export default function PersonalVaultPage() {
                                <VaultInput label="Tags (Comma separated)" value={newKnowledge.tags} onChange={e => setNewKnowledge({...newKnowledge, tags: e.target.value})} placeholder="React, Salary, Work Culture" />
                             </div>
                             <button type="submit" className="w-full py-3 bg-gray-900 dark:bg-white text-white dark:text-black font-mono text-xs tracking-widest uppercase hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors">
-                               ADD TO KNOWLEDGE BASE
+                               {editingKnowledgeId ? 'UPDATE KNOWLEDGE BASE' : 'ADD TO KNOWLEDGE BASE'}
                             </button>
                           </form>
                         </div>
